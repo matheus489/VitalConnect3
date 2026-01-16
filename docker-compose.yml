@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: vitalconnect-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vitalconnect
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d vitalconnect"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vitalconnect-network
+
+  # Redis Cache and Message Queue
+  redis:
+    image: redis:7-alpine
+    container_name: vitalconnect-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vitalconnect-network
+
+  # Adminer - Database UI (development only)
+  adminer:
+    image: adminer:latest
+    container_name: vitalconnect-adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - vitalconnect-network
+    profiles:
+      - dev
+
+  # Redis Commander - Redis UI (development only)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: vitalconnect-redis-commander
+    restart: unless-stopped
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    ports:
+      - "8082:8081"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - vitalconnect-network
+    profiles:
+      - dev
+
+volumes:
+  postgres_data:
+    name: vitalconnect-postgres-data
+  redis_data:
+    name: vitalconnect-redis-data
+
+networks:
+  vitalconnect-network:
+    name: vitalconnect-network
+    driver: bridge
