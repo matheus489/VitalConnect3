@@ -1,10 +1,11 @@
-export { useAuth, AuthProvider } from './useAuth';
-export { useSSE } from './useSSE';
-export { useOccurrences, useOccurrenceDetail, useOccurrenceHistory, useUpdateOccurrenceStatus, useRegisterOutcome } from './useOccurrences';
-export { useMetrics } from './useMetrics';
-export { useHospitals } from './useHospitals';
-export { useShifts, useMyShifts, useTodayShifts, useCoverageGaps, useCreateShift, useUpdateShift, useDeleteShift } from './useShifts';
 export { useAuditLogs, useOccurrenceTimeline } from './useAuditLogs';
+export { useAuth, AuthProvider } from './useAuth';
 export { useSystemHealth, useListenerHealth, useSSEHealth } from './useHealth';
+export { useHospitals } from './useHospitals';
+export { useMapHospitals, useMapSSEHandler } from './useMap';
+export { useMetrics } from './useMetrics';
+export { useOccurrences, useOccurrenceDetail, useOccurrenceHistory, useUpdateOccurrenceStatus, useRegisterOutcome } from './useOccurrences';
 export { usePushNotifications } from './usePushNotifications';
+export { useShifts, useMyShifts, useTodayShifts, useCoverageGaps, useCreateShift, useUpdateShift, useDeleteShift } from './useShifts';
+export { useSSE } from './useSSE';
 export { useTriagemRules, useCreateTriagemRule, useUpdateTriagemRule, useToggleTriagemRule, useDeleteTriagemRule } from './useTriagemRules';

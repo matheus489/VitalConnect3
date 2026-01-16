@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Leaflet CSS - imported for map functionality */
+@import "leaflet/dist/leaflet.css";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -219,4 +222,38 @@
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: var(--foreground);
   }
+}
+
+/* Leaflet custom marker styles */
+.custom-marker-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Fix for Leaflet popups styling */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.leaflet-popup-content {
+  margin: 0.5rem;
+}
+
+/* Fix Leaflet z-index to not overlap modals/drawers */
+.leaflet-container {
+  z-index: 0;
+}
+
+.leaflet-control-container {
+  z-index: 40;
+}
+
+.leaflet-pane {
+  z-index: 40;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 40;
 }

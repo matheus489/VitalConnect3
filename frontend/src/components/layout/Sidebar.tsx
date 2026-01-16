@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
+  MapPin,
   ClipboardList,
   Settings,
   Users,
@@ -37,6 +38,11 @@ const navItems: NavItem[] = [
     href: '/dashboard',
     label: 'Dashboard',
     icon: LayoutDashboard,
+  },
+  {
+    href: '/dashboard/map',
+    label: 'Mapa',
+    icon: MapPin,
   },
   {
     href: '/dashboard/occurrences',

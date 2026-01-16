@@ -76,7 +76,7 @@ Objetivo: Escalar para multiplos hospitais e adicionar inteligencia ao sistema.
 
 27. [ ] **Webhooks Configuraveis** - Sistema de webhooks para notificar sistemas externos sobre eventos relevantes (nova ocorrencia, captacao concluida). `S`
 
-28. [ ] **Dashboard Geografico** - Mapa interativo mostrando hospitais, ocorrencias ativas e equipes de captacao em tempo real. `M`
+28. [x] **Dashboard Geografico** - Mapa interativo mostrando hospitais, ocorrencias ativas e equipes de captacao em tempo real. `M` *(/dashboard/map, Leaflet + OpenStreetMap)*
 
 ---
 

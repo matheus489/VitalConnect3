@@ -183,9 +183,10 @@ export interface ApiError {
 // =============================================================================
 
 export interface SSENotificationEvent {
-  type: 'new_occurrence' | 'status_update';
+  type: 'new_occurrence' | 'status_update' | 'map_update';
   occurrence_id: string;
   hospital: string;
+  hospital_id?: string;
   setor: string;
   tempo_restante_minutos: number;
   timestamp: string;
@@ -211,7 +212,7 @@ export interface SortOptions {
 }
 
 // =============================================================================
-// Shifts (Escalas/Plantões)
+// Shifts (Escalas/Plantoes)
 // =============================================================================
 
 export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
@@ -219,11 +220,11 @@ export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export const DayNames: Record<DayOfWeek, string> = {
   0: 'Domingo',
   1: 'Segunda-feira',
-  2: 'Terça-feira',
+  2: 'Terca-feira',
   3: 'Quarta-feira',
   4: 'Quinta-feira',
   5: 'Sexta-feira',
-  6: 'Sábado',
+  6: 'Sabado',
 };
 
 export interface Shift {
@@ -335,4 +336,63 @@ export interface SystemHealth {
   };
   uptime_seconds: number;
   timestamp: string;
+}
+
+// =============================================================================
+// Map (Dashboard Geografico)
+// =============================================================================
+
+/**
+ * Nivel de urgencia baseado no tempo restante da janela de isquemia
+ * - green: > 4 horas (janela folgada)
+ * - yellow: 2-4 horas (atencao)
+ * - red: < 2 horas (critico)
+ * - none: sem ocorrencias ativas
+ */
+export type UrgencyLevel = 'green' | 'yellow' | 'red' | 'none';
+
+/**
+ * Dados de um operador de plantao para exibicao no mapa
+ */
+export interface MapOperator {
+  id: string;
+  nome: string;
+}
+
+/**
+ * Dados de uma ocorrencia para exibicao no mapa
+ */
+export interface MapOccurrence {
+  id: string;
+  nome_mascarado: string;
+  setor: string;
+  tempo_restante: string;
+  tempo_restante_minutos: number;
+  status: OccurrenceStatus;
+  urgencia: UrgencyLevel;
+}
+
+/**
+ * Dados de um hospital para renderizacao no mapa
+ * Inclui coordenadas geograficas, ocorrencias ativas e operador de plantao
+ */
+export interface MapHospital {
+  id: string;
+  nome: string;
+  codigo: string;
+  latitude: number;
+  longitude: number;
+  ativo: boolean;
+  urgencia_maxima: UrgencyLevel;
+  ocorrencias_count: number;
+  ocorrencias: MapOccurrence[];
+  operador_plantao: MapOperator | null;
+}
+
+/**
+ * Resposta do endpoint GET /api/v1/map/hospitals
+ */
+export interface MapDataResponse {
+  hospitals: MapHospital[];
+  total: number;
 }

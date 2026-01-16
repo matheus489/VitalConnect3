@@ -125,6 +125,9 @@ func main() {
 	// Initialize shift handler
 	shiftHandler := handlers.NewShiftHandler(shiftRepo, userRepo)
 
+	// Initialize map handler for geographic dashboard
+	mapHandler := handlers.NewMapHandler(hospitalRepo, occurrenceRepo, shiftRepo)
+
 	// Initialize Push Notification Service
 	pushConfig := &notification.PushConfig{
 		ServerKey: cfg.FCMServerKey,
@@ -335,7 +338,7 @@ func main() {
 			protected.GET("/health/listener", handlers.ListenerHealth)
 			protected.GET("/health/sse", handlers.SSEHealth)
 
-			// Shifts (plantões)
+			// Shifts (plantoes)
 			shifts := protected.Group("/shifts")
 			{
 				shifts.POST("", middleware.RequireRole("admin", "gestor"), shiftHandler.Create)
@@ -349,6 +352,12 @@ func main() {
 			protected.GET("/hospitals/:id/shifts", shiftHandler.ListByHospital)
 			protected.GET("/hospitals/:id/shifts/today", shiftHandler.GetTodayShifts)
 			protected.GET("/hospitals/:id/shifts/coverage", shiftHandler.GetCoverageGaps)
+
+			// Map routes (Dashboard Geografico)
+			mapRoutes := protected.Group("/map")
+			{
+				mapRoutes.GET("/hospitals", mapHandler.GetMapHospitals)
+			}
 
 			// Audit Logs
 			protected.GET("/audit-logs", middleware.RequireRole("admin", "gestor"), handlers.ListAuditLogs)

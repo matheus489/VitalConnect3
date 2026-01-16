@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { X, LayoutDashboard, ClipboardList, Settings, Users, Building2 } from 'lucide-react';
+import { X, LayoutDashboard, MapPin, ClipboardList, Settings, Users, Building2, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
@@ -26,9 +26,19 @@ const navItems: NavItem[] = [
     icon: LayoutDashboard,
   },
   {
+    href: '/dashboard/map',
+    label: 'Mapa',
+    icon: MapPin,
+  },
+  {
     href: '/dashboard/occurrences',
     label: 'Ocorrencias',
     icon: ClipboardList,
+  },
+  {
+    href: '/dashboard/shifts',
+    label: 'Escalas',
+    icon: Calendar,
   },
   {
     href: '/dashboard/hospitals',
