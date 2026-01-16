@@ -133,6 +133,21 @@ export interface TriagemRuleConfig {
   setores_prioridade?: Record<string, number>;
 }
 
+export interface CreateTriagemRuleInput {
+  nome: string;
+  descricao?: string;
+  regras: TriagemRuleConfig;
+  prioridade: number;
+}
+
+export interface UpdateTriagemRuleInput {
+  nome?: string;
+  descricao?: string;
+  regras?: TriagemRuleConfig;
+  ativo?: boolean;
+  prioridade?: number;
+}
+
 // =============================================================================
 // Metrics
 // =============================================================================
@@ -193,4 +208,131 @@ export type SortOrder = 'asc' | 'desc';
 export interface SortOptions {
   field: SortField;
   order: SortOrder;
+}
+
+// =============================================================================
+// Shifts (Escalas/Plantões)
+// =============================================================================
+
+export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+export const DayNames: Record<DayOfWeek, string> = {
+  0: 'Domingo',
+  1: 'Segunda-feira',
+  2: 'Terça-feira',
+  3: 'Quarta-feira',
+  4: 'Quinta-feira',
+  5: 'Sexta-feira',
+  6: 'Sábado',
+};
+
+export interface Shift {
+  id: string;
+  hospital_id: string;
+  user_id: string;
+  day_of_week: DayOfWeek;
+  day_name: string;
+  start_time: string;
+  end_time: string;
+  is_night: boolean;
+  user?: User;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TodayShift extends Shift {
+  is_active: boolean;
+}
+
+export interface CreateShiftInput {
+  hospital_id: string;
+  user_id: string;
+  day_of_week: DayOfWeek;
+  start_time: string;
+  end_time: string;
+}
+
+export interface CoverageGap {
+  day_of_week: DayOfWeek;
+  day_name: string;
+  start_time: string;
+  end_time: string;
+}
+
+export interface CoverageAnalysis {
+  hospital_id: string;
+  total_shifts: number;
+  gaps: CoverageGap[];
+  has_gaps: boolean;
+}
+
+// =============================================================================
+// Audit Logs
+// =============================================================================
+
+export type Severity = 'INFO' | 'WARN' | 'CRITICAL';
+
+export interface AuditLog {
+  id: string;
+  timestamp: string;
+  usuario_id?: string;
+  actor_name: string;
+  acao: string;
+  entidade_tipo: string;
+  entidade_id: string;
+  hospital_id?: string;
+  hospital_name?: string;
+  severity: Severity;
+  detalhes?: Record<string, unknown>;
+  ip_address?: string;
+}
+
+export interface AuditLogFilters {
+  data_inicio?: string;
+  data_fim?: string;
+  usuario_id?: string;
+  acao?: string;
+  entidade_tipo?: string;
+  severity?: Severity;
+  hospital_id?: string;
+  page?: number;
+  page_size?: number;
+}
+
+// =============================================================================
+// Reports
+// =============================================================================
+
+export interface ReportFilters {
+  date_from?: string;
+  date_to?: string;
+  hospital_id?: string;
+  desfecho?: string[];
+}
+
+// =============================================================================
+// Health Check
+// =============================================================================
+
+export type ServiceStatus = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+
+export interface ServiceHealth {
+  name: string;
+  status: ServiceStatus;
+  latency_ms?: number;
+  last_check?: string;
+  error?: string;
+}
+
+export interface SystemHealth {
+  status: ServiceStatus;
+  services: {
+    database: ServiceHealth;
+    redis: ServiceHealth;
+    listener: ServiceHealth;
+    triagem: ServiceHealth;
+    sse: ServiceHealth;
+  };
+  uptime_seconds: number;
+  timestamp: string;
 }

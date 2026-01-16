@@ -32,61 +32,96 @@ export function useSSE(options: UseSSEOptions = {}): UseSSEReturn {
 
   const eventSourceRef = useRef<EventSource | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const audioUnlockedRef = useRef(false);
 
-  const playAlertSound = useCallback(() => {
-    if (!soundEnabled) return;
-
+  // Play sound using AudioContext (works after user interaction)
+  const playAudioContextSound = useCallback(() => {
+    console.log('[VitalConnect] playAudioContextSound called');
     try {
+      // Create or reuse AudioContext
       if (!audioContextRef.current) {
         audioContextRef.current = new AudioContext();
       }
-
       const ctx = audioContextRef.current;
 
-      // Resume context if suspended (browser autoplay policy)
+      // Resume if suspended
       if (ctx.state === 'suspended') {
         ctx.resume();
       }
 
-      // Play a more noticeable alert: two-tone "ding-ding"
       const playTone = (frequency: number, startTime: number, duration: number) => {
         const oscillator = ctx.createOscillator();
         const gainNode = ctx.createGain();
-
         oscillator.connect(gainNode);
         gainNode.connect(ctx.destination);
-
         oscillator.type = 'sine';
         oscillator.frequency.setValueAtTime(frequency, startTime);
-
-        gainNode.gain.setValueAtTime(0.5, startTime);
+        gainNode.gain.setValueAtTime(0.8, startTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
-
         oscillator.start(startTime);
         oscillator.stop(startTime + duration);
       };
 
-      // First tone (higher pitch)
-      playTone(1200, ctx.currentTime, 0.15);
-      // Second tone (even higher, after short pause)
-      playTone(1500, ctx.currentTime + 0.2, 0.15);
-      // Third tone (highest)
-      playTone(1800, ctx.currentTime + 0.4, 0.2);
-
+      // Urgent beep pattern - 4 beeps
+      playTone(880, ctx.currentTime, 0.15);
+      playTone(880, ctx.currentTime + 0.2, 0.15);
+      playTone(1100, ctx.currentTime + 0.5, 0.15);
+      playTone(1100, ctx.currentTime + 0.7, 0.2);
+      console.log('[VitalConnect] AudioContext sound played');
     } catch (err) {
-      console.warn('Could not play alert sound:', err);
+      console.warn('[VitalConnect] AudioContext sound failed:', err);
     }
-  }, [soundEnabled]);
+  }, []);
 
+  // Play alert sound
+  const playAlertSound = useCallback(() => {
+    console.log('[VitalConnect] playAlertSound called, soundEnabled:', soundEnabled, 'audioUnlocked:', audioUnlockedRef.current);
+    if (!soundEnabled) {
+      console.log('[VitalConnect] Sound is disabled, skipping');
+      return;
+    }
+
+    if (!audioUnlockedRef.current) {
+      console.log('[VitalConnect] Audio not unlocked yet - user needs to interact with page first');
+      // Show visual notification that sound needs to be enabled
+      return;
+    }
+
+    playAudioContextSound();
+  }, [soundEnabled, playAudioContextSound]);
+
+  // Unlock audio on user interaction
+  const unlockAudio = useCallback(() => {
+    if (audioUnlockedRef.current) return;
+
+    console.log('[VitalConnect] Unlocking audio...');
+    try {
+      // Create AudioContext on first interaction
+      if (!audioContextRef.current) {
+        audioContextRef.current = new AudioContext();
+      }
+
+      // Resume if suspended
+      if (audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+
+      audioUnlockedRef.current = true;
+      console.log('[VitalConnect] Audio unlocked successfully');
+    } catch (err) {
+      console.warn('[VitalConnect] Failed to unlock audio:', err);
+    }
+  }, []);
+
+  // Toggle sound and unlock audio
   const toggleSound = useCallback(() => {
+    // Unlock audio on user interaction
+    unlockAudio();
+
     setSoundEnabled((prev) => {
       const newValue = !prev;
       localStorage.setItem('vitalconnect_sound_enabled', String(newValue));
-
-      // Initialize AudioContext on user interaction (required by browser policy)
-      if (newValue && !audioContextRef.current) {
-        audioContextRef.current = new AudioContext();
-      }
+      console.log('[VitalConnect] Sound toggled:', newValue);
 
       // Play a test beep when enabling sound
       if (newValue && audioContextRef.current) {
@@ -103,15 +138,41 @@ export function useSSE(options: UseSSEOptions = {}): UseSSEReturn {
         oscillator.type = 'sine';
         oscillator.frequency.setValueAtTime(800, ctx.currentTime);
         gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
         oscillator.start(ctx.currentTime);
-        oscillator.stop(ctx.currentTime + 0.1);
+        oscillator.stop(ctx.currentTime + 0.15);
       }
 
       return newValue;
     });
-  }, []);
+  }, [unlockAudio]);
 
+  // Add click listener to unlock audio on first interaction
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleInteraction = () => {
+      unlockAudio();
+      // Remove listeners after first interaction
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('keydown', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
+    };
+
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('keydown', handleInteraction);
+    document.addEventListener('touchstart', handleInteraction);
+
+    console.log('[VitalConnect] Audio notification system initialized, waiting for user interaction to unlock');
+
+    return () => {
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('keydown', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
+    };
+  }, [unlockAudio]);
+
+  // SSE connection
   useEffect(() => {
     if (!enabled) return;
 
@@ -124,14 +185,17 @@ export function useSSE(options: UseSSEOptions = {}): UseSSEReturn {
 
     eventSource.onopen = () => {
       setIsConnected(true);
+      console.log('[VitalConnect] SSE connected');
     };
 
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data) as SSENotificationEvent;
+        console.log('[VitalConnect] SSE event received:', data.type, data);
         setLastEvent(data);
 
         if (data.type === 'new_occurrence') {
+          console.log('[VitalConnect] New occurrence detected, playing alert sound');
           setPendingCount((prev) => prev + 1);
           playAlertSound();
         }
@@ -145,6 +209,7 @@ export function useSSE(options: UseSSEOptions = {}): UseSSEReturn {
     eventSource.onerror = () => {
       setIsConnected(false);
       eventSource.close();
+      console.log('[VitalConnect] SSE disconnected');
 
       // Reconnect after 5 seconds
       setTimeout(() => {

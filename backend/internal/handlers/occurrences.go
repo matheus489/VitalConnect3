@@ -12,6 +12,7 @@ import (
 	"github.com/vitalconnect/backend/internal/middleware"
 	"github.com/vitalconnect/backend/internal/models"
 	"github.com/vitalconnect/backend/internal/repository"
+	"github.com/vitalconnect/backend/internal/services/audit"
 )
 
 var (
@@ -156,10 +157,23 @@ func GetOccurrence(c *gin.Context) {
 	}
 
 	// Log access to complete data for LGPD audit
-	claims, _ := middleware.GetUserClaims(c)
-	if claims != nil {
-		// TODO: Log audit event for LGPD compliance
-		_ = claims.UserID
+	if auditService != nil {
+		userID, actorName := audit.GetUserInfoFromContext(c)
+		ipAddress, userAgent := audit.ExtractRequestInfo(c)
+
+		auditService.LogEventWithUser(
+			c.Request.Context(),
+			userID,
+			actorName,
+			models.ActionOcorrenciaVisualizar,
+			"Ocorrencia",
+			id.String(),
+			&occurrence.HospitalID,
+			models.SeverityInfo,
+			nil, // No sensitive details
+			ipAddress,
+			userAgent,
+		)
 	}
 
 	c.JSON(http.StatusOK, occurrence.ToDetailResponse())
@@ -297,19 +311,27 @@ func UpdateOccurrenceStatus(c *gin.Context) {
 		}
 	}
 
-	// Determine action description
+	// Determine action description and audit action
 	action := models.ActionStatusChanged
+	var auditAction string
 	switch input.Status {
 	case models.StatusEmAndamento:
 		action = models.ActionOccurrenceAssigned
+		auditAction = models.ActionOcorrenciaStatusChange
 	case models.StatusAceita:
 		action = models.ActionOccurrenceAccepted
+		auditAction = models.ActionOcorrenciaAceitar
 	case models.StatusRecusada:
 		action = models.ActionOccurrenceRefused
+		auditAction = models.ActionOcorrenciaRecusar
 	case models.StatusCancelada:
 		action = models.ActionOccurrenceCanceled
+		auditAction = models.ActionOcorrenciaStatusChange
 	case models.StatusConcluida:
 		action = models.ActionOccurrenceConcluded
+		auditAction = models.ActionOcorrenciaStatusChange
+	default:
+		auditAction = models.ActionOcorrenciaStatusChange
 	}
 
 	// Create history entry
@@ -326,6 +348,29 @@ func UpdateOccurrenceStatus(c *gin.Context) {
 	if err != nil {
 		// Log error but don't fail the request
 		_ = err
+	}
+
+	// Log audit event for status change
+	if auditService != nil {
+		userIDForAudit, actorName := audit.GetUserInfoFromContext(c)
+		ipAddress, userAgent := audit.ExtractRequestInfo(c)
+
+		auditService.LogEventWithUser(
+			c.Request.Context(),
+			userIDForAudit,
+			actorName,
+			auditAction,
+			"Ocorrencia",
+			id.String(),
+			&occurrence.HospitalID,
+			models.SeverityInfo,
+			map[string]interface{}{
+				"status_anterior": occurrence.Status,
+				"status_novo":     input.Status,
+			},
+			ipAddress,
+			userAgent,
+		)
 	}
 
 	// Get updated occurrence
@@ -441,6 +486,28 @@ func RegisterOutcome(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to register outcome"})
 		return
+	}
+
+	// Log audit event for outcome registration
+	if auditService != nil {
+		userIDForAudit, actorName := audit.GetUserInfoFromContext(c)
+		ipAddress, userAgent := audit.ExtractRequestInfo(c)
+
+		auditService.LogEventWithUser(
+			c.Request.Context(),
+			userIDForAudit,
+			actorName,
+			models.ActionOcorrenciaStatusChange,
+			"Ocorrencia",
+			id.String(),
+			&occurrence.HospitalID,
+			models.SeverityInfo,
+			map[string]interface{}{
+				"desfecho": input.Desfecho,
+			},
+			ipAddress,
+			userAgent,
+		)
 	}
 
 	c.JSON(http.StatusCreated, gin.H{

@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	"github.com/redis/go-redis/v9"
 	"github.com/vitalconnect/backend/config"
@@ -19,9 +20,12 @@ import (
 	"github.com/vitalconnect/backend/internal/middleware"
 	"github.com/vitalconnect/backend/internal/models"
 	"github.com/vitalconnect/backend/internal/repository"
+	"github.com/vitalconnect/backend/internal/services/audit"
 	"github.com/vitalconnect/backend/internal/services/auth"
+	"github.com/vitalconnect/backend/internal/services/health"
 	"github.com/vitalconnect/backend/internal/services/listener"
 	"github.com/vitalconnect/backend/internal/services/notification"
+	"github.com/vitalconnect/backend/internal/services/report"
 	"github.com/vitalconnect/backend/internal/services/triagem"
 )
 
@@ -88,6 +92,10 @@ func main() {
 	occurrenceRepo := repository.NewOccurrenceRepository(db)
 	occurrenceHistoryRepo := repository.NewOccurrenceHistoryRepository(db)
 	triagemRuleRepo := repository.NewTriagemRuleRepository(db, redisClient)
+	indicatorsRepo := repository.NewIndicatorsRepository(db)
+	auditLogRepo := repository.NewAuditLogRepository(db)
+	shiftRepo := repository.NewShiftRepository(db)
+	pushSubRepo := repository.NewPushSubscriptionRepository(db)
 
 	// Initialize auth service
 	authService := auth.NewAuthService(jwtService, userRepo, redisClient)
@@ -103,6 +111,40 @@ func main() {
 	handlers.SetOccurrenceHistoryRepository(occurrenceHistoryRepo)
 	handlers.SetTriagemRuleRepository(triagemRuleRepo)
 	handlers.SetMetricsOccurrenceRepository(occurrenceRepo)
+	handlers.SetIndicatorsRepository(indicatorsRepo)
+	handlers.SetAuditLogRepository(auditLogRepo)
+
+	// Initialize audit service
+	auditService := audit.NewAuditService(auditLogRepo)
+	handlers.SetAuditService(auditService)
+
+	// Initialize report service
+	reportService := report.NewReportService(db)
+	handlers.SetReportService(reportService)
+
+	// Initialize shift handler
+	shiftHandler := handlers.NewShiftHandler(shiftRepo, userRepo)
+
+	// Initialize Push Notification Service
+	pushConfig := &notification.PushConfig{
+		ServerKey: cfg.FCMServerKey,
+	}
+	pushService := notification.NewPushService(pushConfig)
+	handlers.SetPushService(pushService)
+	handlers.SetPushSubscriptionRepository(pushSubRepo)
+
+	if cfg.IsFCMConfigured() {
+		log.Println("[PushService] FCM push notifications enabled")
+	} else {
+		log.Println("[PushService] FCM not configured - push notifications disabled (set FCM_SERVER_KEY)")
+	}
+
+	// Initialize PEP Integration
+	handlers.SetPEPRedisClient(redisClient)
+	// TODO: Load PEP API keys from database or configuration
+	// For now, use empty map - can be configured via hospital settings
+	handlers.SetPEPAPIKeys(make(map[string]uuid.UUID))
+	log.Println("[PEP] PEP integration endpoint initialized")
 
 	// Initialize SSE Hub for real-time notifications
 	sseHub := notification.NewSSEHub(redisClient, db)
@@ -128,6 +170,15 @@ func main() {
 	// Initialize and start triagem motor
 	triagemMotor := triagem.NewTriagemMotor(db, redisClient)
 	handlers.SetGlobalTriagemMotor(triagemMotor)
+
+	// Initialize Health Monitor Service
+	healthMonitor := health.NewHealthMonitorService(db, redisClient, emailService, cfg.AdminAlertEmail)
+	healthMonitor.SetSSEHub(sseHub)
+	healthMonitor.SetListener(obitoListener)
+	healthMonitor.SetTriagemMotor(triagemMotor)
+	healthMonitor.SetCheckInterval(cfg.HealthCheckInterval)
+	healthMonitor.SetCooldownPeriod(time.Duration(cfg.AlertCooldownMinutes) * time.Minute)
+	handlers.SetGlobalHealthMonitor(healthMonitor)
 
 	// Set callback for new occurrences to trigger SSE notifications
 	triagemMotor.SetOnOccurrenceCreated(func(ctx context.Context, occurrence *models.Occurrence, hospitalNome string) {
@@ -191,6 +242,12 @@ func main() {
 		log.Printf("Warning: Failed to start email queue worker: %v", err)
 	}
 
+	// Start health monitor service
+	if err := healthMonitor.Start(ctx); err != nil {
+		log.Printf("Warning: Failed to start health monitor: %v", err)
+	}
+	log.Println("[HealthMonitor] Health monitor service initialized")
+
 	// Initialize router
 	router := gin.Default()
 
@@ -200,7 +257,7 @@ func main() {
 	router.Use(middleware.Logger())
 	router.Use(middleware.SetJWTService(jwtService))
 
-	// Health check endpoint
+	// Health check endpoint (basic)
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status":    "healthy",
@@ -223,6 +280,9 @@ func main() {
 
 		// SSE stream with query param authentication (for EventSource - no auth header support)
 		v1.GET("/notifications/stream", handlers.NotificationStream)
+
+		// Public health summary endpoint (for load balancers)
+		v1.GET("/health/summary", handlers.HealthSummary)
 
 		// Protected routes
 		protected := v1.Group("")
@@ -264,14 +324,58 @@ func main() {
 				rules.GET("", middleware.RequireRole("gestor", "admin"), handlers.ListTriagemRules)
 				rules.POST("", middleware.RequireRole("gestor", "admin"), handlers.CreateTriagemRule)
 				rules.PATCH("/:id", middleware.RequireRole("gestor", "admin"), handlers.UpdateTriagemRule)
+				rules.DELETE("/:id", middleware.RequireRole("gestor", "admin"), handlers.DeleteTriagemRule)
 			}
 
 			// Metrics
 			protected.GET("/metrics/dashboard", handlers.GetDashboardMetrics)
+			protected.GET("/metrics/indicators", handlers.GetIndicators)
 
-			// Health checks
+			// Health checks (protected - for detailed info)
 			protected.GET("/health/listener", handlers.ListenerHealth)
 			protected.GET("/health/sse", handlers.SSEHealth)
+
+			// Shifts (plantões)
+			shifts := protected.Group("/shifts")
+			{
+				shifts.POST("", middleware.RequireRole("admin", "gestor"), shiftHandler.Create)
+				shifts.GET("/:id", shiftHandler.GetByID)
+				shifts.PUT("/:id", middleware.RequireRole("admin", "gestor"), shiftHandler.Update)
+				shifts.DELETE("/:id", middleware.RequireRole("admin", "gestor"), shiftHandler.Delete)
+				shifts.GET("/me", shiftHandler.GetMyShifts)
+			}
+
+			// Hospital-specific shift routes
+			protected.GET("/hospitals/:id/shifts", shiftHandler.ListByHospital)
+			protected.GET("/hospitals/:id/shifts/today", shiftHandler.GetTodayShifts)
+			protected.GET("/hospitals/:id/shifts/coverage", shiftHandler.GetCoverageGaps)
+
+			// Audit Logs
+			protected.GET("/audit-logs", middleware.RequireRole("admin", "gestor"), handlers.ListAuditLogs)
+			protected.GET("/occurrences/:id/timeline", handlers.GetOccurrenceTimeline)
+
+			// Reports
+			reports := protected.Group("/reports")
+			{
+				reports.GET("/csv", middleware.RequireRole("admin", "gestor"), handlers.ExportCSV)
+				reports.GET("/pdf", middleware.RequireRole("admin", "gestor"), handlers.ExportPDF)
+			}
+
+			// Push Notifications
+			push := protected.Group("/push")
+			{
+				push.POST("/subscribe", handlers.SubscribePush)
+				push.DELETE("/unsubscribe", handlers.UnsubscribePush)
+				push.GET("/subscriptions", handlers.GetMySubscriptions)
+				push.GET("/status", handlers.GetPushStatus)
+			}
+		}
+
+		// PEP Integration (API Key authentication, not user auth)
+		pep := v1.Group("/pep")
+		{
+			pep.POST("/eventos", handlers.ReceivePEPEvent)
+			pep.GET("/status", handlers.GetPEPStatus)
 		}
 	}
 
@@ -307,6 +411,7 @@ func main() {
 	triagemMotor.Stop()
 	sseHub.Stop()
 	emailQueueWorker.Stop()
+	healthMonitor.Stop()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()

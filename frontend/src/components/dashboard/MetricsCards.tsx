@@ -6,7 +6,10 @@ import { Button } from '@/components/ui/button';
 import { useMetrics } from '@/hooks/useMetrics';
 import { cn } from '@/lib/utils';
 
-function formatTimeNotification(seconds: number): string {
+function formatTimeNotification(seconds: number | null | undefined): string {
+  if (seconds == null || isNaN(seconds) || seconds <= 0) {
+    return '—';
+  }
   if (seconds < 60) {
     return `${Math.round(seconds)}s`;
   }

@@ -36,25 +36,25 @@ Objetivo: Fluxo completo de deteccao e notificacao funcionando em ambiente contr
 
 Objetivo: Sistema pronto para implantacao piloto em ambiente real com um hospital parceiro.
 
-11. [ ] **Integracao Real com PEP** - Adaptar o listener para conectar a um banco de dados hospitalar real (PostgreSQL/MySQL/Oracle), com mapeamento configuravel de campos. `L`
+11. [x] **Integracao Real com PEP** - Adaptar o listener para conectar a um banco de dados hospitalar real (PostgreSQL/MySQL/Oracle), com mapeamento configuravel de campos. `L` *(pep-agent standalone, endpoint /api/v1/pep/eventos)*
 
-12. [ ] **Notificacao SMS** - Integrar com gateway SMS (ex: Twilio, Zenvia) para envio de alertas para celulares da equipe de plantao. `S`
+12. [x] **Notificacao SMS** - Integrar com gateway SMS (ex: Twilio, Zenvia) para envio de alertas para celulares da equipe de plantao. `S`
 
-13. [ ] **Notificacao Push** - Implementar push notifications via web e/ou app mobile para alertas em tempo real mesmo com app fechado. `M`
+13. [x] **Notificacao Push** - Implementar push notifications via web e/ou app mobile para alertas em tempo real mesmo com app fechado. `M` *(FCM, service worker, config: FCM_SERVER_KEY)*
 
-14. [ ] **Gestao de Plantoes** - Cadastro de escalas de plantao com horarios e responsaveis, direcionando notificacoes para a equipe correta do turno. `M`
+14. [x] **Gestao de Plantoes** - Cadastro de escalas de plantao com horarios e responsaveis, direcionando notificacoes para a equipe correta do turno. `M`
 
-15. [ ] **Editor de Regras de Triagem** - Interface visual para gestores criarem e editarem regras de elegibilidade sem necessidade de alteracao de codigo. `M`
+15. [x] **Editor de Regras de Triagem** - Interface visual para gestores criarem e editarem regras de elegibilidade sem necessidade de alteracao de codigo. `M` *(/dashboard/rules)*
 
-16. [ ] **Dashboard de Metricas** - Tela com graficos de notificacoes por periodo, tempo medio de resposta, taxa de conversao (notificacao -> captacao) e ranking por hospital. `M`
+16. [x] **Dashboard de Metricas** - Tela com graficos de notificacoes por periodo, tempo medio de resposta, taxa de conversao (notificacao -> captacao) e ranking por hospital. `M`
 
-17. [ ] **Relatorios Exportaveis** - Geracao de relatorios em PDF e Excel com dados de ocorrencias e metricas para prestacao de contas. `S`
+17. [x] **Relatorios Exportaveis** - Geracao de relatorios em PDF e Excel com dados de ocorrencias e metricas para prestacao de contas. `S`
 
-18. [ ] **Logs e Auditoria** - Registro detalhado de todas as acoes do sistema e usuarios, com tela de consulta para rastreabilidade. `M`
+18. [x] **Logs e Auditoria** - Registro detalhado de todas as acoes do sistema e usuarios, com tela de consulta para rastreabilidade. `M`
 
-19. [ ] **Gestao de Usuarios** - CRUD de usuarios com atribuicao de roles, hospitais vinculados e preferencias de notificacao. `S`
+19. [x] **Gestao de Usuarios** - CRUD de usuarios com atribuicao de roles, hospitais vinculados e preferencias de notificacao. `S`
 
-20. [ ] **Health Check e Monitoramento** - Endpoints de status dos servicos, alertas de falha do listener e dashboard de saude do sistema. `S`
+20. [x] **Health Check e Monitoramento** - Endpoints de status dos servicos, alertas de falha do listener e dashboard de saude do sistema. `S`
 
 ---
 

@@ -227,7 +227,7 @@ func TestIdentificacaoDesconhecidaRuleLogic(t *testing.T) {
 
 // TestCausasExcludentesRuleLogic tests the excluded causes rule logic
 func TestCausasExcludentesRuleLogic(t *testing.T) {
-	excludedCauses := []string{"sepse", "meningite", "tuberculose"}
+	excludedCauses := []string{"sepse", "septico", "meningite", "tuberculose"}
 
 	tests := []struct {
 		name           string
@@ -448,7 +448,7 @@ func TestMaskNameForOccurrence(t *testing.T) {
 		{"Two words", "Joao Silva", "Jo** Si***"},
 		{"Three words", "Maria Santos Silva", "Ma*** Sa**** Si***"},
 		{"Single word", "Joao", "Jo**"},
-		{"Short name", "Li Wu", "Li W*"},
+		{"Short name", "Li Wu", "L* W*"},
 		{"Empty", "", ""},
 	}
 

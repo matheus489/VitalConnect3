@@ -21,31 +21,45 @@ const (
 
 	// Default poll interval
 	DefaultPollInterval = 3 * time.Second
+
+	// Heartbeat constants
+	HeartbeatKey      = "vitalconnect:listener:heartbeat"
+	HeartbeatInterval = 5 * time.Second
+	HeartbeatTTL      = 15 * time.Second
+
+	// HeartbeatMissThreshold is the number of seconds after which the listener is considered DOWN
+	HeartbeatMissThreshold = 20 * time.Second
 )
 
 // ObitoEvent represents an event published to Redis Streams
 type ObitoEvent struct {
-	ObitoID            string `json:"obito_id"`
-	HospitalID         string `json:"hospital_id"`
-	TimestampDeteccao  string `json:"timestamp_deteccao"`
-	NomePaciente       string `json:"nome_paciente"`
-	DataObito          string `json:"data_obito"`
-	CausaMortis        string `json:"causa_mortis"`
-	Setor              string `json:"setor,omitempty"`
-	Leito              string `json:"leito,omitempty"`
-	Idade              int    `json:"idade"`
+	ObitoID               string `json:"obito_id"`
+	HospitalID            string `json:"hospital_id"`
+	TimestampDeteccao     string `json:"timestamp_deteccao"`
+	NomePaciente          string `json:"nome_paciente"`
+	DataObito             string `json:"data_obito"`
+	CausaMortis           string `json:"causa_mortis"`
+	Setor                 string `json:"setor,omitempty"`
+	Leito                 string `json:"leito,omitempty"`
+	Idade                 int    `json:"idade"`
 	IdentificacaoDesconhecida bool `json:"identificacao_desconhecida"`
+}
+
+// HeartbeatData represents the heartbeat data stored in Redis
+type HeartbeatData struct {
+	Timestamp time.Time `json:"timestamp"`
+	Status    string    `json:"status"`
 }
 
 // ListenerStatus represents the current status of the listener
 type ListenerStatus struct {
-	Status              string    `json:"status"`
-	Running             bool      `json:"running"`
-	UltimoProcessamento *time.Time `json:"ultimo_processamento,omitempty"`
-	ObitosDetectadosHoje int      `json:"obitos_detectados_hoje"`
-	TotalProcessados    int64     `json:"total_processados"`
-	Errors              int64     `json:"errors"`
-	StartedAt           *time.Time `json:"started_at,omitempty"`
+	Status               string     `json:"status"`
+	Running              bool       `json:"running"`
+	UltimoProcessamento  *time.Time `json:"ultimo_processamento,omitempty"`
+	ObitosDetectadosHoje int        `json:"obitos_detectados_hoje"`
+	TotalProcessados     int64      `json:"total_processados"`
+	Errors               int64      `json:"errors"`
+	StartedAt            *time.Time `json:"started_at,omitempty"`
 }
 
 // ObitoListener polls the obitos_simulados table and detects new deaths
@@ -63,8 +77,10 @@ type ObitoListener struct {
 	startedAt           time.Time
 
 	// Control channels
-	stopCh chan struct{}
-	doneCh chan struct{}
+	stopCh          chan struct{}
+	doneCh          chan struct{}
+	heartbeatStopCh chan struct{}
+	heartbeatDoneCh chan struct{}
 
 	// Mutex for status updates
 	mu sync.RWMutex
@@ -80,19 +96,21 @@ func NewObitoListener(db *sql.DB, redisClient *redis.Client, pollInterval time.D
 	}
 
 	listener := &ObitoListener{
-		db:           db,
-		redis:        redisClient,
-		obitoRepo:    repository.NewObitoRepository(db),
-		pollInterval: pollInterval,
-		stopCh:       make(chan struct{}),
-		doneCh:       make(chan struct{}),
-		logger:       log.Default(),
+		db:              db,
+		redis:           redisClient,
+		obitoRepo:       repository.NewObitoRepository(db),
+		pollInterval:    pollInterval,
+		stopCh:          make(chan struct{}),
+		doneCh:          make(chan struct{}),
+		heartbeatStopCh: make(chan struct{}),
+		heartbeatDoneCh: make(chan struct{}),
+		logger:          log.Default(),
 	}
 
 	return listener
 }
 
-// Start begins the polling loop
+// Start begins the polling loop and heartbeat goroutine
 func (l *ObitoListener) Start(ctx context.Context) error {
 	if !atomic.CompareAndSwapInt32(&l.running, 0, 1) {
 		return nil // Already running
@@ -102,15 +120,18 @@ func (l *ObitoListener) Start(ctx context.Context) error {
 	l.logger.Printf("[Listener] Starting obito listener with poll interval: %v", l.pollInterval)
 
 	go l.pollLoop(ctx)
+	go l.heartbeatLoop(ctx)
 
 	return nil
 }
 
-// Stop stops the polling loop
+// Stop stops the polling loop and heartbeat goroutine
 func (l *ObitoListener) Stop() {
 	if atomic.CompareAndSwapInt32(&l.running, 1, 0) {
 		close(l.stopCh)
+		close(l.heartbeatStopCh)
 		<-l.doneCh
+		<-l.heartbeatDoneCh
 		l.logger.Println("[Listener] Obito listener stopped")
 	}
 }
@@ -148,6 +169,89 @@ func (l *ObitoListener) GetStatus(ctx context.Context) *ListenerStatus {
 	}
 
 	return status
+}
+
+// heartbeatLoop publishes heartbeat to Redis every HeartbeatInterval
+func (l *ObitoListener) heartbeatLoop(ctx context.Context) {
+	defer close(l.heartbeatDoneCh)
+
+	ticker := time.NewTicker(HeartbeatInterval)
+	defer ticker.Stop()
+
+	// Publish initial heartbeat
+	l.publishHeartbeat(ctx)
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-l.heartbeatStopCh:
+			return
+		case <-ticker.C:
+			l.publishHeartbeat(ctx)
+		}
+	}
+}
+
+// publishHeartbeat publishes the heartbeat to Redis with TTL
+func (l *ObitoListener) publishHeartbeat(ctx context.Context) {
+	heartbeat := HeartbeatData{
+		Timestamp: time.Now(),
+		Status:    "running",
+	}
+
+	data, err := json.Marshal(heartbeat)
+	if err != nil {
+		l.logger.Printf("[Listener] Error marshalling heartbeat: %v", err)
+		return
+	}
+
+	err = l.redis.Set(ctx, HeartbeatKey, data, HeartbeatTTL).Err()
+	if err != nil {
+		l.logger.Printf("[Listener] Error publishing heartbeat: %v", err)
+		return
+	}
+}
+
+// GetHeartbeatStatus checks the heartbeat status from Redis
+// Returns the heartbeat data and time since last heartbeat
+func GetHeartbeatStatus(ctx context.Context, redisClient *redis.Client) (isUp bool, timeSinceLastHeartbeat time.Duration, err error) {
+	data, err := redisClient.Get(ctx, HeartbeatKey).Result()
+	if err == redis.Nil {
+		// Key doesn't exist - listener is DOWN
+		return false, HeartbeatMissThreshold, nil
+	}
+	if err != nil {
+		return false, 0, err
+	}
+
+	var heartbeat HeartbeatData
+	if err := json.Unmarshal([]byte(data), &heartbeat); err != nil {
+		return false, 0, err
+	}
+
+	timeSince := time.Since(heartbeat.Timestamp)
+	isUp = timeSince < HeartbeatMissThreshold
+
+	return isUp, timeSince, nil
+}
+
+// CheckHeartbeat checks if the listener is alive based on heartbeat
+func CheckHeartbeat(ctx context.Context, redisClient *redis.Client) (status string, latencyMs int64) {
+	start := time.Now()
+
+	isUp, timeSince, err := GetHeartbeatStatus(ctx, redisClient)
+	latencyMs = time.Since(start).Milliseconds()
+
+	if err != nil {
+		return "down", latencyMs
+	}
+
+	if !isUp || timeSince >= HeartbeatMissThreshold {
+		return "down", latencyMs
+	}
+
+	return "up", latencyMs
 }
 
 // pollLoop is the main polling loop
@@ -264,15 +368,15 @@ func (l *ObitoListener) publishToStream(ctx context.Context, obito *models.Obito
 	}
 
 	event := ObitoEvent{
-		ObitoID:                   obito.ID.String(),
-		HospitalID:                obito.HospitalID.String(),
-		TimestampDeteccao:         time.Now().Format(time.RFC3339),
-		NomePaciente:              obito.NomePaciente,
-		DataObito:                 obito.DataObito.Format(time.RFC3339),
-		CausaMortis:               obito.CausaMortis,
-		Setor:                     setor,
-		Leito:                     leito,
-		Idade:                     obito.CalculateAge(),
+		ObitoID:               obito.ID.String(),
+		HospitalID:            obito.HospitalID.String(),
+		TimestampDeteccao:     time.Now().Format(time.RFC3339),
+		NomePaciente:          obito.NomePaciente,
+		DataObito:             obito.DataObito.Format(time.RFC3339),
+		CausaMortis:           obito.CausaMortis,
+		Setor:                 setor,
+		Leito:                 leito,
+		Idade:                 obito.CalculateAge(),
 		IdentificacaoDesconhecida: obito.IdentificacaoDesconhecida,
 	}
 

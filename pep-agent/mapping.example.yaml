@@ -1,0 +1,109 @@
+# VitalConnect PEP Agent - Arquivo de Configuracao
+# =================================================
+# Este arquivo define a conexao com o banco de dados do PEP hospitalar
+# e o mapeamento de campos para o sistema VitalConnect.
+#
+# IMPORTANTE:
+# - Copie este arquivo para mapping.yaml antes de configurar
+# - Use variaveis de ambiente para credenciais sensiveis: ${VAR_NAME}
+# - O agente faz APENAS leitura (SELECT) no banco do PEP
+#
+# Exemplo de uso:
+#   export PEP_DB_PASSWORD="senha_do_banco"
+#   export VITALCONNECT_API_KEY="chave_api_do_hospital"
+#   ./pep-agent -config mapping.yaml
+
+# Configuracao de conexao com o banco de dados do PEP
+database:
+  # Driver do banco: postgres, mysql, oracle
+  driver: postgres
+
+  # Host do servidor de banco de dados
+  host: localhost
+
+  # Porta (default: postgres=5432, mysql=3306, oracle=1521)
+  port: 5433
+
+  # Nome do banco de dados
+  database: hospital_pep
+
+  # Usuario (recomendado: criar usuario com permissao SELECT apenas)
+  user: pep_reader
+
+  # Senha (use variavel de ambiente para seguranca)
+  password: ${PEP_DB_PASSWORD}
+
+  # Modo SSL: disable, require, verify-full
+  ssl_mode: disable
+
+# Mapeamento de campos do PEP para VitalConnect
+mapping:
+  # Tabela ou view de origem (usar nome completo com schema)
+  source_table: TASY.TB_PACIENTE_OBITO
+
+  # Coluna usada para filtrar novos registros (watermark)
+  filter_column: DT_OBITO
+
+  # Mapeamento de campos (de-para)
+  # Lado esquerdo: campo padrao VitalConnect
+  # Lado direito: nome da coluna no banco do PEP
+  fields:
+    # Campos obrigatorios
+    id: CD_PACIENTE_OBITO           # ID unico do registro no PEP
+    nome_paciente: NM_PACIENTE      # Nome completo do paciente
+    data_obito: DT_OBITO            # Data/hora do obito (TIMESTAMP)
+    causa_mortis: DS_CAUSA_MORTIS   # Causa da morte
+
+    # Idade: use data_nascimento OU idade (um dos dois e obrigatorio)
+    data_nascimento: DT_NASCIMENTO  # Data de nascimento do paciente
+    # idade: NR_IDADE               # Alternativa: idade em anos
+
+    # Identificacao do paciente (CNS ou CPF - crucial para Central de Transplantes)
+    cns: NR_CNS                     # Cartao Nacional de Saude (15 digitos)
+    cpf: NR_CPF                     # CPF (sera mascarado automaticamente)
+
+    # Campos opcionais
+    setor: CD_SETOR                 # Setor/unidade do hospital
+    leito: NR_LEITO                 # Numero do leito
+    prontuario: NR_PRONTUARIO       # Numero do prontuario
+    identificacao_desconhecida: IE_IDENTIFICACAO_DESCONHECIDA  # 'S' ou 'N'
+
+  # Query customizada (opcional - sobrescreve source_table e fields)
+  # Use {{WATERMARK}} para inserir o valor do watermark
+  # custom_query: |
+  #   SELECT CD_PACIENTE_OBITO, NM_PACIENTE, DT_OBITO, DS_CAUSA_MORTIS,
+  #          DT_NASCIMENTO, NR_CNS, NR_CPF, CD_SETOR, NR_LEITO, NR_PRONTUARIO
+  #   FROM TASY.TB_PACIENTE_OBITO
+  #   WHERE DT_OBITO > '{{WATERMARK}}'
+  #   ORDER BY DT_OBITO ASC
+
+# Configuracao do servidor central VitalConnect
+central:
+  # URL do endpoint de recepcao de eventos
+  url: http://localhost:8080/api/v1/pep/eventos
+
+  # Chave de API do hospital (use variavel de ambiente)
+  api_key: ${VITALCONNECT_API_KEY}
+
+  # Pular verificacao TLS (APENAS para desenvolvimento)
+  insecure: true
+
+  # Timeout para requisicoes HTTP (default: 30s)
+  timeout: 30s
+
+# Configuracoes operacionais do agente
+agent:
+  # ID do hospital no VitalConnect (UUID)
+  hospital_id: 123e4567-e89b-12d3-a456-426614174000
+
+  # Intervalo de polling (default: 3s)
+  poll_interval: 3s
+
+  # Arquivo para persistir estado (watermark do ultimo registro processado)
+  state_file: ./pep-agent-state.json
+
+  # Nivel de log: debug, info, warn, error
+  log_level: info
+
+  # Tempo offline para gerar alerta (default: 10m)
+  alert_threshold: 10m

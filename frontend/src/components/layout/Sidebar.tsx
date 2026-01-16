@@ -10,6 +10,11 @@ import {
   Building2,
   ChevronLeft,
   ChevronRight,
+  Calendar,
+  FileText,
+  History,
+  Activity,
+  Sliders,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -39,6 +44,17 @@ const navItems: NavItem[] = [
     icon: ClipboardList,
   },
   {
+    href: '/dashboard/shifts',
+    label: 'Escalas',
+    icon: Calendar,
+  },
+  {
+    href: '/dashboard/rules',
+    label: 'Regras',
+    icon: Sliders,
+    roles: ['admin', 'gestor'],
+  },
+  {
     href: '/dashboard/hospitals',
     label: 'Hospitais',
     icon: Building2,
@@ -48,6 +64,24 @@ const navItems: NavItem[] = [
     href: '/dashboard/users',
     label: 'Usuarios',
     icon: Users,
+    roles: ['admin'],
+  },
+  {
+    href: '/dashboard/reports',
+    label: 'Relatorios',
+    icon: FileText,
+    roles: ['admin', 'gestor'],
+  },
+  {
+    href: '/dashboard/audit-logs',
+    label: 'Auditoria',
+    icon: History,
+    roles: ['admin', 'gestor'],
+  },
+  {
+    href: '/dashboard/status',
+    label: 'Status',
+    icon: Activity,
     roles: ['admin'],
   },
   {

@@ -233,7 +233,7 @@ func (r *TriagemRuleRepository) Create(ctx context.Context, input *models.Create
 	}
 
 	// Invalidate cache
-	r.invalidateCache(ctx)
+	r.InvalidateCache(ctx)
 
 	return rule, nil
 }
@@ -293,13 +293,40 @@ func (r *TriagemRuleRepository) Update(ctx context.Context, id uuid.UUID, input 
 	}
 
 	// Invalidate cache
-	r.invalidateCache(ctx)
+	r.InvalidateCache(ctx)
 
 	return rule, nil
 }
 
-// invalidateCache invalidates the triagem rules cache
-func (r *TriagemRuleRepository) invalidateCache(ctx context.Context) {
+// SoftDelete performs a soft delete by setting ativo to false
+func (r *TriagemRuleRepository) SoftDelete(ctx context.Context, id uuid.UUID) error {
+	query := `
+		UPDATE triagem_rules
+		SET ativo = false, updated_at = $1
+		WHERE id = $2 AND ativo = true
+	`
+
+	result, err := r.db.ExecContext(ctx, query, time.Now(), id)
+	if err != nil {
+		return err
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return ErrTriagemRuleNotFound
+	}
+
+	// Invalidate cache
+	r.InvalidateCache(ctx)
+
+	return nil
+}
+
+// InvalidateCache invalidates the triagem rules cache (exported for use by handlers)
+func (r *TriagemRuleRepository) InvalidateCache(ctx context.Context) {
 	if r.redis != nil {
 		r.redis.Del(ctx, triagemRulesCacheKey)
 	}

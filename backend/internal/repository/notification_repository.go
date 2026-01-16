@@ -257,3 +257,47 @@ func (r *NotificationRepository) CreateNotificationFromEmail(ctx context.Context
 
 	return r.Create(ctx, input)
 }
+
+// CreateNotificationFromSMS creates a notification record for SMS events
+func (r *NotificationRepository) CreateNotificationFromSMS(ctx context.Context, occurrenceID uuid.UUID, userID *uuid.UUID, metadata *models.NotificationMetadata, status models.NotificationStatus, errorMsg *string) (*models.Notification, error) {
+	var metadataJSON json.RawMessage
+	if metadata != nil {
+		data, err := json.Marshal(metadata)
+		if err != nil {
+			return nil, err
+		}
+		metadataJSON = data
+	}
+
+	input := &models.CreateNotificationInput{
+		OccurrenceID: occurrenceID,
+		UserID:       userID,
+		Canal:        models.ChannelSMS,
+		StatusEnvio:  status,
+		ErroMensagem: errorMsg,
+		Metadata:     metadataJSON,
+	}
+
+	return r.Create(ctx, input)
+}
+
+// ExistsSMSForOccurrenceAndUser checks if an SMS notification already exists for an occurrence and user
+// Used to prevent duplicate SMS notifications (limit 1 per occurrence per user)
+func (r *NotificationRepository) ExistsSMSForOccurrenceAndUser(ctx context.Context, occurrenceID uuid.UUID, userID uuid.UUID) (bool, error) {
+	query := `
+		SELECT EXISTS(
+			SELECT 1 FROM notifications
+			WHERE occurrence_id = $1
+			AND user_id = $2
+			AND canal = 'sms'
+		)
+	`
+
+	var exists bool
+	err := r.db.QueryRowContext(ctx, query, occurrenceID, userID).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}

@@ -73,11 +73,38 @@ services:
     profiles:
       - dev
 
+  # PEP Simulator - Simulates hospital Tasy/MV database (development only)
+  postgres-pep-sim:
+    build:
+      context: ./docker/postgres-pep-sim
+      dockerfile: Dockerfile
+    container_name: vitalconnect-pep-sim
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pep_reader
+      POSTGRES_PASSWORD: pep_readonly_2024
+      POSTGRES_DB: hospital_pep
+    ports:
+      - "5433:5432"
+    volumes:
+      - pep_sim_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pep_reader -d hospital_pep"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vitalconnect-network
+    profiles:
+      - dev
+
 volumes:
   postgres_data:
     name: vitalconnect-postgres-data
   redis_data:
     name: vitalconnect-redis-data
+  pep_sim_data:
+    name: vitalconnect-pep-sim-data
 
 networks:
   vitalconnect-network:

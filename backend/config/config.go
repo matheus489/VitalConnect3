@@ -33,6 +33,11 @@ type Config struct {
 	SMTPPassword string
 	SMTPFrom     string
 
+	// Twilio (SMS)
+	TwilioAccountSID string
+	TwilioAuthToken  string
+	TwilioPhoneNumber string
+
 	// CORS
 	CORSOrigins []string
 
@@ -41,6 +46,17 @@ type Config struct {
 
 	// Listener
 	ListenerPollInterval time.Duration
+
+	// Health Check
+	AdminAlertEmail     string
+	HealthCheckInterval time.Duration
+	AlertCooldownMinutes int
+
+	// Dashboard URL (for notification links)
+	DashboardURL string
+
+	// Firebase Cloud Messaging (Push Notifications)
+	FCMServerKey string
 }
 
 // Load reads configuration from environment variables
@@ -69,6 +85,11 @@ func Load() (*Config, error) {
 		SMTPPassword: getEnv("SMTP_PASS", ""),
 		SMTPFrom:     getEnv("SMTP_FROM", "noreply@vitalconnect.gov.br"),
 
+		// Twilio (SMS)
+		TwilioAccountSID:  getEnv("TWILIO_ACCOUNT_SID", ""),
+		TwilioAuthToken:   getEnv("TWILIO_AUTH_TOKEN", ""),
+		TwilioPhoneNumber: getEnv("TWILIO_PHONE_NUMBER", ""),
+
 		// CORS
 		CORSOrigins: getSliceEnv("CORS_ORIGINS", []string{"http://localhost:3000"}),
 
@@ -77,6 +98,17 @@ func Load() (*Config, error) {
 
 		// Listener
 		ListenerPollInterval: getDurationEnv("LISTENER_POLL_INTERVAL", 3*time.Second),
+
+		// Health Check
+		AdminAlertEmail:      getEnv("ADMIN_ALERT_EMAIL", ""),
+		HealthCheckInterval:  getDurationEnv("HEALTH_CHECK_INTERVAL", 10*time.Second),
+		AlertCooldownMinutes: getIntEnv("ALERT_COOLDOWN_MINUTES", 5),
+
+		// Dashboard URL
+		DashboardURL: getEnv("DASHBOARD_URL", "http://localhost:3000"),
+
+		// FCM (Push Notifications)
+		FCMServerKey: getEnv("FCM_SERVER_KEY", ""),
 	}
 
 	// Validate required fields in production
@@ -100,6 +132,16 @@ func Load() (*Config, error) {
 	}
 
 	return cfg, nil
+}
+
+// IsTwilioConfigured returns true if Twilio SMS is configured
+func (c *Config) IsTwilioConfigured() bool {
+	return c.TwilioAccountSID != "" && c.TwilioAuthToken != "" && c.TwilioPhoneNumber != ""
+}
+
+// IsFCMConfigured returns true if Firebase Cloud Messaging is configured
+func (c *Config) IsFCMConfigured() bool {
+	return c.FCMServerKey != ""
 }
 
 // getEnv retrieves an environment variable or returns a default value

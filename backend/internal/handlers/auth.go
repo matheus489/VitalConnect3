@@ -4,7 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/vitalconnect/backend/internal/middleware"
+	"github.com/vitalconnect/backend/internal/models"
+	"github.com/vitalconnect/backend/internal/services/audit"
 	"github.com/vitalconnect/backend/internal/services/auth"
 )
 
@@ -48,8 +51,28 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
+	// Extract request info for audit
+	ipAddress, userAgent := audit.ExtractRequestInfo(c)
+
 	result, err := h.authService.Login(c.Request.Context(), req.Email, req.Password)
 	if err != nil {
+		// Log failed login attempt
+		if auditService != nil {
+			auditService.LogAuthEvent(
+				c.Request.Context(),
+				models.ActionAuthLoginFailed,
+				nil,
+				req.Email,
+				models.SeverityWarn,
+				ipAddress,
+				userAgent,
+				map[string]interface{}{
+					"email":  req.Email,
+					"reason": err.Error(),
+				},
+			)
+		}
+
 		switch err {
 		case auth.ErrInvalidCredentials:
 			c.JSON(http.StatusUnauthorized, gin.H{
@@ -65,6 +88,26 @@ func (h *AuthHandler) Login(c *gin.Context) {
 			})
 		}
 		return
+	}
+
+	// Log successful login
+	if auditService != nil {
+		var userID *uuid.UUID
+		if result.User != nil {
+			userID = &result.User.ID
+		}
+		auditService.LogAuthEvent(
+			c.Request.Context(),
+			models.ActionAuthLogin,
+			userID,
+			req.Email,
+			models.SeverityInfo,
+			ipAddress,
+			userAgent,
+			map[string]interface{}{
+				"email": req.Email,
+			},
+		)
 	}
 
 	c.JSON(http.StatusOK, result)
@@ -127,9 +170,28 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 		return
 	}
 
+	// Get user info from context if available
+	claims, _ := middleware.GetUserClaims(c)
+
 	// Logout always returns success even if token is invalid
 	// This prevents information leakage
 	_ = h.authService.Logout(c.Request.Context(), req.RefreshToken)
+
+	// Log logout event
+	if auditService != nil && claims != nil {
+		ipAddress, userAgent := audit.ExtractRequestInfo(c)
+		uid, _ := uuid.Parse(claims.UserID)
+		auditService.LogAuthEvent(
+			c.Request.Context(),
+			models.ActionAuthLogout,
+			&uid,
+			claims.Email,
+			models.SeverityInfo,
+			ipAddress,
+			userAgent,
+			nil,
+		)
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "logged out successfully",

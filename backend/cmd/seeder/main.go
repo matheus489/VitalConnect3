@@ -24,12 +24,14 @@ const (
 func main() {
 	// Parse flags
 	var (
-		clearData    = flag.Bool("clear", false, "Clear existing seed data before inserting")
+		clearData     = flag.Bool("clear", false, "Clear existing seed data before inserting")
 		hospitalsOnly = flag.Bool("hospitals", false, "Seed only hospitals")
 		usersOnly     = flag.Bool("users", false, "Seed only users")
 		rulesOnly     = flag.Bool("rules", false, "Seed only triagem rules")
 		obitosOnly    = flag.Bool("obitos", false, "Seed only obitos")
 		liveDemo      = flag.Bool("live-demo", false, "Insert live demo obito (T+10 seconds)")
+		metricsDemo   = flag.Bool("metrics", false, "Seed 30 days of metrics data for dashboard demo")
+		clearMetrics  = flag.Bool("clear-metrics", false, "Clear existing metrics seed data")
 	)
 	flag.Parse()
 
@@ -61,8 +63,15 @@ func main() {
 		}
 	}
 
+	// Clear metrics data if requested
+	if *clearMetrics {
+		if err := ClearMetricsData(ctx, db); err != nil {
+			log.Printf("Warning: Failed to clear metrics data: %v", err)
+		}
+	}
+
 	// Seed based on flags or all if no specific flag
-	seedAll := !*hospitalsOnly && !*usersOnly && !*rulesOnly && !*obitosOnly && !*liveDemo
+	seedAll := !*hospitalsOnly && !*usersOnly && !*rulesOnly && !*obitosOnly && !*liveDemo && !*metricsDemo && !*clearMetrics
 
 	if seedAll || *hospitalsOnly {
 		log.Println("Seeding hospitals...")
@@ -103,6 +112,21 @@ func main() {
 		}
 	}
 
+	// Seed metrics data for dashboard demo
+	if *metricsDemo {
+		log.Println("\n========================================")
+		log.Println("SEEDING METRICS DATA FOR DASHBOARD DEMO")
+		log.Println("========================================")
+		config := DefaultMetricsSeedConfig()
+		if err := SeedMetricsData(ctx, db, config); err != nil {
+			log.Fatalf("Failed to seed metrics data: %v", err)
+		}
+		log.Println("\n========================================")
+		log.Println("Metrics data seeded successfully!")
+		log.Println("Dashboard indicators are now populated with 30 days of data.")
+		log.Println("========================================")
+	}
+
 	if seedAll {
 		log.Println("\n========================================")
 		log.Println("VitalConnect seed data created successfully!")
@@ -114,6 +138,8 @@ func main() {
 		log.Println("\nHospitals:")
 		log.Println("  HGG:  Hospital Geral de Goiania")
 		log.Println("  HUGO: Hospital de Urgencias de Goias")
+		log.Println("\nTo seed 30 days of metrics data for the dashboard demo, run:")
+		log.Println("  go run ./cmd/seeder -metrics")
 	}
 }
 
@@ -126,6 +152,7 @@ func clearSeedData(ctx context.Context, db *sql.DB) error {
 		"occurrences",
 		"obitos_simulados",
 		"triagem_rules",
+		"user_hospitals",
 		"users",
 		"hospitals",
 	}
@@ -143,11 +170,11 @@ func clearSeedData(ctx context.Context, db *sql.DB) error {
 // seedHospitals creates the demo hospitals
 func seedHospitals(ctx context.Context, db *sql.DB) error {
 	hospitals := []struct {
-		ID        uuid.UUID
-		Nome      string
-		Codigo    string
-		Endereco  string
-		Config    map[string]interface{}
+		ID       uuid.UUID
+		Nome     string
+		Codigo   string
+		Endereco string
+		Config   map[string]interface{}
 	}{
 		{
 			ID:       uuid.MustParse("11111111-1111-1111-1111-111111111111"),
@@ -216,33 +243,41 @@ func seedUsers(ctx context.Context, db *sql.DB) error {
 		return fmt.Errorf("failed to hash password: %w", err)
 	}
 
+	hggID := uuid.MustParse("11111111-1111-1111-1111-111111111111")
+	hugoID := uuid.MustParse("22222222-2222-2222-2222-222222222222")
+
 	users := []struct {
-		ID    uuid.UUID
-		Email string
-		Nome  string
-		Role  string
+		ID          uuid.UUID
+		Email       string
+		Nome        string
+		Role        string
+		HospitalIDs []uuid.UUID // Multiple hospitals via user_hospitals table
 	}{
 		{
-			ID:    uuid.MustParse("aaaa0000-0000-0000-0000-000000000001"),
-			Email: "admin@vitalconnect.gov.br",
-			Nome:  "Administrador Sistema",
-			Role:  "admin",
+			ID:          uuid.MustParse("aaaa0000-0000-0000-0000-000000000001"),
+			Email:       "admin@vitalconnect.gov.br",
+			Nome:        "Administrador Sistema",
+			Role:        "admin",
+			HospitalIDs: []uuid.UUID{hggID, hugoID}, // Admin has access to all hospitals
 		},
 		{
-			ID:    uuid.MustParse("aaaa0000-0000-0000-0000-000000000002"),
-			Email: "gestor@vitalconnect.gov.br",
-			Nome:  "Gestor Central Transplantes",
-			Role:  "gestor",
+			ID:          uuid.MustParse("aaaa0000-0000-0000-0000-000000000002"),
+			Email:       "gestor@vitalconnect.gov.br",
+			Nome:        "Gestor Central Transplantes",
+			Role:        "gestor",
+			HospitalIDs: []uuid.UUID{hggID, hugoID}, // Gestor has access to all hospitals
 		},
 		{
-			ID:    uuid.MustParse("aaaa0000-0000-0000-0000-000000000003"),
-			Email: "operador@vitalconnect.gov.br",
-			Nome:  "Operador Plantao",
-			Role:  "operador",
+			ID:          uuid.MustParse("aaaa0000-0000-0000-0000-000000000003"),
+			Email:       "operador@vitalconnect.gov.br",
+			Nome:        "Operador Plantao",
+			Role:        "operador",
+			HospitalIDs: []uuid.UUID{hggID}, // Operador only has access to HGG
 		},
 	}
 
 	for _, u := range users {
+		// Insert user without hospital_id (now uses user_hospitals table)
 		_, err := db.ExecContext(ctx, `
 			INSERT INTO users (id, email, password_hash, nome, role, ativo, created_at, updated_at)
 			VALUES ($1, $2, $3, $4, $5, true, NOW(), NOW())
@@ -257,6 +292,19 @@ func seedUsers(ctx context.Context, db *sql.DB) error {
 			return fmt.Errorf("failed to insert user %s: %w", u.Email, err)
 		}
 		log.Printf("  Created user: %s (%s)", u.Email, u.Role)
+
+		// Create user_hospitals associations
+		for _, hospitalID := range u.HospitalIDs {
+			_, err := db.ExecContext(ctx, `
+				INSERT INTO user_hospitals (user_id, hospital_id, created_at)
+				VALUES ($1, $2, NOW())
+				ON CONFLICT (user_id, hospital_id) DO NOTHING
+			`, u.ID, hospitalID)
+
+			if err != nil {
+				return fmt.Errorf("failed to associate user %s with hospital %s: %w", u.Email, hospitalID, err)
+			}
+		}
 	}
 
 	return nil
@@ -358,82 +406,82 @@ func seedDemoObitos(ctx context.Context, db *sql.DB) error {
 	hugoID := uuid.MustParse("22222222-2222-2222-2222-222222222222")
 
 	obitos := []struct {
-		ID                      uuid.UUID
-		HospitalID              uuid.UUID
-		NomePaciente            string
-		DataNascimento          time.Time
-		DataObito               time.Time
-		CausaMortis             string
-		Prontuario              string
-		Setor                   string
-		Leito                   string
+		ID                        uuid.UUID
+		HospitalID                uuid.UUID
+		NomePaciente              string
+		DataNascimento            time.Time
+		DataObito                 time.Time
+		CausaMortis               string
+		Prontuario                string
+		Setor                     string
+		Leito                     string
 		IdentificacaoDesconhecida bool
-		Description             string // For logging
+		Description               string // For logging
 	}{
 		{
-			ID:             uuid.MustParse("cccc0000-0000-0000-0000-000000000001"),
-			HospitalID:     hggID,
-			NomePaciente:   "Jose Carlos Oliveira",
-			DataNascimento: time.Date(1955, 3, 15, 0, 0, 0, 0, time.UTC),
-			DataObito:      time.Now().Add(-1 * time.Hour),
-			CausaMortis:    "Infarto Agudo do Miocardio",
-			Prontuario:     "HGG-2026-001234",
-			Setor:          "UTI",
-			Leito:          "3",
+			ID:                        uuid.MustParse("cccc0000-0000-0000-0000-000000000001"),
+			HospitalID:                hggID,
+			NomePaciente:              "Jose Carlos Oliveira",
+			DataNascimento:            time.Date(1955, 3, 15, 0, 0, 0, 0, time.UTC),
+			DataObito:                 time.Now().Add(-1 * time.Hour),
+			CausaMortis:               "Infarto Agudo do Miocardio",
+			Prontuario:                "HGG-2026-001234",
+			Setor:                     "UTI",
+			Leito:                     "3",
 			IdentificacaoDesconhecida: false,
-			Description:    "Elegivel - UTI, 1h atras",
+			Description:               "Elegivel - UTI, 1h atras",
 		},
 		{
-			ID:             uuid.MustParse("cccc0000-0000-0000-0000-000000000002"),
-			HospitalID:     hugoID,
-			NomePaciente:   "Maria Helena Santos",
-			DataNascimento: time.Date(1948, 7, 22, 0, 0, 0, 0, time.UTC),
-			DataObito:      time.Now().Add(-3 * time.Hour),
-			CausaMortis:    "Acidente Vascular Cerebral",
-			Prontuario:     "HUGO-2026-005678",
-			Setor:          "Emergencia",
-			Leito:          "12",
+			ID:                        uuid.MustParse("cccc0000-0000-0000-0000-000000000002"),
+			HospitalID:                hugoID,
+			NomePaciente:              "Maria Helena Santos",
+			DataNascimento:            time.Date(1948, 7, 22, 0, 0, 0, 0, time.UTC),
+			DataObito:                 time.Now().Add(-3 * time.Hour),
+			CausaMortis:               "Acidente Vascular Cerebral",
+			Prontuario:                "HUGO-2026-005678",
+			Setor:                     "Emergencia",
+			Leito:                     "12",
 			IdentificacaoDesconhecida: false,
-			Description:    "Elegivel - Emergencia, 3h atras",
+			Description:               "Elegivel - Emergencia, 3h atras",
 		},
 		{
-			ID:             uuid.MustParse("cccc0000-0000-0000-0000-000000000003"),
-			HospitalID:     hggID,
-			NomePaciente:   "Antonio Pereira Lima",
-			DataNascimento: time.Date(1940, 11, 5, 0, 0, 0, 0, time.UTC),
-			DataObito:      time.Now().Add(-5 * time.Hour),
-			CausaMortis:    "Insuficiencia Cardiaca Congestiva",
-			Prontuario:     "HGG-2026-002345",
-			Setor:          "Enfermaria",
-			Leito:          "8B",
+			ID:                        uuid.MustParse("cccc0000-0000-0000-0000-000000000003"),
+			HospitalID:                hggID,
+			NomePaciente:              "Antonio Pereira Lima",
+			DataNascimento:            time.Date(1940, 11, 5, 0, 0, 0, 0, time.UTC),
+			DataObito:                 time.Now().Add(-5 * time.Hour),
+			CausaMortis:               "Insuficiencia Cardiaca Congestiva",
+			Prontuario:                "HGG-2026-002345",
+			Setor:                     "Enfermaria",
+			Leito:                     "8B",
 			IdentificacaoDesconhecida: false,
-			Description:    "INELEGIVEL - Idade > 80 anos",
+			Description:               "INELEGIVEL - Idade > 80 anos",
 		},
 		{
-			ID:             uuid.MustParse("cccc0000-0000-0000-0000-000000000004"),
-			HospitalID:     hugoID,
-			NomePaciente:   "Francisca Souza Costa",
-			DataNascimento: time.Date(1960, 2, 28, 0, 0, 0, 0, time.UTC),
-			DataObito:      time.Now().Add(-8 * time.Hour),
-			CausaMortis:    "Traumatismo Craniano Grave",
-			Prontuario:     "HUGO-2026-007890",
-			Setor:          "UTI",
-			Leito:          "1",
+			ID:                        uuid.MustParse("cccc0000-0000-0000-0000-000000000004"),
+			HospitalID:                hugoID,
+			NomePaciente:              "Francisca Souza Costa",
+			DataNascimento:            time.Date(1960, 2, 28, 0, 0, 0, 0, time.UTC),
+			DataObito:                 time.Now().Add(-8 * time.Hour),
+			CausaMortis:               "Traumatismo Craniano Grave",
+			Prontuario:                "HUGO-2026-007890",
+			Setor:                     "UTI",
+			Leito:                     "1",
 			IdentificacaoDesconhecida: false,
-			Description:    "INELEGIVEL - Fora da janela 6h",
+			Description:               "INELEGIVEL - Fora da janela 6h",
 		},
 		{
-			ID:             uuid.MustParse("cccc0000-0000-0000-0000-000000000005"),
-			HospitalID:     hggID,
-			NomePaciente:   "Desconhecido - Indigente",
-			DataNascimento: time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC), // Estimated
-			DataObito:      time.Now().Add(-2 * time.Hour),
-			CausaMortis:    "Parada Cardiorrespiratoria",
-			Prontuario:     "HGG-2026-003456",
-			Setor:          "Emergencia",
-			Leito:          "5",
+			ID:                        uuid.MustParse("cccc0000-0000-0000-0000-000000000005"),
+			HospitalID:                hggID,
+			NomePaciente:              "Desconhecido - Indigente",
+			DataNascimento:            time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC), // Estimated
+			DataObito:                 time.Now().Add(-2 * time.Hour),
+			CausaMortis:               "Parada Cardiorrespiratoria",
+			Prontuario:                "HGG-2026-003456",
+			Setor:                     "Emergencia",
+			Leito:                     "5",
 			IdentificacaoDesconhecida: true,
-			Description:    "INELEGIVEL - Identificacao desconhecida",
+			Description:               "INELEGIVEL - Identificacao desconhecida",
 		},
 	}
 
