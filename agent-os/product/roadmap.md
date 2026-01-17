@@ -62,7 +62,7 @@ Objetivo: Sistema pronto para implantacao piloto em ambiente real com um hospita
 
 Objetivo: Escalar para multiplos hospitais e adicionar inteligencia ao sistema.
 
-21. [ ] **Multi-Tenant** - Suporte a multiplas Centrais de Transplante operando na mesma instancia, com isolamento de dados e configuracoes independentes. `L`
+21. [x] **Multi-Tenant** - Suporte a multiplas Centrais de Transplante operando na mesma instancia, com isolamento de dados e configuracoes independentes. `L` *(tenant_id em todas as tabelas, JWT claims com tenant context, middleware de isolamento)*
 
 22. [ ] **Conectores Padronizados** - Biblioteca de conectores pre-configurados para os principais sistemas de PEP do mercado (MV, Tasy, Philips). `XL`
 

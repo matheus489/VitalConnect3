@@ -10,6 +10,7 @@ import (
 // Hospital represents a hospital integrated with VitalConnect
 type Hospital struct {
 	ID            uuid.UUID       `json:"id" db:"id"`
+	TenantID      uuid.UUID       `json:"tenant_id" db:"tenant_id"`
 	Nome          string          `json:"nome" db:"nome" validate:"required,min=2,max=255"`
 	Codigo        string          `json:"codigo" db:"codigo" validate:"required,min=2,max=50"`
 	Endereco      *string         `json:"endereco,omitempty" db:"endereco"`

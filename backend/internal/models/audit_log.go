@@ -41,6 +41,7 @@ func (s Severity) String() string {
 // AuditLog represents an audit log entry
 type AuditLog struct {
 	ID           uuid.UUID       `json:"id" db:"id"`
+	TenantID     *uuid.UUID      `json:"tenant_id,omitempty" db:"tenant_id"`
 	Timestamp    time.Time       `json:"timestamp" db:"timestamp"`
 	UsuarioID    *uuid.UUID      `json:"usuario_id,omitempty" db:"usuario_id"`
 	ActorName    string          `json:"actor_name" db:"actor_name"`
@@ -56,6 +57,7 @@ type AuditLog struct {
 
 // CreateAuditLogInput represents input for creating an audit log entry
 type CreateAuditLogInput struct {
+	TenantID     *uuid.UUID      `json:"tenant_id,omitempty"`
 	UsuarioID    *uuid.UUID      `json:"usuario_id,omitempty"`
 	ActorName    string          `json:"actor_name" validate:"required"`
 	Acao         string          `json:"acao" validate:"required,min=2,max=100"`
@@ -70,6 +72,7 @@ type CreateAuditLogInput struct {
 
 // AuditLogFilter represents filters for querying audit logs
 type AuditLogFilter struct {
+	TenantID     *uuid.UUID `json:"tenant_id,omitempty"`
 	DataInicio   *time.Time `json:"data_inicio,omitempty"`
 	DataFim      *time.Time `json:"data_fim,omitempty"`
 	UsuarioID    *uuid.UUID `json:"usuario_id,omitempty"`
@@ -93,6 +96,7 @@ func DefaultAuditLogFilters() *AuditLogFilter {
 // AuditLogResponse represents the API response for audit log entries
 type AuditLogResponse struct {
 	ID           uuid.UUID       `json:"id"`
+	TenantID     *uuid.UUID      `json:"tenant_id,omitempty"`
 	Timestamp    time.Time       `json:"timestamp"`
 	UsuarioID    *uuid.UUID      `json:"usuario_id,omitempty"`
 	ActorName    string          `json:"actor_name"`
@@ -111,6 +115,7 @@ type AuditLogResponse struct {
 func (a *AuditLog) ToResponse() AuditLogResponse {
 	return AuditLogResponse{
 		ID:           a.ID,
+		TenantID:     a.TenantID,
 		Timestamp:    a.Timestamp,
 		UsuarioID:    a.UsuarioID,
 		ActorName:    a.ActorName,
@@ -138,17 +143,31 @@ const (
 	ActionRegraDelete = "regra.delete"
 
 	// Occurrence actions
-	ActionOcorrenciaVisualizar  = "ocorrencia.visualizar"
-	ActionOcorrenciaAceitar     = "ocorrencia.aceitar"
-	ActionOcorrenciaRecusar     = "ocorrencia.recusar"
+	ActionOcorrenciaVisualizar   = "ocorrencia.visualizar"
+	ActionOcorrenciaAceitar      = "ocorrencia.aceitar"
+	ActionOcorrenciaRecusar      = "ocorrencia.recusar"
 	ActionOcorrenciaStatusChange = "ocorrencia.status_change"
-	ActionTriagemRejeicao       = "triagem.rejeicao"
+	ActionTriagemRejeicao        = "triagem.rejeicao"
 
 	// User actions
 	ActionUsuarioCreate    = "usuario.create"
 	ActionUsuarioUpdate    = "usuario.update"
 	ActionUsuarioDesativar = "usuario.desativar"
+
+	// Tenant actions
+	ActionTenantCreate        = "tenant.create"
+	ActionTenantUpdate        = "tenant.update"
+	ActionTenantContextSwitch = "tenant.context_switch"
 )
 
 // VitalConnectBotActor is the name used for system actions
 const VitalConnectBotActor = "VitalConnect Bot"
+
+// Entity types for audit log
+const (
+	EntityTypeTenant     = "Tenant"
+	EntityTypeUser       = "User"
+	EntityTypeHospital   = "Hospital"
+	EntityTypeOccurrence = "Ocorrencia"
+	EntityTypeTriagemRule = "TriagemRule"
+)

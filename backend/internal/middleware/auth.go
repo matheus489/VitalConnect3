@@ -10,10 +10,12 @@ import (
 
 // UserClaims represents the JWT claims for a user
 type UserClaims struct {
-	UserID     string `json:"user_id"`
-	Email      string `json:"email"`
-	Role       string `json:"role"`
-	HospitalID string `json:"hospital_id,omitempty"`
+	UserID       string `json:"user_id"`
+	Email        string `json:"email"`
+	Role         string `json:"role"`
+	HospitalID   string `json:"hospital_id,omitempty"`
+	TenantID     string `json:"tenant_id,omitempty"`
+	IsSuperAdmin bool   `json:"is_super_admin,omitempty"`
 }
 
 // contextKey is the key used to store JWT service in context
@@ -97,12 +99,14 @@ func AuthRequired() gin.HandlerFunc {
 			return
 		}
 
-		// Set user claims in context
+		// Set user claims in context (including tenant info)
 		userClaims := &UserClaims{
-			UserID:     claims.UserID,
-			Email:      claims.Email,
-			Role:       claims.Role,
-			HospitalID: claims.HospitalID,
+			UserID:       claims.UserID,
+			Email:        claims.Email,
+			Role:         claims.Role,
+			HospitalID:   claims.HospitalID,
+			TenantID:     claims.TenantID,
+			IsSuperAdmin: claims.IsSuperAdmin,
 		}
 		c.Set("user_claims", userClaims)
 
@@ -200,12 +204,14 @@ func OptionalAuth() gin.HandlerFunc {
 			return
 		}
 
-		// Set user claims in context
+		// Set user claims in context (including tenant info)
 		userClaims := &UserClaims{
-			UserID:     claims.UserID,
-			Email:      claims.Email,
-			Role:       claims.Role,
-			HospitalID: claims.HospitalID,
+			UserID:       claims.UserID,
+			Email:        claims.Email,
+			Role:         claims.Role,
+			HospitalID:   claims.HospitalID,
+			TenantID:     claims.TenantID,
+			IsSuperAdmin: claims.IsSuperAdmin,
 		}
 		c.Set("user_claims", userClaims)
 

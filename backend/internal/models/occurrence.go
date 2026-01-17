@@ -79,6 +79,7 @@ func (s OccurrenceStatus) IsTerminal() bool {
 // Occurrence represents an eligible death occurrence
 type Occurrence struct {
 	ID                    uuid.UUID        `json:"id" db:"id"`
+	TenantID              uuid.UUID        `json:"tenant_id" db:"tenant_id"`
 	ObitoID               uuid.UUID        `json:"obito_id" db:"obito_id" validate:"required"`
 	HospitalID            uuid.UUID        `json:"hospital_id" db:"hospital_id" validate:"required"`
 	Status                OccurrenceStatus `json:"status" db:"status" validate:"required,oneof=PENDENTE EM_ANDAMENTO ACEITA RECUSADA CANCELADA CONCLUIDA"`

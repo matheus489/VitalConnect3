@@ -39,16 +39,18 @@ func (r UserRole) String() string {
 
 // User represents a system user
 type User struct {
-	ID                 uuid.UUID `json:"id" db:"id"`
-	Email              string    `json:"email" db:"email" validate:"required,email,max=255"`
-	PasswordHash       string    `json:"-" db:"password_hash"`
-	Nome               string    `json:"nome" db:"nome" validate:"required,min=2,max=255"`
-	Role               UserRole  `json:"role" db:"role" validate:"required,oneof=operador gestor admin"`
-	MobilePhone        *string   `json:"mobile_phone,omitempty" db:"mobile_phone"`
-	EmailNotifications bool      `json:"email_notifications" db:"email_notifications"`
-	Ativo              bool      `json:"ativo" db:"ativo"`
-	CreatedAt          time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt          time.Time `json:"updated_at" db:"updated_at"`
+	ID                 uuid.UUID  `json:"id" db:"id"`
+	TenantID           *uuid.UUID `json:"tenant_id,omitempty" db:"tenant_id"`
+	Email              string     `json:"email" db:"email" validate:"required,email,max=255"`
+	PasswordHash       string     `json:"-" db:"password_hash"`
+	Nome               string     `json:"nome" db:"nome" validate:"required,min=2,max=255"`
+	Role               UserRole   `json:"role" db:"role" validate:"required,oneof=operador gestor admin"`
+	IsSuperAdmin       bool       `json:"is_super_admin" db:"is_super_admin"`
+	MobilePhone        *string    `json:"mobile_phone,omitempty" db:"mobile_phone"`
+	EmailNotifications bool       `json:"email_notifications" db:"email_notifications"`
+	Ativo              bool       `json:"ativo" db:"ativo"`
+	CreatedAt          time.Time  `json:"created_at" db:"created_at"`
+	UpdatedAt          time.Time  `json:"updated_at" db:"updated_at"`
 
 	// Related data (populated by queries) - N:N relationship with hospitals
 	Hospitals []Hospital `json:"hospitals,omitempty" db:"-"`
@@ -86,9 +88,11 @@ type UpdateProfileInput struct {
 // UserResponse represents the API response for a user
 type UserResponse struct {
 	ID                 uuid.UUID          `json:"id"`
+	TenantID           *uuid.UUID         `json:"tenant_id,omitempty"`
 	Email              string             `json:"email"`
 	Nome               string             `json:"nome"`
 	Role               UserRole           `json:"role"`
+	IsSuperAdmin       bool               `json:"is_super_admin,omitempty"`
 	Hospitals          []HospitalResponse `json:"hospitals"`
 	MobilePhone        *string            `json:"mobile_phone,omitempty"`
 	EmailNotifications bool               `json:"email_notifications"`
@@ -101,9 +105,11 @@ type UserResponse struct {
 func (u *User) ToResponse() UserResponse {
 	resp := UserResponse{
 		ID:                 u.ID,
+		TenantID:           u.TenantID,
 		Email:              u.Email,
 		Nome:               u.Nome,
 		Role:               u.Role,
+		IsSuperAdmin:       u.IsSuperAdmin,
 		Hospitals:          make([]HospitalResponse, 0, len(u.Hospitals)),
 		MobilePhone:        u.MobilePhone,
 		EmailNotifications: u.EmailNotifications,
@@ -163,27 +169,27 @@ func MaskMobilePhone(phone string) string {
 
 // CanManageUsers returns true if the user can manage other users
 func (u *User) CanManageUsers() bool {
-	return u.Role == RoleAdmin
+	return u.Role == RoleAdmin || u.IsSuperAdmin
 }
 
 // CanManageHospitals returns true if the user can manage hospitals
 func (u *User) CanManageHospitals() bool {
-	return u.Role == RoleAdmin
+	return u.Role == RoleAdmin || u.IsSuperAdmin
 }
 
 // CanManageTriagemRules returns true if the user can manage triagem rules
 func (u *User) CanManageTriagemRules() bool {
-	return u.Role == RoleAdmin || u.Role == RoleGestor
+	return u.Role == RoleAdmin || u.Role == RoleGestor || u.IsSuperAdmin
 }
 
 // CanViewMetrics returns true if the user can view dashboard metrics
 func (u *User) CanViewMetrics() bool {
-	return u.Role == RoleAdmin || u.Role == RoleGestor
+	return u.Role == RoleAdmin || u.Role == RoleGestor || u.IsSuperAdmin
 }
 
 // CanOperateOccurrences returns true if the user can operate occurrences
 func (u *User) CanOperateOccurrences() bool {
-	return u.Role == RoleAdmin || u.Role == RoleGestor || u.Role == RoleOperador
+	return u.Role == RoleAdmin || u.Role == RoleGestor || u.Role == RoleOperador || u.IsSuperAdmin
 }
 
 // CanReceiveSMSNotifications returns true if the user can receive SMS notifications
@@ -199,24 +205,29 @@ func (u *User) CanReceiveEmailNotifications() bool {
 // CanManageShifts returns true if the user can create, update, or delete shifts
 // Admin can manage all shifts, Gestor can manage shifts for their hospital
 func (u *User) CanManageShifts() bool {
-	return u.Role == RoleAdmin || u.Role == RoleGestor
+	return u.Role == RoleAdmin || u.Role == RoleGestor || u.IsSuperAdmin
 }
 
 // CanViewShifts returns true if the user can view shifts
 // All authenticated users can view shifts
 func (u *User) CanViewShifts() bool {
-	return u.Role == RoleAdmin || u.Role == RoleGestor || u.Role == RoleOperador
+	return u.Role == RoleAdmin || u.Role == RoleGestor || u.Role == RoleOperador || u.IsSuperAdmin
 }
 
 // CanManageShiftsForHospital returns true if the user can manage shifts for a specific hospital
 func (u *User) CanManageShiftsForHospital(hospitalID uuid.UUID) bool {
-	if u.Role == RoleAdmin {
+	if u.Role == RoleAdmin || u.IsSuperAdmin {
 		return true
 	}
 	if u.Role == RoleGestor && u.HasHospital(hospitalID) {
 		return true
 	}
 	return false
+}
+
+// CanSwitchTenantContext returns true if user can switch tenant context (super-admin only)
+func (u *User) CanSwitchTenantContext() bool {
+	return u.IsSuperAdmin
 }
 
 // UserListParams represents parameters for listing users with pagination and filtering

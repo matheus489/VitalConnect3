@@ -26,12 +26,14 @@ func NewHospitalRepository(db *sql.DB) *HospitalRepository {
 	return &HospitalRepository{db: db}
 }
 
-// List returns all active hospitals
+// List returns all active hospitals for the current tenant
 func (r *HospitalRepository) List(ctx context.Context) ([]models.Hospital, error) {
+	tf := NewTenantFilter(ctx)
+
 	query := `
 		SELECT id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at, deleted_at
 		FROM hospitals
-		WHERE deleted_at IS NULL
+		WHERE deleted_at IS NULL` + tf.AndClause() + `
 		ORDER BY nome ASC
 	`
 
@@ -95,12 +97,14 @@ func (r *HospitalRepository) List(ctx context.Context) ([]models.Hospital, error
 	return hospitals, nil
 }
 
-// GetByID retrieves a hospital by ID
+// GetByID retrieves a hospital by ID for the current tenant
 func (r *HospitalRepository) GetByID(ctx context.Context, id uuid.UUID) (*models.Hospital, error) {
+	tf := NewTenantFilter(ctx)
+
 	query := `
 		SELECT id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at, deleted_at
 		FROM hospitals
-		WHERE id = $1 AND deleted_at IS NULL
+		WHERE id = $1 AND deleted_at IS NULL` + tf.AndClause() + `
 	`
 
 	var h models.Hospital
@@ -152,12 +156,14 @@ func (r *HospitalRepository) GetByID(ctx context.Context, id uuid.UUID) (*models
 	return &h, nil
 }
 
-// GetByCodigo retrieves a hospital by code
+// GetByCodigo retrieves a hospital by code for the current tenant
 func (r *HospitalRepository) GetByCodigo(ctx context.Context, codigo string) (*models.Hospital, error) {
+	tf := NewTenantFilter(ctx)
+
 	query := `
 		SELECT id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at, deleted_at
 		FROM hospitals
-		WHERE codigo = $1 AND deleted_at IS NULL
+		WHERE codigo = $1 AND deleted_at IS NULL` + tf.AndClause() + `
 	`
 
 	var h models.Hospital
@@ -209,9 +215,19 @@ func (r *HospitalRepository) GetByCodigo(ctx context.Context, codigo string) (*m
 	return &h, nil
 }
 
-// Create creates a new hospital
+// Create creates a new hospital for the current tenant
 func (r *HospitalRepository) Create(ctx context.Context, input *models.CreateHospitalInput) (*models.Hospital, error) {
-	// Check if code already exists
+	// Get tenant ID from context
+	tenantID, err := RequireTenantID(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tenantUUID, err := uuid.Parse(tenantID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if code already exists within the tenant
 	exists, err := r.ExistsByCodigo(ctx, input.Codigo)
 	if err != nil {
 		return nil, err
@@ -232,6 +248,7 @@ func (r *HospitalRepository) Create(ctx context.Context, input *models.CreateHos
 
 	hospital := &models.Hospital{
 		ID:        uuid.New(),
+		TenantID:  tenantUUID,
 		Nome:      input.Nome,
 		Codigo:    input.Codigo,
 		Endereco:  &endereco,
@@ -248,8 +265,8 @@ func (r *HospitalRepository) Create(ctx context.Context, input *models.CreateHos
 	}
 
 	query := `
-		INSERT INTO hospitals (id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+		INSERT INTO hospitals (id, tenant_id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 	`
 
 	var configJSON interface{}
@@ -259,6 +276,7 @@ func (r *HospitalRepository) Create(ctx context.Context, input *models.CreateHos
 
 	_, err = r.db.ExecContext(ctx, query,
 		hospital.ID,
+		hospital.TenantID,
 		hospital.Nome,
 		hospital.Codigo,
 		hospital.Endereco,
@@ -278,15 +296,17 @@ func (r *HospitalRepository) Create(ctx context.Context, input *models.CreateHos
 	return hospital, nil
 }
 
-// Update updates a hospital
+// Update updates a hospital for the current tenant
 func (r *HospitalRepository) Update(ctx context.Context, id uuid.UUID, input *models.UpdateHospitalInput) (*models.Hospital, error) {
-	// Get existing hospital
+	tf := NewTenantFilter(ctx)
+
+	// Get existing hospital (already filtered by tenant)
 	hospital, err := r.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	// Check if new code conflicts with existing hospital
+	// Check if new code conflicts with existing hospital within the tenant
 	if input.Codigo != nil && *input.Codigo != hospital.Codigo {
 		exists, err := r.ExistsByCodigo(ctx, *input.Codigo)
 		if err != nil {
@@ -325,7 +345,7 @@ func (r *HospitalRepository) Update(ctx context.Context, id uuid.UUID, input *mo
 	query := `
 		UPDATE hospitals
 		SET nome = $1, codigo = $2, endereco = $3, telefone = $4, latitude = $5, longitude = $6, config_conexao = $7, ativo = $8, updated_at = $9
-		WHERE id = $10 AND deleted_at IS NULL
+		WHERE id = $10 AND deleted_at IS NULL` + tf.AndClause() + `
 	`
 
 	var configJSON interface{}
@@ -360,12 +380,14 @@ func (r *HospitalRepository) Update(ctx context.Context, id uuid.UUID, input *mo
 	return hospital, nil
 }
 
-// SoftDelete performs a soft delete on a hospital
+// SoftDelete performs a soft delete on a hospital for the current tenant
 func (r *HospitalRepository) SoftDelete(ctx context.Context, id uuid.UUID) error {
+	tf := NewTenantFilter(ctx)
+
 	query := `
 		UPDATE hospitals
 		SET deleted_at = $1, ativo = false, updated_at = $1
-		WHERE id = $2 AND deleted_at IS NULL
+		WHERE id = $2 AND deleted_at IS NULL` + tf.AndClause() + `
 	`
 
 	now := time.Now()
@@ -385,9 +407,11 @@ func (r *HospitalRepository) SoftDelete(ctx context.Context, id uuid.UUID) error
 	return nil
 }
 
-// ExistsByCodigo checks if a hospital with the given code exists
+// ExistsByCodigo checks if a hospital with the given code exists within the current tenant
 func (r *HospitalRepository) ExistsByCodigo(ctx context.Context, codigo string) (bool, error) {
-	query := `SELECT EXISTS(SELECT 1 FROM hospitals WHERE codigo = $1 AND deleted_at IS NULL)`
+	tf := NewTenantFilter(ctx)
+
+	query := `SELECT EXISTS(SELECT 1 FROM hospitals WHERE codigo = $1 AND deleted_at IS NULL` + tf.AndClause() + `)`
 
 	var exists bool
 	err := r.db.QueryRowContext(ctx, query, codigo).Scan(&exists)
@@ -398,12 +422,14 @@ func (r *HospitalRepository) ExistsByCodigo(ctx context.Context, codigo string) 
 	return exists, nil
 }
 
-// GetActiveHospitals returns all active hospitals
+// GetActiveHospitals returns all active hospitals for the current tenant
 func (r *HospitalRepository) GetActiveHospitals(ctx context.Context) ([]models.Hospital, error) {
+	tf := NewTenantFilter(ctx)
+
 	query := `
 		SELECT id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at
 		FROM hospitals
-		WHERE deleted_at IS NULL AND ativo = true
+		WHERE deleted_at IS NULL AND ativo = true` + tf.AndClause() + `
 		ORDER BY nome ASC
 	`
 
@@ -458,16 +484,18 @@ func (r *HospitalRepository) GetActiveHospitals(ctx context.Context) ([]models.H
 	return hospitals, nil
 }
 
-// GetActiveHospitalsWithCoordinates returns all active hospitals that have coordinates set
+// GetActiveHospitalsWithCoordinates returns all active hospitals that have coordinates set for the current tenant
 // This is used for the geographic map feature
 func (r *HospitalRepository) GetActiveHospitalsWithCoordinates(ctx context.Context) ([]models.Hospital, error) {
+	tf := NewTenantFilter(ctx)
+
 	query := `
 		SELECT id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at
 		FROM hospitals
 		WHERE deleted_at IS NULL
 		  AND ativo = true
 		  AND latitude IS NOT NULL
-		  AND longitude IS NOT NULL
+		  AND longitude IS NOT NULL` + tf.AndClause() + `
 		ORDER BY nome ASC
 	`
 

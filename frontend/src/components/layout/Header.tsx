@@ -1,6 +1,7 @@
 'use client';
 
 import { Bell, BellOff, LogOut, Menu, Volume2, VolumeX, User } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
@@ -15,6 +16,13 @@ interface HeaderProps {
 export function Header({ onMenuToggle, showMenuButton = false }: HeaderProps) {
   const { user, logout } = useAuth();
   const { isConnected, pendingCount, soundEnabled, toggleSound } = useSSE();
+  const queryClient = useQueryClient();
+
+  const handleLogout = () => {
+    // Clear all React Query cache before logout to prevent stale data on next login
+    queryClient.clear();
+    logout();
+  };
 
   const getRoleLabel = (role: string) => {
     switch (role) {
@@ -112,7 +120,7 @@ export function Header({ onMenuToggle, showMenuButton = false }: HeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={logout}
+          onClick={handleLogout}
           aria-label="Sair do sistema"
           className="text-muted-foreground hover:text-foreground"
         >

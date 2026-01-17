@@ -26,10 +26,12 @@ func NewOccurrenceRepository(db *sql.DB) *OccurrenceRepository {
 	return &OccurrenceRepository{db: db}
 }
 
-// List returns occurrences with pagination and filters
+// List returns occurrences with pagination and filters for the current tenant
 func (r *OccurrenceRepository) List(ctx context.Context, filters models.OccurrenceListFilters) ([]models.Occurrence, int, error) {
+	tf := NewTenantFilter(ctx)
+
 	// Build the WHERE clause
-	where := "WHERE 1=1"
+	where := "WHERE 1=1" + tf.AndClauseWithAlias("o")
 	args := []interface{}{}
 	argIndex := 1
 
@@ -146,8 +148,10 @@ func (r *OccurrenceRepository) List(ctx context.Context, filters models.Occurren
 	return occurrences, totalItems, nil
 }
 
-// GetByID retrieves an occurrence by ID with full data
+// GetByID retrieves an occurrence by ID with full data for the current tenant
 func (r *OccurrenceRepository) GetByID(ctx context.Context, id uuid.UUID) (*models.Occurrence, error) {
+	tf := NewTenantFilter(ctx)
+
 	query := `
 		SELECT
 			o.id, o.obito_id, o.hospital_id, o.status, o.score_priorizacao,
@@ -156,7 +160,7 @@ func (r *OccurrenceRepository) GetByID(ctx context.Context, id uuid.UUID) (*mode
 			h.id, h.nome, h.codigo, h.endereco, h.ativo
 		FROM occurrences o
 		LEFT JOIN hospitals h ON o.hospital_id = h.id
-		WHERE o.id = $1
+		WHERE o.id = $1` + tf.AndClauseWithAlias("o") + `
 	`
 
 	var o models.Occurrence
@@ -193,12 +197,14 @@ func (r *OccurrenceRepository) GetByID(ctx context.Context, id uuid.UUID) (*mode
 	return &o, nil
 }
 
-// UpdateStatus updates the status of an occurrence
+// UpdateStatus updates the status of an occurrence for the current tenant
 func (r *OccurrenceRepository) UpdateStatus(ctx context.Context, id uuid.UUID, newStatus models.OccurrenceStatus) error {
+	tf := NewTenantFilter(ctx)
+
 	query := `
 		UPDATE occurrences
 		SET status = $1, updated_at = $2
-		WHERE id = $3
+		WHERE id = $3` + tf.AndClause() + `
 	`
 
 	result, err := r.db.ExecContext(ctx, query, newStatus, time.Now(), id)
@@ -262,12 +268,14 @@ func (r *OccurrenceRepository) Create(ctx context.Context, input *models.CreateO
 	return occurrence, nil
 }
 
-// SetNotificado marks the occurrence as notified
+// SetNotificado marks the occurrence as notified for the current tenant
 func (r *OccurrenceRepository) SetNotificado(ctx context.Context, id uuid.UUID) error {
+	tf := NewTenantFilter(ctx)
+
 	query := `
 		UPDATE occurrences
 		SET notificado_em = $1, updated_at = $1
-		WHERE id = $2
+		WHERE id = $2` + tf.AndClause() + `
 	`
 
 	now := time.Now()
@@ -275,29 +283,35 @@ func (r *OccurrenceRepository) SetNotificado(ctx context.Context, id uuid.UUID) 
 	return err
 }
 
-// GetPendingCount returns the count of pending occurrences
+// GetPendingCount returns the count of pending occurrences for the current tenant
 func (r *OccurrenceRepository) GetPendingCount(ctx context.Context) (int, error) {
-	query := `SELECT COUNT(*) FROM occurrences WHERE status = 'PENDENTE'`
+	tf := NewTenantFilter(ctx)
+
+	query := `SELECT COUNT(*) FROM occurrences WHERE status = 'PENDENTE'` + tf.AndClause()
 
 	var count int
 	err := r.db.QueryRowContext(ctx, query).Scan(&count)
 	return count, err
 }
 
-// GetEmAndamentoCount returns the count of in-progress occurrences
+// GetEmAndamentoCount returns the count of in-progress occurrences for the current tenant
 func (r *OccurrenceRepository) GetEmAndamentoCount(ctx context.Context) (int, error) {
-	query := `SELECT COUNT(*) FROM occurrences WHERE status = 'EM_ANDAMENTO'`
+	tf := NewTenantFilter(ctx)
+
+	query := `SELECT COUNT(*) FROM occurrences WHERE status = 'EM_ANDAMENTO'` + tf.AndClause()
 
 	var count int
 	err := r.db.QueryRowContext(ctx, query).Scan(&count)
 	return count, err
 }
 
-// GetTodayEligibleCount returns the count of eligible occurrences created today
+// GetTodayEligibleCount returns the count of eligible occurrences created today for the current tenant
 func (r *OccurrenceRepository) GetTodayEligibleCount(ctx context.Context) (int, error) {
+	tf := NewTenantFilter(ctx)
+
 	query := `
 		SELECT COUNT(*) FROM occurrences
-		WHERE DATE(created_at) = CURRENT_DATE
+		WHERE DATE(created_at) = CURRENT_DATE` + tf.AndClause() + `
 	`
 
 	var count int
@@ -305,13 +319,15 @@ func (r *OccurrenceRepository) GetTodayEligibleCount(ctx context.Context) (int, 
 	return count, err
 }
 
-// GetAverageNotificationTime returns the average notification time in seconds
+// GetAverageNotificationTime returns the average notification time in seconds for the current tenant
 func (r *OccurrenceRepository) GetAverageNotificationTime(ctx context.Context) (float64, error) {
+	tf := NewTenantFilter(ctx)
+
 	query := `
 		SELECT COALESCE(AVG(EXTRACT(EPOCH FROM (notificado_em - created_at))), 0)
 		FROM occurrences
 		WHERE notificado_em IS NOT NULL
-		AND DATE(created_at) = CURRENT_DATE
+		AND DATE(created_at) = CURRENT_DATE` + tf.AndClause() + `
 	`
 
 	var avgTime float64
@@ -319,7 +335,7 @@ func (r *OccurrenceRepository) GetAverageNotificationTime(ctx context.Context) (
 	return avgTime, err
 }
 
-// ExistsByObitoID checks if an occurrence already exists for a given obito
+// ExistsByObitoID checks if an occurrence already exists for a given obito (tenant-independent for triagem motor)
 func (r *OccurrenceRepository) ExistsByObitoID(ctx context.Context, obitoID uuid.UUID) (bool, error) {
 	query := `SELECT EXISTS(SELECT 1 FROM occurrences WHERE obito_id = $1)`
 

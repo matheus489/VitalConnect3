@@ -32,6 +32,8 @@ type User struct {
 	Nome         string
 	Role         string
 	HospitalID   *uuid.UUID
+	TenantID     *uuid.UUID
+	IsSuperAdmin bool
 	Ativo        bool
 }
 
@@ -43,9 +45,9 @@ type UserRepository interface {
 
 // AuthService handles authentication operations
 type AuthService struct {
-	jwtService     *JWTService
-	userRepo       UserRepository
-	redisClient    *redis.Client
+	jwtService       *JWTService
+	userRepo         UserRepository
+	redisClient      *redis.Client
 	revokedKeyPrefix string
 }
 
@@ -70,11 +72,13 @@ type LoginResult struct {
 
 // UserInfo contains user information returned after login
 type UserInfo struct {
-	ID         uuid.UUID  `json:"id"`
-	Email      string     `json:"email"`
-	Nome       string     `json:"nome"`
-	Role       string     `json:"role"`
-	HospitalID *uuid.UUID `json:"hospital_id,omitempty"`
+	ID           uuid.UUID  `json:"id"`
+	Email        string     `json:"email"`
+	Nome         string     `json:"nome"`
+	Role         string     `json:"role"`
+	HospitalID   *uuid.UUID `json:"hospital_id,omitempty"`
+	TenantID     *uuid.UUID `json:"tenant_id,omitempty"`
+	IsSuperAdmin bool       `json:"is_super_admin,omitempty"`
 }
 
 // Login authenticates a user with email and password
@@ -98,17 +102,24 @@ func (s *AuthService) Login(ctx context.Context, email, password string) (*Login
 		return nil, ErrInvalidCredentials
 	}
 
-	// Generate tokens
+	// Generate tokens with tenant context
 	hospitalID := ""
 	if user.HospitalID != nil {
 		hospitalID = user.HospitalID.String()
 	}
 
-	accessToken, refreshToken, err := s.jwtService.GenerateTokenPair(
+	tenantID := ""
+	if user.TenantID != nil {
+		tenantID = user.TenantID.String()
+	}
+
+	accessToken, refreshToken, err := s.jwtService.GenerateTokenPairWithTenant(
 		user.ID.String(),
 		user.Email,
 		user.Role,
 		hospitalID,
+		tenantID,
+		user.IsSuperAdmin,
 	)
 	if err != nil {
 		return nil, err
@@ -120,11 +131,13 @@ func (s *AuthService) Login(ctx context.Context, email, password string) (*Login
 		TokenType:    "Bearer",
 		ExpiresIn:    int64(s.jwtService.GetAccessTokenDuration().Seconds()),
 		User: &UserInfo{
-			ID:         user.ID,
-			Email:      user.Email,
-			Nome:       user.Nome,
-			Role:       user.Role,
-			HospitalID: user.HospitalID,
+			ID:           user.ID,
+			Email:        user.Email,
+			Nome:         user.Nome,
+			Role:         user.Role,
+			HospitalID:   user.HospitalID,
+			TenantID:     user.TenantID,
+			IsSuperAdmin: user.IsSuperAdmin,
 		},
 	}, nil
 }
@@ -175,17 +188,24 @@ func (s *AuthService) Refresh(ctx context.Context, refreshToken string) (*Refres
 		_ = err
 	}
 
-	// Generate new tokens
+	// Generate new tokens with tenant context
 	hospitalID := ""
 	if user.HospitalID != nil {
 		hospitalID = user.HospitalID.String()
 	}
 
-	newAccessToken, newRefreshToken, err := s.jwtService.GenerateTokenPair(
+	tenantID := ""
+	if user.TenantID != nil {
+		tenantID = user.TenantID.String()
+	}
+
+	newAccessToken, newRefreshToken, err := s.jwtService.GenerateTokenPairWithTenant(
 		user.ID.String(),
 		user.Email,
 		user.Role,
 		hospitalID,
+		tenantID,
+		user.IsSuperAdmin,
 	)
 	if err != nil {
 		return nil, err
@@ -251,10 +271,12 @@ func (s *AuthService) GetCurrentUser(ctx context.Context, userID string) (*UserI
 	}
 
 	return &UserInfo{
-		ID:         user.ID,
-		Email:      user.Email,
-		Nome:       user.Nome,
-		Role:       user.Role,
-		HospitalID: user.HospitalID,
+		ID:           user.ID,
+		Email:        user.Email,
+		Nome:         user.Nome,
+		Role:         user.Role,
+		HospitalID:   user.HospitalID,
+		TenantID:     user.TenantID,
+		IsSuperAdmin: user.IsSuperAdmin,
 	}, nil
 }

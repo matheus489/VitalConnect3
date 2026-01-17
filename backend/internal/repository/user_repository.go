@@ -31,12 +31,14 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 // GetByEmail retrieves a user by email for authentication
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*auth.User, error) {
 	query := `
-		SELECT id, email, password_hash, nome, role, ativo
+		SELECT id, email, password_hash, nome, role, tenant_id, is_super_admin, ativo
 		FROM users
 		WHERE email = $1
 	`
 
 	var user auth.User
+	var tenantID sql.NullString
+	var isSuperAdmin sql.NullBool
 
 	err := r.db.QueryRowContext(ctx, query, email).Scan(
 		&user.ID,
@@ -44,6 +46,8 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*auth.Us
 		&user.PasswordHash,
 		&user.Nome,
 		&user.Role,
+		&tenantID,
+		&isSuperAdmin,
 		&user.Ativo,
 	)
 
@@ -52,6 +56,19 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*auth.Us
 			return nil, auth.ErrUserNotFound
 		}
 		return nil, err
+	}
+
+	// Set tenant ID if present
+	if tenantID.Valid {
+		tid, err := uuid.Parse(tenantID.String)
+		if err == nil {
+			user.TenantID = &tid
+		}
+	}
+
+	// Set super admin flag
+	if isSuperAdmin.Valid {
+		user.IsSuperAdmin = isSuperAdmin.Bool
 	}
 
 	// Get first hospital for auth claims (for backward compatibility)
@@ -66,12 +83,14 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*auth.Us
 // GetByID retrieves a user by ID for authentication
 func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (*auth.User, error) {
 	query := `
-		SELECT id, email, password_hash, nome, role, ativo
+		SELECT id, email, password_hash, nome, role, tenant_id, is_super_admin, ativo
 		FROM users
 		WHERE id = $1
 	`
 
 	var user auth.User
+	var tenantID sql.NullString
+	var isSuperAdmin sql.NullBool
 
 	err := r.db.QueryRowContext(ctx, query, id).Scan(
 		&user.ID,
@@ -79,6 +98,8 @@ func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (*auth.User,
 		&user.PasswordHash,
 		&user.Nome,
 		&user.Role,
+		&tenantID,
+		&isSuperAdmin,
 		&user.Ativo,
 	)
 
@@ -87,6 +108,19 @@ func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (*auth.User,
 			return nil, auth.ErrUserNotFound
 		}
 		return nil, err
+	}
+
+	// Set tenant ID if present
+	if tenantID.Valid {
+		tid, err := uuid.Parse(tenantID.String)
+		if err == nil {
+			user.TenantID = &tid
+		}
+	}
+
+	// Set super admin flag
+	if isSuperAdmin.Valid {
+		user.IsSuperAdmin = isSuperAdmin.Bool
 	}
 
 	// Get first hospital for auth claims (for backward compatibility)
@@ -100,10 +134,23 @@ func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (*auth.User,
 
 // Create creates a new user for auth service
 func (r *UserRepository) Create(ctx context.Context, user *auth.User) error {
+	// Get tenant ID from context if not provided
+	tenantID := GetTenantIDOrNil(ctx)
+	if user.TenantID != nil {
+		tenantID = user.TenantID.String()
+	}
+
 	query := `
-		INSERT INTO users (id, email, password_hash, nome, role, email_notifications, ativo, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, true, $6, NOW(), NOW())
+		INSERT INTO users (id, email, password_hash, nome, role, tenant_id, is_super_admin, email_notifications, ativo, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, true, $8, NOW(), NOW())
 	`
+
+	var tenantArg interface{}
+	if tenantID != "" {
+		tenantArg = tenantID
+	} else {
+		tenantArg = nil
+	}
 
 	_, err := r.db.ExecContext(ctx, query,
 		user.ID,
@@ -111,6 +158,8 @@ func (r *UserRepository) Create(ctx context.Context, user *auth.User) error {
 		user.PasswordHash,
 		user.Nome,
 		user.Role,
+		tenantArg,
+		user.IsSuperAdmin,
 		user.Ativo,
 	)
 
@@ -220,11 +269,19 @@ func (r *UserRepository) SetUserHospitals(ctx context.Context, userID uuid.UUID,
 		return err
 	}
 
-	// Insert new associations
+	// Insert new associations with tenant_id
 	if len(hospitalIDs) > 0 {
+		tenantID := GetTenantIDOrNil(ctx)
+		var tenantArg interface{}
+		if tenantID != "" {
+			tenantArg = tenantID
+		} else {
+			tenantArg = nil
+		}
+
 		stmt, err := tx.PrepareContext(ctx, `
-			INSERT INTO user_hospitals (user_id, hospital_id, created_at)
-			VALUES ($1, $2, NOW())
+			INSERT INTO user_hospitals (user_id, hospital_id, tenant_id, created_at)
+			VALUES ($1, $2, $3, NOW())
 			ON CONFLICT (user_id, hospital_id) DO NOTHING
 		`)
 		if err != nil {
@@ -233,7 +290,7 @@ func (r *UserRepository) SetUserHospitals(ctx context.Context, userID uuid.UUID,
 		defer stmt.Close()
 
 		for _, hospitalID := range hospitalIDs {
-			_, err = stmt.ExecContext(ctx, userID, hospitalID)
+			_, err = stmt.ExecContext(ctx, userID, hospitalID, tenantArg)
 			if err != nil {
 				return err
 			}
@@ -243,7 +300,7 @@ func (r *UserRepository) SetUserHospitals(ctx context.Context, userID uuid.UUID,
 	return tx.Commit()
 }
 
-// ListWithPagination returns users with pagination, search, and filters
+// ListWithPagination returns users with pagination, search, and filters (tenant-scoped)
 func (r *UserRepository) ListWithPagination(ctx context.Context, params *models.UserListParams) (*models.UserListResult, error) {
 	// Set defaults
 	if params.Page < 1 {
@@ -263,6 +320,14 @@ func (r *UserRepository) ListWithPagination(ctx context.Context, params *models.
 	var conditions []string
 	var args []interface{}
 	argIndex := 1
+
+	// Tenant scoping
+	tenantFilter := NewTenantFilter(ctx)
+	if tenantFilter.ShouldFilter() {
+		conditions = append(conditions, fmt.Sprintf("u.tenant_id = $%d", argIndex))
+		args = append(args, tenantFilter.TenantID)
+		argIndex++
+	}
 
 	if params.Search != "" {
 		conditions = append(conditions, fmt.Sprintf("(u.nome ILIKE $%d OR u.email ILIKE $%d)", argIndex, argIndex+1))
@@ -300,7 +365,7 @@ func (r *UserRepository) ListWithPagination(ctx context.Context, params *models.
 
 	// Get users
 	query := fmt.Sprintf(`
-		SELECT u.id, u.email, u.nome, u.role, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
+		SELECT u.id, u.email, u.nome, u.role, u.tenant_id, u.is_super_admin, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
 		FROM users u
 		%s
 		ORDER BY u.nome ASC
@@ -318,10 +383,11 @@ func (r *UserRepository) ListWithPagination(ctx context.Context, params *models.
 	var users []models.User
 	for rows.Next() {
 		var u models.User
-		var mobilePhone sql.NullString
+		var mobilePhone, tenantID sql.NullString
+		var isSuperAdmin sql.NullBool
 
 		err := rows.Scan(
-			&u.ID, &u.Email, &u.Nome, &u.Role, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
+			&u.ID, &u.Email, &u.Nome, &u.Role, &tenantID, &isSuperAdmin, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
@@ -329,6 +395,15 @@ func (r *UserRepository) ListWithPagination(ctx context.Context, params *models.
 
 		if mobilePhone.Valid {
 			u.MobilePhone = &mobilePhone.String
+		}
+		if tenantID.Valid {
+			tid, err := uuid.Parse(tenantID.String)
+			if err == nil {
+				u.TenantID = &tid
+			}
+		}
+		if isSuperAdmin.Valid {
+			u.IsSuperAdmin = isSuperAdmin.Bool
 		}
 
 		// Load hospitals for each user
@@ -367,16 +442,27 @@ func (r *UserRepository) List(ctx context.Context) ([]models.User, error) {
 	return result.Users, nil
 }
 
-// ListByRole returns all active users with a specific role
+// ListByRole returns all active users with a specific role (tenant-scoped)
 func (r *UserRepository) ListByRole(ctx context.Context, role string) ([]models.User, error) {
+	tenantFilter := NewTenantFilter(ctx)
+
 	query := `
-		SELECT u.id, u.email, u.nome, u.role, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
+		SELECT u.id, u.email, u.nome, u.role, u.tenant_id, u.is_super_admin, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
 		FROM users u
 		WHERE u.role = $1 AND u.ativo = true
-		ORDER BY u.nome ASC
 	`
 
-	rows, err := r.db.QueryContext(ctx, query, role)
+	var args []interface{}
+	args = append(args, role)
+
+	if tenantFilter.ShouldFilter() {
+		query += " AND u.tenant_id = $2"
+		args = append(args, tenantFilter.TenantID)
+	}
+
+	query += " ORDER BY u.nome ASC"
+
+	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -385,10 +471,11 @@ func (r *UserRepository) ListByRole(ctx context.Context, role string) ([]models.
 	var users []models.User
 	for rows.Next() {
 		var u models.User
-		var mobilePhone sql.NullString
+		var mobilePhone, tenantID sql.NullString
+		var isSuperAdmin sql.NullBool
 
 		err := rows.Scan(
-			&u.ID, &u.Email, &u.Nome, &u.Role, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
+			&u.ID, &u.Email, &u.Nome, &u.Role, &tenantID, &isSuperAdmin, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
@@ -396,6 +483,15 @@ func (r *UserRepository) ListByRole(ctx context.Context, role string) ([]models.
 
 		if mobilePhone.Valid {
 			u.MobilePhone = &mobilePhone.String
+		}
+		if tenantID.Valid {
+			tid, err := uuid.Parse(tenantID.String)
+			if err == nil {
+				u.TenantID = &tid
+			}
+		}
+		if isSuperAdmin.Valid {
+			u.IsSuperAdmin = isSuperAdmin.Bool
 		}
 
 		// Load hospitals for each user
@@ -415,17 +511,28 @@ func (r *UserRepository) ListByRole(ctx context.Context, role string) ([]models.
 	return users, nil
 }
 
-// ListByRoleAndHospital returns all active users with a specific role linked to a specific hospital
+// ListByRoleAndHospital returns all active users with a specific role linked to a specific hospital (tenant-scoped)
 func (r *UserRepository) ListByRoleAndHospital(ctx context.Context, role string, hospitalID uuid.UUID) ([]models.User, error) {
+	tenantFilter := NewTenantFilter(ctx)
+
 	query := `
-		SELECT u.id, u.email, u.nome, u.role, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
+		SELECT u.id, u.email, u.nome, u.role, u.tenant_id, u.is_super_admin, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
 		FROM users u
 		INNER JOIN user_hospitals uh ON u.id = uh.user_id
 		WHERE u.role = $1 AND u.ativo = true AND uh.hospital_id = $2
-		ORDER BY u.nome ASC
 	`
 
-	rows, err := r.db.QueryContext(ctx, query, role, hospitalID)
+	var args []interface{}
+	args = append(args, role, hospitalID)
+
+	if tenantFilter.ShouldFilter() {
+		query += " AND u.tenant_id = $3"
+		args = append(args, tenantFilter.TenantID)
+	}
+
+	query += " ORDER BY u.nome ASC"
+
+	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -434,10 +541,11 @@ func (r *UserRepository) ListByRoleAndHospital(ctx context.Context, role string,
 	var users []models.User
 	for rows.Next() {
 		var u models.User
-		var mobilePhone sql.NullString
+		var mobilePhone, tenantID sql.NullString
+		var isSuperAdmin sql.NullBool
 
 		err := rows.Scan(
-			&u.ID, &u.Email, &u.Nome, &u.Role, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
+			&u.ID, &u.Email, &u.Nome, &u.Role, &tenantID, &isSuperAdmin, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
@@ -445,6 +553,15 @@ func (r *UserRepository) ListByRoleAndHospital(ctx context.Context, role string,
 
 		if mobilePhone.Valid {
 			u.MobilePhone = &mobilePhone.String
+		}
+		if tenantID.Valid {
+			tid, err := uuid.Parse(tenantID.String)
+			if err == nil {
+				u.TenantID = &tid
+			}
+		}
+		if isSuperAdmin.Valid {
+			u.IsSuperAdmin = isSuperAdmin.Bool
 		}
 
 		// Load hospitals for each user
@@ -464,16 +581,27 @@ func (r *UserRepository) ListByRoleAndHospital(ctx context.Context, role string,
 	return users, nil
 }
 
-// ListByRoleWithEmailNotifications returns active users with a specific role that have email notifications enabled
+// ListByRoleWithEmailNotifications returns active users with a specific role that have email notifications enabled (tenant-scoped)
 func (r *UserRepository) ListByRoleWithEmailNotifications(ctx context.Context, role string) ([]models.User, error) {
+	tenantFilter := NewTenantFilter(ctx)
+
 	query := `
-		SELECT u.id, u.email, u.nome, u.role, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
+		SELECT u.id, u.email, u.nome, u.role, u.tenant_id, u.is_super_admin, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
 		FROM users u
 		WHERE u.role = $1 AND u.ativo = true AND u.email_notifications = true
-		ORDER BY u.nome ASC
 	`
 
-	rows, err := r.db.QueryContext(ctx, query, role)
+	var args []interface{}
+	args = append(args, role)
+
+	if tenantFilter.ShouldFilter() {
+		query += " AND u.tenant_id = $2"
+		args = append(args, tenantFilter.TenantID)
+	}
+
+	query += " ORDER BY u.nome ASC"
+
+	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -482,10 +610,11 @@ func (r *UserRepository) ListByRoleWithEmailNotifications(ctx context.Context, r
 	var users []models.User
 	for rows.Next() {
 		var u models.User
-		var mobilePhone sql.NullString
+		var mobilePhone, tenantID sql.NullString
+		var isSuperAdmin sql.NullBool
 
 		err := rows.Scan(
-			&u.ID, &u.Email, &u.Nome, &u.Role, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
+			&u.ID, &u.Email, &u.Nome, &u.Role, &tenantID, &isSuperAdmin, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
@@ -493,6 +622,15 @@ func (r *UserRepository) ListByRoleWithEmailNotifications(ctx context.Context, r
 
 		if mobilePhone.Valid {
 			u.MobilePhone = &mobilePhone.String
+		}
+		if tenantID.Valid {
+			tid, err := uuid.Parse(tenantID.String)
+			if err == nil {
+				u.TenantID = &tid
+			}
+		}
+		if isSuperAdmin.Valid {
+			u.IsSuperAdmin = isSuperAdmin.Bool
 		}
 
 		// Load hospitals for each user
@@ -520,16 +658,17 @@ func (r *UserRepository) ListOperatorsByHospital(ctx context.Context, hospitalID
 // GetModelByID retrieves a user by ID with hospital data
 func (r *UserRepository) GetModelByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	query := `
-		SELECT u.id, u.email, u.password_hash, u.nome, u.role, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
+		SELECT u.id, u.email, u.password_hash, u.nome, u.role, u.tenant_id, u.is_super_admin, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
 		FROM users u
 		WHERE u.id = $1
 	`
 
 	var u models.User
-	var mobilePhone sql.NullString
+	var mobilePhone, tenantID sql.NullString
+	var isSuperAdmin sql.NullBool
 
 	err := r.db.QueryRowContext(ctx, query, id).Scan(
-		&u.ID, &u.Email, &u.PasswordHash, &u.Nome, &u.Role, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
+		&u.ID, &u.Email, &u.PasswordHash, &u.Nome, &u.Role, &tenantID, &isSuperAdmin, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
 	)
 
 	if err != nil {
@@ -542,6 +681,15 @@ func (r *UserRepository) GetModelByID(ctx context.Context, id uuid.UUID) (*model
 	if mobilePhone.Valid {
 		u.MobilePhone = &mobilePhone.String
 	}
+	if tenantID.Valid {
+		tid, err := uuid.Parse(tenantID.String)
+		if err == nil {
+			u.TenantID = &tid
+		}
+	}
+	if isSuperAdmin.Valid {
+		u.IsSuperAdmin = isSuperAdmin.Bool
+	}
 
 	// Load hospitals
 	hospitals, err := r.GetUserHospitals(ctx, u.ID)
@@ -553,7 +701,7 @@ func (r *UserRepository) GetModelByID(ctx context.Context, id uuid.UUID) (*model
 	return &u, nil
 }
 
-// CreateUser creates a new user from input
+// CreateUser creates a new user from input (tenant-scoped)
 func (r *UserRepository) CreateUser(ctx context.Context, input *models.CreateUserInput, passwordHash string) (*models.User, error) {
 	// Check if email already exists
 	exists, err := r.ExistsByEmail(ctx, input.Email)
@@ -564,6 +712,20 @@ func (r *UserRepository) CreateUser(ctx context.Context, input *models.CreateUse
 		return nil, ErrUserExists
 	}
 
+	// Get tenant ID from context
+	tenantID := GetTenantIDOrNil(ctx)
+	var tenantArg interface{}
+	var tenantUUID *uuid.UUID
+	if tenantID != "" {
+		tenantArg = tenantID
+		tid, err := uuid.Parse(tenantID)
+		if err == nil {
+			tenantUUID = &tid
+		}
+	} else {
+		tenantArg = nil
+	}
+
 	// Default email notifications to true
 	emailNotifications := true
 	if input.EmailNotifications != nil {
@@ -572,6 +734,7 @@ func (r *UserRepository) CreateUser(ctx context.Context, input *models.CreateUse
 
 	user := &models.User{
 		ID:                 uuid.New(),
+		TenantID:           tenantUUID,
 		Email:              input.Email,
 		PasswordHash:       passwordHash,
 		Nome:               input.Nome,
@@ -590,8 +753,8 @@ func (r *UserRepository) CreateUser(ctx context.Context, input *models.CreateUse
 	defer tx.Rollback()
 
 	query := `
-		INSERT INTO users (id, email, password_hash, nome, role, mobile_phone, email_notifications, ativo, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+		INSERT INTO users (id, email, password_hash, nome, role, tenant_id, is_super_admin, mobile_phone, email_notifications, ativo, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 	`
 
 	_, err = tx.ExecContext(ctx, query,
@@ -600,6 +763,8 @@ func (r *UserRepository) CreateUser(ctx context.Context, input *models.CreateUse
 		user.PasswordHash,
 		user.Nome,
 		user.Role,
+		tenantArg,
+		false, // is_super_admin defaults to false
 		user.MobilePhone,
 		user.EmailNotifications,
 		user.Ativo,
@@ -611,11 +776,11 @@ func (r *UserRepository) CreateUser(ctx context.Context, input *models.CreateUse
 		return nil, err
 	}
 
-	// Set hospital associations
+	// Set hospital associations with tenant_id
 	if len(input.HospitalIDs) > 0 {
 		stmt, err := tx.PrepareContext(ctx, `
-			INSERT INTO user_hospitals (user_id, hospital_id, created_at)
-			VALUES ($1, $2, NOW())
+			INSERT INTO user_hospitals (user_id, hospital_id, tenant_id, created_at)
+			VALUES ($1, $2, $3, NOW())
 			ON CONFLICT (user_id, hospital_id) DO NOTHING
 		`)
 		if err != nil {
@@ -624,7 +789,7 @@ func (r *UserRepository) CreateUser(ctx context.Context, input *models.CreateUse
 		defer stmt.Close()
 
 		for _, hospitalID := range input.HospitalIDs {
-			_, err = stmt.ExecContext(ctx, user.ID, hospitalID)
+			_, err = stmt.ExecContext(ctx, user.ID, hospitalID, tenantArg)
 			if err != nil {
 				return nil, err
 			}
@@ -717,11 +882,21 @@ func (r *UserRepository) UpdateUser(ctx context.Context, id uuid.UUID, input *mo
 			return nil, err
 		}
 
-		// Insert new associations
+		// Insert new associations with tenant_id
 		if len(input.HospitalIDs) > 0 {
+			tenantID := GetTenantIDOrNil(ctx)
+			var tenantArg interface{}
+			if tenantID != "" {
+				tenantArg = tenantID
+			} else if user.TenantID != nil {
+				tenantArg = user.TenantID.String()
+			} else {
+				tenantArg = nil
+			}
+
 			stmt, err := tx.PrepareContext(ctx, `
-				INSERT INTO user_hospitals (user_id, hospital_id, created_at)
-				VALUES ($1, $2, NOW())
+				INSERT INTO user_hospitals (user_id, hospital_id, tenant_id, created_at)
+				VALUES ($1, $2, $3, NOW())
 				ON CONFLICT (user_id, hospital_id) DO NOTHING
 			`)
 			if err != nil {
@@ -730,7 +905,7 @@ func (r *UserRepository) UpdateUser(ctx context.Context, id uuid.UUID, input *mo
 			defer stmt.Close()
 
 			for _, hospitalID := range input.HospitalIDs {
-				_, err = stmt.ExecContext(ctx, id, hospitalID)
+				_, err = stmt.ExecContext(ctx, id, hospitalID, tenantArg)
 				if err != nil {
 					return nil, err
 				}
@@ -820,20 +995,30 @@ func (r *UserRepository) DeactivateUser(ctx context.Context, id uuid.UUID) error
 	return nil
 }
 
-// GetUsersWithSMSEnabled returns all active users with SMS enabled and mobile phone set
+// GetUsersWithSMSEnabled returns all active users with SMS enabled and mobile phone set (tenant-scoped)
 func (r *UserRepository) GetUsersWithSMSEnabled(ctx context.Context) ([]models.User, error) {
+	tenantFilter := NewTenantFilter(ctx)
+
 	query := `
-		SELECT u.id, u.email, u.nome, u.role, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
+		SELECT u.id, u.email, u.nome, u.role, u.tenant_id, u.is_super_admin, u.mobile_phone, u.email_notifications, u.ativo, u.created_at, u.updated_at
 		FROM users u
 		LEFT JOIN user_notification_preferences p ON u.id = p.user_id
 		WHERE u.ativo = true
 		AND u.mobile_phone IS NOT NULL
 		AND u.mobile_phone != ''
 		AND (p.sms_enabled IS NULL OR p.sms_enabled = true)
-		ORDER BY u.nome ASC
 	`
 
-	rows, err := r.db.QueryContext(ctx, query)
+	var args []interface{}
+
+	if tenantFilter.ShouldFilter() {
+		query += " AND u.tenant_id = $1"
+		args = append(args, tenantFilter.TenantID)
+	}
+
+	query += " ORDER BY u.nome ASC"
+
+	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -842,10 +1027,11 @@ func (r *UserRepository) GetUsersWithSMSEnabled(ctx context.Context) ([]models.U
 	var users []models.User
 	for rows.Next() {
 		var u models.User
-		var mobilePhone sql.NullString
+		var mobilePhone, tenantID sql.NullString
+		var isSuperAdmin sql.NullBool
 
 		err := rows.Scan(
-			&u.ID, &u.Email, &u.Nome, &u.Role, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
+			&u.ID, &u.Email, &u.Nome, &u.Role, &tenantID, &isSuperAdmin, &mobilePhone, &u.EmailNotifications, &u.Ativo, &u.CreatedAt, &u.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
@@ -853,6 +1039,15 @@ func (r *UserRepository) GetUsersWithSMSEnabled(ctx context.Context) ([]models.U
 
 		if mobilePhone.Valid {
 			u.MobilePhone = &mobilePhone.String
+		}
+		if tenantID.Valid {
+			tid, err := uuid.Parse(tenantID.String)
+			if err == nil {
+				u.TenantID = &tid
+			}
+		}
+		if isSuperAdmin.Valid {
+			u.IsSuperAdmin = isSuperAdmin.Bool
 		}
 
 		// Load hospitals for each user

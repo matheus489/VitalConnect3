@@ -40,21 +40,23 @@ const (
 
 // Claims represents the JWT claims for authentication
 type Claims struct {
-	UserID     string `json:"user_id"`
-	Email      string `json:"email"`
-	Role       string `json:"role"`
-	HospitalID string `json:"hospital_id,omitempty"`
-	TokenType  string `json:"token_type"`
+	UserID       string `json:"user_id"`
+	Email        string `json:"email"`
+	Role         string `json:"role"`
+	HospitalID   string `json:"hospital_id,omitempty"`
+	TenantID     string `json:"tenant_id,omitempty"`
+	IsSuperAdmin bool   `json:"is_super_admin,omitempty"`
+	TokenType    string `json:"token_type"`
 	jwt.RegisteredClaims
 }
 
 // JWTService handles JWT token generation and validation
 type JWTService struct {
-	accessSecret       []byte
-	refreshSecret      []byte
-	accessDuration     time.Duration
-	refreshDuration    time.Duration
-	issuer             string
+	accessSecret    []byte
+	refreshSecret   []byte
+	accessDuration  time.Duration
+	refreshDuration time.Duration
+	issuer          string
 }
 
 // NewJWTService creates a new JWT service instance
@@ -83,13 +85,20 @@ func NewJWTService(accessSecret, refreshSecret string, accessDuration, refreshDu
 }
 
 // GenerateTokenPair generates both access and refresh tokens
+// Deprecated: Use GenerateTokenPairWithTenant for multi-tenant support
 func (s *JWTService) GenerateTokenPair(userID, email, role, hospitalID string) (accessToken, refreshToken string, err error) {
-	accessToken, err = s.GenerateAccessToken(userID, email, role, hospitalID)
+	// For backward compatibility, call the new method with empty tenant
+	return s.GenerateTokenPairWithTenant(userID, email, role, hospitalID, "", false)
+}
+
+// GenerateTokenPairWithTenant generates both access and refresh tokens with tenant context
+func (s *JWTService) GenerateTokenPairWithTenant(userID, email, role, hospitalID, tenantID string, isSuperAdmin bool) (accessToken, refreshToken string, err error) {
+	accessToken, err = s.GenerateAccessTokenWithTenant(userID, email, role, hospitalID, tenantID, isSuperAdmin)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshToken, err = s.GenerateRefreshToken(userID, email, role, hospitalID)
+	refreshToken, err = s.GenerateRefreshTokenWithTenant(userID, email, role, hospitalID, tenantID, isSuperAdmin)
 	if err != nil {
 		return "", "", err
 	}
@@ -98,14 +107,22 @@ func (s *JWTService) GenerateTokenPair(userID, email, role, hospitalID string) (
 }
 
 // GenerateAccessToken generates a new access token (15 minutes expiration)
+// Deprecated: Use GenerateAccessTokenWithTenant for multi-tenant support
 func (s *JWTService) GenerateAccessToken(userID, email, role, hospitalID string) (string, error) {
+	return s.GenerateAccessTokenWithTenant(userID, email, role, hospitalID, "", false)
+}
+
+// GenerateAccessTokenWithTenant generates a new access token with tenant context (15 minutes expiration)
+func (s *JWTService) GenerateAccessTokenWithTenant(userID, email, role, hospitalID, tenantID string, isSuperAdmin bool) (string, error) {
 	now := time.Now()
 	claims := Claims{
-		UserID:     userID,
-		Email:      email,
-		Role:       role,
-		HospitalID: hospitalID,
-		TokenType:  string(AccessToken),
+		UserID:       userID,
+		Email:        email,
+		Role:         role,
+		HospitalID:   hospitalID,
+		TenantID:     tenantID,
+		IsSuperAdmin: isSuperAdmin,
+		TokenType:    string(AccessToken),
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(s.accessDuration)),
 			IssuedAt:  jwt.NewNumericDate(now),
@@ -121,14 +138,22 @@ func (s *JWTService) GenerateAccessToken(userID, email, role, hospitalID string)
 }
 
 // GenerateRefreshToken generates a new refresh token (7 days expiration)
+// Deprecated: Use GenerateRefreshTokenWithTenant for multi-tenant support
 func (s *JWTService) GenerateRefreshToken(userID, email, role, hospitalID string) (string, error) {
+	return s.GenerateRefreshTokenWithTenant(userID, email, role, hospitalID, "", false)
+}
+
+// GenerateRefreshTokenWithTenant generates a new refresh token with tenant context (7 days expiration)
+func (s *JWTService) GenerateRefreshTokenWithTenant(userID, email, role, hospitalID, tenantID string, isSuperAdmin bool) (string, error) {
 	now := time.Now()
 	claims := Claims{
-		UserID:     userID,
-		Email:      email,
-		Role:       role,
-		HospitalID: hospitalID,
-		TokenType:  string(RefreshToken),
+		UserID:       userID,
+		Email:        email,
+		Role:         role,
+		HospitalID:   hospitalID,
+		TenantID:     tenantID,
+		IsSuperAdmin: isSuperAdmin,
+		TokenType:    string(RefreshToken),
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(s.refreshDuration)),
 			IssuedAt:  jwt.NewNumericDate(now),

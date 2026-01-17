@@ -290,6 +290,8 @@ func main() {
 		// Protected routes
 		protected := v1.Group("")
 		protected.Use(middleware.AuthRequired())
+		protected.Use(middleware.TenantContextMiddleware())
+		protected.Use(middleware.InjectTenantContext())
 		{
 			// Hospitals
 			hospitals := protected.Group("/hospitals")
