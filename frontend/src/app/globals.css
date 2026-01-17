@@ -225,7 +225,8 @@
 }
 
 /* Leaflet custom marker styles */
-.custom-marker-icon {
+.custom-marker-icon,
+.custom-location-marker {
   background: transparent !important;
   border: none !important;
 }

@@ -40,11 +40,42 @@ export interface Hospital {
   id: string;
   nome: string;
   codigo: string;
-  endereco: string;
-  config_conexao: Record<string, unknown>;
+  endereco?: string;
+  telefone?: string;
+  latitude?: number;
+  longitude?: number;
+  config_conexao?: Record<string, unknown>;
   ativo: boolean;
   created_at: string;
   updated_at: string;
+}
+
+/**
+ * Input for creating a new hospital
+ * Coordinates and address are required for map integration
+ */
+export interface CreateHospitalInput {
+  nome: string;
+  codigo: string;
+  endereco: string;
+  telefone?: string;
+  latitude: number;
+  longitude: number;
+  ativo?: boolean;
+}
+
+/**
+ * Input for updating an existing hospital
+ * All fields are optional for partial updates
+ */
+export interface UpdateHospitalInput {
+  nome?: string;
+  codigo?: string;
+  endereco?: string;
+  telefone?: string;
+  latitude?: number;
+  longitude?: number;
+  ativo?: boolean;
 }
 
 // =============================================================================
@@ -395,4 +426,30 @@ export interface MapHospital {
 export interface MapDataResponse {
   hospitals: MapHospital[];
   total: number;
+}
+
+// =============================================================================
+// Geocoding (Nominatim)
+// =============================================================================
+
+/**
+ * Result from Nominatim geocoding search
+ */
+export interface NominatimResult {
+  place_id: number;
+  licence: string;
+  osm_type: string;
+  osm_id: number;
+  lat: string;
+  lon: string;
+  display_name: string;
+  address?: {
+    road?: string;
+    suburb?: string;
+    city?: string;
+    state?: string;
+    postcode?: string;
+    country?: string;
+  };
+  boundingbox?: string[];
 }

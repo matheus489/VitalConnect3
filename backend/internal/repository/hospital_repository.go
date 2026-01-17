@@ -29,7 +29,7 @@ func NewHospitalRepository(db *sql.DB) *HospitalRepository {
 // List returns all active hospitals
 func (r *HospitalRepository) List(ctx context.Context) ([]models.Hospital, error) {
 	query := `
-		SELECT id, nome, codigo, endereco, latitude, longitude, config_conexao, ativo, created_at, updated_at, deleted_at
+		SELECT id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at, deleted_at
 		FROM hospitals
 		WHERE deleted_at IS NULL
 		ORDER BY nome ASC
@@ -44,7 +44,7 @@ func (r *HospitalRepository) List(ctx context.Context) ([]models.Hospital, error
 	var hospitals []models.Hospital
 	for rows.Next() {
 		var h models.Hospital
-		var endereco, configConexao sql.NullString
+		var endereco, telefone, configConexao sql.NullString
 		var latitude, longitude sql.NullFloat64
 		var deletedAt sql.NullTime
 
@@ -53,6 +53,7 @@ func (r *HospitalRepository) List(ctx context.Context) ([]models.Hospital, error
 			&h.Nome,
 			&h.Codigo,
 			&endereco,
+			&telefone,
 			&latitude,
 			&longitude,
 			&configConexao,
@@ -67,6 +68,9 @@ func (r *HospitalRepository) List(ctx context.Context) ([]models.Hospital, error
 
 		if endereco.Valid {
 			h.Endereco = &endereco.String
+		}
+		if telefone.Valid {
+			h.Telefone = &telefone.String
 		}
 		if latitude.Valid {
 			h.Latitude = &latitude.Float64
@@ -94,13 +98,13 @@ func (r *HospitalRepository) List(ctx context.Context) ([]models.Hospital, error
 // GetByID retrieves a hospital by ID
 func (r *HospitalRepository) GetByID(ctx context.Context, id uuid.UUID) (*models.Hospital, error) {
 	query := `
-		SELECT id, nome, codigo, endereco, latitude, longitude, config_conexao, ativo, created_at, updated_at, deleted_at
+		SELECT id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at, deleted_at
 		FROM hospitals
 		WHERE id = $1 AND deleted_at IS NULL
 	`
 
 	var h models.Hospital
-	var endereco, configConexao sql.NullString
+	var endereco, telefone, configConexao sql.NullString
 	var latitude, longitude sql.NullFloat64
 	var deletedAt sql.NullTime
 
@@ -109,6 +113,7 @@ func (r *HospitalRepository) GetByID(ctx context.Context, id uuid.UUID) (*models
 		&h.Nome,
 		&h.Codigo,
 		&endereco,
+		&telefone,
 		&latitude,
 		&longitude,
 		&configConexao,
@@ -127,6 +132,9 @@ func (r *HospitalRepository) GetByID(ctx context.Context, id uuid.UUID) (*models
 
 	if endereco.Valid {
 		h.Endereco = &endereco.String
+	}
+	if telefone.Valid {
+		h.Telefone = &telefone.String
 	}
 	if latitude.Valid {
 		h.Latitude = &latitude.Float64
@@ -147,13 +155,13 @@ func (r *HospitalRepository) GetByID(ctx context.Context, id uuid.UUID) (*models
 // GetByCodigo retrieves a hospital by code
 func (r *HospitalRepository) GetByCodigo(ctx context.Context, codigo string) (*models.Hospital, error) {
 	query := `
-		SELECT id, nome, codigo, endereco, latitude, longitude, config_conexao, ativo, created_at, updated_at, deleted_at
+		SELECT id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at, deleted_at
 		FROM hospitals
 		WHERE codigo = $1 AND deleted_at IS NULL
 	`
 
 	var h models.Hospital
-	var endereco, configConexao sql.NullString
+	var endereco, telefone, configConexao sql.NullString
 	var latitude, longitude sql.NullFloat64
 	var deletedAt sql.NullTime
 
@@ -162,6 +170,7 @@ func (r *HospitalRepository) GetByCodigo(ctx context.Context, codigo string) (*m
 		&h.Nome,
 		&h.Codigo,
 		&endereco,
+		&telefone,
 		&latitude,
 		&longitude,
 		&configConexao,
@@ -180,6 +189,9 @@ func (r *HospitalRepository) GetByCodigo(ctx context.Context, codigo string) (*m
 
 	if endereco.Valid {
 		h.Endereco = &endereco.String
+	}
+	if telefone.Valid {
+		h.Telefone = &telefone.String
 	}
 	if latitude.Valid {
 		h.Latitude = &latitude.Float64
@@ -208,14 +220,25 @@ func (r *HospitalRepository) Create(ctx context.Context, input *models.CreateHos
 		return nil, ErrHospitalExists
 	}
 
+	// Handle Ativo field with default value
+	ativo := true
+	if input.Ativo != nil {
+		ativo = *input.Ativo
+	}
+
+	endereco := input.Endereco
+	lat := input.Latitude
+	lng := input.Longitude
+
 	hospital := &models.Hospital{
 		ID:        uuid.New(),
 		Nome:      input.Nome,
 		Codigo:    input.Codigo,
-		Endereco:  input.Endereco,
-		Latitude:  input.Latitude,
-		Longitude: input.Longitude,
-		Ativo:     true,
+		Endereco:  &endereco,
+		Telefone:  input.Telefone,
+		Latitude:  &lat,
+		Longitude: &lng,
+		Ativo:     ativo,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -225,8 +248,8 @@ func (r *HospitalRepository) Create(ctx context.Context, input *models.CreateHos
 	}
 
 	query := `
-		INSERT INTO hospitals (id, nome, codigo, endereco, latitude, longitude, config_conexao, ativo, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+		INSERT INTO hospitals (id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 	`
 
 	var configJSON interface{}
@@ -239,6 +262,7 @@ func (r *HospitalRepository) Create(ctx context.Context, input *models.CreateHos
 		hospital.Nome,
 		hospital.Codigo,
 		hospital.Endereco,
+		hospital.Telefone,
 		hospital.Latitude,
 		hospital.Longitude,
 		configJSON,
@@ -280,6 +304,9 @@ func (r *HospitalRepository) Update(ctx context.Context, id uuid.UUID, input *mo
 	if input.Endereco != nil {
 		hospital.Endereco = input.Endereco
 	}
+	if input.Telefone != nil {
+		hospital.Telefone = input.Telefone
+	}
 	if input.Latitude != nil {
 		hospital.Latitude = input.Latitude
 	}
@@ -297,8 +324,8 @@ func (r *HospitalRepository) Update(ctx context.Context, id uuid.UUID, input *mo
 
 	query := `
 		UPDATE hospitals
-		SET nome = $1, codigo = $2, endereco = $3, latitude = $4, longitude = $5, config_conexao = $6, ativo = $7, updated_at = $8
-		WHERE id = $9 AND deleted_at IS NULL
+		SET nome = $1, codigo = $2, endereco = $3, telefone = $4, latitude = $5, longitude = $6, config_conexao = $7, ativo = $8, updated_at = $9
+		WHERE id = $10 AND deleted_at IS NULL
 	`
 
 	var configJSON interface{}
@@ -310,6 +337,7 @@ func (r *HospitalRepository) Update(ctx context.Context, id uuid.UUID, input *mo
 		hospital.Nome,
 		hospital.Codigo,
 		hospital.Endereco,
+		hospital.Telefone,
 		hospital.Latitude,
 		hospital.Longitude,
 		configJSON,
@@ -373,7 +401,7 @@ func (r *HospitalRepository) ExistsByCodigo(ctx context.Context, codigo string) 
 // GetActiveHospitals returns all active hospitals
 func (r *HospitalRepository) GetActiveHospitals(ctx context.Context) ([]models.Hospital, error) {
 	query := `
-		SELECT id, nome, codigo, endereco, latitude, longitude, config_conexao, ativo, created_at, updated_at
+		SELECT id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at
 		FROM hospitals
 		WHERE deleted_at IS NULL AND ativo = true
 		ORDER BY nome ASC
@@ -388,7 +416,7 @@ func (r *HospitalRepository) GetActiveHospitals(ctx context.Context) ([]models.H
 	var hospitals []models.Hospital
 	for rows.Next() {
 		var h models.Hospital
-		var endereco, configConexao sql.NullString
+		var endereco, telefone, configConexao sql.NullString
 		var latitude, longitude sql.NullFloat64
 
 		err := rows.Scan(
@@ -396,6 +424,7 @@ func (r *HospitalRepository) GetActiveHospitals(ctx context.Context) ([]models.H
 			&h.Nome,
 			&h.Codigo,
 			&endereco,
+			&telefone,
 			&latitude,
 			&longitude,
 			&configConexao,
@@ -409,6 +438,9 @@ func (r *HospitalRepository) GetActiveHospitals(ctx context.Context) ([]models.H
 
 		if endereco.Valid {
 			h.Endereco = &endereco.String
+		}
+		if telefone.Valid {
+			h.Telefone = &telefone.String
 		}
 		if latitude.Valid {
 			h.Latitude = &latitude.Float64
@@ -430,7 +462,7 @@ func (r *HospitalRepository) GetActiveHospitals(ctx context.Context) ([]models.H
 // This is used for the geographic map feature
 func (r *HospitalRepository) GetActiveHospitalsWithCoordinates(ctx context.Context) ([]models.Hospital, error) {
 	query := `
-		SELECT id, nome, codigo, endereco, latitude, longitude, config_conexao, ativo, created_at, updated_at
+		SELECT id, nome, codigo, endereco, telefone, latitude, longitude, config_conexao, ativo, created_at, updated_at
 		FROM hospitals
 		WHERE deleted_at IS NULL
 		  AND ativo = true
@@ -448,7 +480,7 @@ func (r *HospitalRepository) GetActiveHospitalsWithCoordinates(ctx context.Conte
 	var hospitals []models.Hospital
 	for rows.Next() {
 		var h models.Hospital
-		var endereco, configConexao sql.NullString
+		var endereco, telefone, configConexao sql.NullString
 		var latitude, longitude sql.NullFloat64
 
 		err := rows.Scan(
@@ -456,6 +488,7 @@ func (r *HospitalRepository) GetActiveHospitalsWithCoordinates(ctx context.Conte
 			&h.Nome,
 			&h.Codigo,
 			&endereco,
+			&telefone,
 			&latitude,
 			&longitude,
 			&configConexao,
@@ -469,6 +502,9 @@ func (r *HospitalRepository) GetActiveHospitalsWithCoordinates(ctx context.Conte
 
 		if endereco.Valid {
 			h.Endereco = &endereco.String
+		}
+		if telefone.Valid {
+			h.Telefone = &telefone.String
 		}
 		if latitude.Valid {
 			h.Latitude = &latitude.Float64

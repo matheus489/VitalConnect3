@@ -13,6 +13,7 @@ type Hospital struct {
 	Nome          string          `json:"nome" db:"nome" validate:"required,min=2,max=255"`
 	Codigo        string          `json:"codigo" db:"codigo" validate:"required,min=2,max=50"`
 	Endereco      *string         `json:"endereco,omitempty" db:"endereco"`
+	Telefone      *string         `json:"telefone,omitempty" db:"telefone" validate:"omitempty,max=20"`
 	Latitude      *float64        `json:"latitude,omitempty" db:"latitude"`
 	Longitude     *float64        `json:"longitude,omitempty" db:"longitude"`
 	ConfigConexao json.RawMessage `json:"config_conexao,omitempty" db:"config_conexao"`
@@ -35,10 +36,12 @@ type HospitalConfig struct {
 type CreateHospitalInput struct {
 	Nome          string          `json:"nome" validate:"required,min=2,max=255"`
 	Codigo        string          `json:"codigo" validate:"required,min=2,max=50,alphanum"`
-	Endereco      *string         `json:"endereco,omitempty" validate:"omitempty,max=500"`
-	Latitude      *float64        `json:"latitude,omitempty" validate:"omitempty,min=-90,max=90"`
-	Longitude     *float64        `json:"longitude,omitempty" validate:"omitempty,min=-180,max=180"`
+	Endereco      string          `json:"endereco" validate:"required,max=500"`
+	Telefone      *string         `json:"telefone,omitempty" validate:"omitempty,max=20"`
+	Latitude      float64         `json:"latitude" validate:"required,min=-90,max=90"`
+	Longitude     float64         `json:"longitude" validate:"required,min=-180,max=180"`
 	ConfigConexao json.RawMessage `json:"config_conexao,omitempty"`
+	Ativo         *bool           `json:"ativo,omitempty"`
 }
 
 // UpdateHospitalInput represents input for updating a hospital
@@ -46,6 +49,7 @@ type UpdateHospitalInput struct {
 	Nome          *string         `json:"nome,omitempty" validate:"omitempty,min=2,max=255"`
 	Codigo        *string         `json:"codigo,omitempty" validate:"omitempty,min=2,max=50,alphanum"`
 	Endereco      *string         `json:"endereco,omitempty" validate:"omitempty,max=500"`
+	Telefone      *string         `json:"telefone,omitempty" validate:"omitempty,max=20"`
 	Latitude      *float64        `json:"latitude,omitempty" validate:"omitempty,min=-90,max=90"`
 	Longitude     *float64        `json:"longitude,omitempty" validate:"omitempty,min=-180,max=180"`
 	ConfigConexao json.RawMessage `json:"config_conexao,omitempty"`
@@ -58,6 +62,7 @@ type HospitalResponse struct {
 	Nome      string    `json:"nome"`
 	Codigo    string    `json:"codigo"`
 	Endereco  *string   `json:"endereco,omitempty"`
+	Telefone  *string   `json:"telefone,omitempty"`
 	Latitude  *float64  `json:"latitude,omitempty"`
 	Longitude *float64  `json:"longitude,omitempty"`
 	Ativo     bool      `json:"ativo"`
@@ -72,6 +77,7 @@ func (h *Hospital) ToResponse() HospitalResponse {
 		Nome:      h.Nome,
 		Codigo:    h.Codigo,
 		Endereco:  h.Endereco,
+		Telefone:  h.Telefone,
 		Latitude:  h.Latitude,
 		Longitude: h.Longitude,
 		Ativo:     h.Ativo,
