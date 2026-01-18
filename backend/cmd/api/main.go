@@ -17,6 +17,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/vitalconnect/backend/config"
 	"github.com/vitalconnect/backend/internal/handlers"
+	"github.com/vitalconnect/backend/internal/integration"
 	"github.com/vitalconnect/backend/internal/middleware"
 	"github.com/vitalconnect/backend/internal/models"
 	"github.com/vitalconnect/backend/internal/repository"
@@ -183,6 +184,11 @@ func main() {
 	// Initialize SSE Hub for real-time notifications
 	sseHub := notification.NewSSEHub(redisClient, db)
 	handlers.SetGlobalSSEHub(sseHub)
+
+	// Initialize AI Service Client
+	aiServiceClient := integration.NewAIServiceClient(integration.DefaultAIServiceConfig())
+	handlers.SetAIServiceClient(aiServiceClient)
+	log.Printf("[AIService] AI service client initialized (URL: %s)", aiServiceClient.GetBaseURL())
 
 	// Initialize Email Service
 	emailConfig := &notification.EmailConfig{
@@ -416,6 +422,34 @@ func main() {
 			tenants := protected.Group("/tenants")
 			{
 				tenants.GET("/current/theme", handlers.GetCurrentTenantTheme)
+			}
+
+			// AI Assistant Routes (proxy to Python AI service)
+			ai := protected.Group("/ai")
+			{
+				// Chat endpoints
+				ai.POST("/chat", handlers.AIChat)
+				ai.POST("/chat/stream", handlers.AIChatStream)
+
+				// Action confirmation endpoint
+				ai.POST("/confirm/:action_id", handlers.AIConfirmAction)
+
+				// Conversation management endpoints
+				ai.GET("/conversations", handlers.AIListConversations)
+				ai.GET("/conversations/:session_id", handlers.AIGetConversation)
+				ai.DELETE("/conversations/:session_id", handlers.AIDeleteConversation)
+
+				// AI service health check
+				ai.GET("/health", handlers.AIHealth)
+
+				// Document management endpoints (admin only) - proxy to AI service
+				aiDocs := ai.Group("/documents")
+				aiDocs.Use(middleware.RequireRole("admin", "gestor"))
+				{
+					aiDocs.POST("/index", handlers.AIGenericProxy)
+					aiDocs.GET("", handlers.AIGenericProxy)
+					aiDocs.DELETE("/:id", handlers.AIGenericProxy)
+				}
 			}
 		}
 

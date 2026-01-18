@@ -124,4 +124,160 @@ api.interceptors.response.use(
   }
 );
 
+// =============================================================================
+// AI Assistant API
+// =============================================================================
+
+export interface AIChatMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  tool_calls?: AIToolCall[];
+  metadata?: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface AIToolCall {
+  id: string;
+  name: string;
+  arguments: Record<string, unknown>;
+  result?: unknown;
+}
+
+export interface AIChatRequest {
+  message: string;
+  session_id?: string;
+}
+
+export interface AIChatResponse {
+  response: string;
+  session_id: string;
+  tool_calls?: AIToolCall[];
+  confirmation_required?: AIConfirmationRequest;
+}
+
+export interface AIConfirmationRequest {
+  action_id: string;
+  action_type: string;
+  description: string;
+  details: Record<string, unknown>;
+}
+
+export interface AIConfirmRequest {
+  confirmed: boolean;
+}
+
+export interface AIConfirmResponse {
+  success: boolean;
+  result?: unknown;
+  message?: string;
+}
+
+export interface AIConversation {
+  session_id: string;
+  title?: string;
+  last_message?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AIConversationHistory {
+  session_id: string;
+  messages: AIChatMessage[];
+}
+
+/**
+ * AI API client for chat operations
+ */
+export const aiApi = {
+  /**
+   * Send a message to the AI assistant
+   */
+  sendMessage: async (request: AIChatRequest): Promise<AIChatResponse> => {
+    const response = await api.post<AIChatResponse>('/ai/chat', request);
+    return response.data;
+  },
+
+  /**
+   * Confirm or cancel a pending action
+   */
+  confirmAction: async (actionId: string, request: AIConfirmRequest): Promise<AIConfirmResponse> => {
+    const response = await api.post<AIConfirmResponse>(`/ai/confirm/${actionId}`, request);
+    return response.data;
+  },
+
+  /**
+   * Get conversation history for a session
+   */
+  getHistory: async (sessionId: string): Promise<AIConversationHistory> => {
+    const response = await api.get<AIConversationHistory>(`/ai/conversations/${sessionId}`);
+    return response.data;
+  },
+
+  /**
+   * List all user conversations
+   */
+  listConversations: async (): Promise<AIConversation[]> => {
+    const response = await api.get<AIConversation[]>('/ai/conversations');
+    return response.data;
+  },
+
+  /**
+   * Delete a conversation
+   */
+  deleteConversation: async (sessionId: string): Promise<void> => {
+    await api.delete(`/ai/conversations/${sessionId}`);
+  },
+
+  /**
+   * Create SSE connection for streaming AI responses
+   */
+  createStreamConnection: (sessionId: string, onEvent: (event: AIStreamEvent) => void): () => void => {
+    const token = getAccessToken();
+    if (!token) {
+      console.error('[AI] No access token available for streaming');
+      return () => {};
+    }
+
+    const url = `${API_URL}/ai/chat/stream?session_id=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(token)}`;
+    const eventSource = new EventSource(url);
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data) as AIStreamEvent;
+        onEvent(data);
+      } catch (error) {
+        console.error('[AI] Failed to parse SSE event:', error);
+      }
+    };
+
+    eventSource.onerror = () => {
+      console.error('[AI] SSE connection error');
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  },
+};
+
+/**
+ * Types of events received from SSE streaming
+ */
+export type AIStreamEventType = 'thinking' | 'tool_call' | 'response_chunk' | 'done' | 'error';
+
+export interface AIStreamEvent {
+  type: AIStreamEventType;
+  data: {
+    step?: string;
+    tool_name?: string;
+    chunk?: string;
+    full_response?: string;
+    session_id?: string;
+    confirmation_required?: AIConfirmationRequest;
+    error?: string;
+  };
+}
+
 export default api;

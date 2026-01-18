@@ -1,3 +1,6 @@
+
+
+
 -- Migration: 008_add_mobile_phone_to_users
 -- Description: Add mobile_phone field to users table for SMS notifications
 -- Created: 2026-01-16

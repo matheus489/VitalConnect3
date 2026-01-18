@@ -1,3 +1,4 @@
+export { useAIChat } from './useAIChat';
 export { useAuditLogs, useOccurrenceTimeline } from './useAuditLogs';
 export { useAuth, AuthProvider } from './useAuth';
 export { useDebounce } from './useDebounce';

@@ -1,0 +1,57 @@
+# FastAPI and ASGI server
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+
+# LlamaIndex for RAG pipeline
+llama-index>=0.10.0
+llama-index-embeddings-huggingface>=0.1.0
+llama-index-vector-stores-qdrant>=0.1.0
+llama-index-llms-openai>=0.1.0
+
+# Celery for background tasks
+celery[redis]>=5.3.0
+
+# Database
+psycopg2-binary>=2.9.9
+sqlalchemy>=2.0.0
+asyncpg>=0.29.0
+
+# Redis
+redis>=5.0.0
+
+# Authentication
+pyjwt>=2.8.0
+
+# HTTP client for Go backend communication
+httpx>=0.26.0
+
+# Environment and configuration
+python-dotenv>=1.0.0
+
+# Vector store
+qdrant-client>=1.7.0
+
+# OpenAI
+openai>=1.10.0
+
+# Data validation
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# SSE support for streaming responses
+sse-starlette>=1.8.0
+
+# PDF processing for document ingestion
+PyPDF2>=3.0.0
+pdfminer.six>=20221105
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.23.0
+pytest-cov>=4.1.0
+httpx>=0.26.0
+
+# Development tools
+black>=23.0.0
+isort>=5.12.0
+mypy>=1.8.0

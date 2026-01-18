@@ -149,3 +149,108 @@ func NewOccurrenceSSEEvent(occurrence *Occurrence, hospitalNome string) SSEEvent
 		CreatedAt:     time.Now(),
 	}
 }
+
+// SSE Event Types for AI Assistant
+const (
+	// SSEEventTypeAIResponseChunk represents a chunk of AI response text
+	SSEEventTypeAIResponseChunk = "ai_response_chunk"
+	// SSEEventTypeAIThinking represents the AI is processing/thinking
+	SSEEventTypeAIThinking = "ai_thinking"
+	// SSEEventTypeAIToolCall represents a tool/function call by the AI
+	SSEEventTypeAIToolCall = "ai_tool_call"
+	// SSEEventTypeAIDone represents the AI has finished responding
+	SSEEventTypeAIDone = "ai_done"
+	// SSEEventTypeAIError represents an error occurred during AI processing
+	SSEEventTypeAIError = "ai_error"
+	// SSEEventTypeAIConfirmationRequired represents an action needs user confirmation
+	SSEEventTypeAIConfirmationRequired = "ai_confirmation_required"
+)
+
+// AISSEEvent represents a Server-Sent Event for AI assistant responses
+type AISSEEvent struct {
+	Type      string                 `json:"type"`
+	SessionID string                 `json:"session_id,omitempty"`
+	Content   string                 `json:"content,omitempty"`
+	ToolCall  *AIToolCallEvent       `json:"tool_call,omitempty"`
+	Metadata  map[string]interface{} `json:"metadata,omitempty"`
+	Error     string                 `json:"error,omitempty"`
+	Timestamp time.Time              `json:"timestamp"`
+}
+
+// AIToolCallEvent represents details of an AI tool call
+type AIToolCallEvent struct {
+	Name       string                 `json:"name"`
+	Parameters map[string]interface{} `json:"parameters,omitempty"`
+	Result     interface{}            `json:"result,omitempty"`
+	Status     string                 `json:"status"` // executing, completed, failed
+}
+
+// AIConfirmationEvent represents a pending action requiring user confirmation
+type AIConfirmationEvent struct {
+	ActionID    string                 `json:"action_id"`
+	ActionType  string                 `json:"action_type"`
+	Description string                 `json:"description"`
+	Details     map[string]interface{} `json:"details,omitempty"`
+}
+
+// NewAIResponseChunkEvent creates an AI response chunk event
+func NewAIResponseChunkEvent(sessionID, content string) AISSEEvent {
+	return AISSEEvent{
+		Type:      SSEEventTypeAIResponseChunk,
+		SessionID: sessionID,
+		Content:   content,
+		Timestamp: time.Now(),
+	}
+}
+
+// NewAIThinkingEvent creates an AI thinking event
+func NewAIThinkingEvent(sessionID, step string) AISSEEvent {
+	return AISSEEvent{
+		Type:      SSEEventTypeAIThinking,
+		SessionID: sessionID,
+		Content:   step,
+		Timestamp: time.Now(),
+	}
+}
+
+// NewAIToolCallEvent creates an AI tool call event
+func NewAIToolCallEvent(sessionID string, toolCall *AIToolCallEvent) AISSEEvent {
+	return AISSEEvent{
+		Type:      SSEEventTypeAIToolCall,
+		SessionID: sessionID,
+		ToolCall:  toolCall,
+		Timestamp: time.Now(),
+	}
+}
+
+// NewAIDoneEvent creates an AI done event
+func NewAIDoneEvent(sessionID string, metadata map[string]interface{}) AISSEEvent {
+	return AISSEEvent{
+		Type:      SSEEventTypeAIDone,
+		SessionID: sessionID,
+		Metadata:  metadata,
+		Timestamp: time.Now(),
+	}
+}
+
+// NewAIErrorEvent creates an AI error event
+func NewAIErrorEvent(sessionID, errorMsg string) AISSEEvent {
+	return AISSEEvent{
+		Type:      SSEEventTypeAIError,
+		SessionID: sessionID,
+		Error:     errorMsg,
+		Timestamp: time.Now(),
+	}
+}
+
+// NewAIConfirmationRequiredEvent creates an AI confirmation required event
+func NewAIConfirmationRequiredEvent(sessionID string, confirmation *AIConfirmationEvent) AISSEEvent {
+	return AISSEEvent{
+		Type:      SSEEventTypeAIConfirmationRequired,
+		SessionID: sessionID,
+		Metadata: map[string]interface{}{
+			"confirmation": confirmation,
+		},
+		Timestamp: time.Now(),
+	}
+}

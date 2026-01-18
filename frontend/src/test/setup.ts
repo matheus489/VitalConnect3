@@ -41,3 +41,51 @@ window.AudioContext = vi.fn().mockImplementation(() => ({
   destination: {},
   currentTime: 0,
 }));
+
+// Mock crypto.randomUUID for tests
+Object.defineProperty(globalThis, 'crypto', {
+  value: {
+    randomUUID: vi.fn(() => 'test-uuid-' + Math.random().toString(36).substr(2, 9)),
+  },
+});
+
+// Mock EventSource for SSE tests
+class MockEventSource {
+  url: string;
+  onmessage: ((event: MessageEvent) => void) | null = null;
+  onerror: ((event: Event) => void) | null = null;
+  onopen: ((event: Event) => void) | null = null;
+  readyState: number = 0;
+
+  constructor(url: string) {
+    this.url = url;
+    this.readyState = 1; // OPEN
+  }
+
+  close() {
+    this.readyState = 2; // CLOSED
+  }
+}
+
+Object.defineProperty(window, 'EventSource', {
+  value: MockEventSource,
+  writable: true,
+});
+
+// Mock scrollIntoView for chat tests
+Element.prototype.scrollIntoView = vi.fn();
+
+// Mock window.location for navigation tests
+Object.defineProperty(window, 'location', {
+  value: {
+    href: '',
+    origin: 'http://localhost:3000',
+    pathname: '/',
+    search: '',
+    hash: '',
+    assign: vi.fn(),
+    replace: vi.fn(),
+    reload: vi.fn(),
+  },
+  writable: true,
+});
