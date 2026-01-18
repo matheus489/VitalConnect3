@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Sidebar } from './Sidebar';
+import { DynamicSidebar } from './DynamicSidebar';
 import { Header } from './Header';
 import { MobileNav } from './MobileNav';
 import { useAuth } from '@/hooks/useAuth';
 import { useSSE } from '@/hooks/useSSE';
+import { TenantThemeProvider } from '@/contexts/TenantThemeContext';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import type { SSENotificationEvent } from '@/types';
@@ -15,7 +16,11 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+/**
+ * Inner layout component that uses the DynamicSidebar
+ * Must be inside TenantThemeProvider to access theme context
+ */
+function DashboardLayoutInner({ children }: DashboardLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { user, isLoading, isAuthenticated } = useAuth();
@@ -68,9 +73,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Desktop Sidebar */}
+      {/* Desktop Sidebar - Now uses DynamicSidebar */}
       <div className="hidden lg:block">
-        <Sidebar
+        <DynamicSidebar
           collapsed={sidebarCollapsed}
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
@@ -96,3 +101,35 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     </div>
   );
 }
+
+/**
+ * Dashboard layout component with dynamic theme support.
+ *
+ * This component:
+ * - Wraps children with TenantThemeProvider for dynamic theming
+ * - Uses DynamicSidebar that reads from theme_config
+ * - Handles authentication and redirects
+ * - Manages SSE notifications
+ * - Handles responsive sidebar collapse
+ *
+ * @example
+ * ```tsx
+ * // In app/dashboard/layout.tsx
+ * export default function DashboardRootLayout({ children }) {
+ *   return (
+ *     <AuthProvider>
+ *       <DashboardLayout>{children}</DashboardLayout>
+ *     </AuthProvider>
+ *   );
+ * }
+ * ```
+ */
+export function DashboardLayout({ children }: DashboardLayoutProps) {
+  return (
+    <TenantThemeProvider>
+      <DashboardLayoutInner>{children}</DashboardLayoutInner>
+    </TenantThemeProvider>
+  );
+}
+
+export default DashboardLayout;

@@ -80,10 +80,9 @@ Objetivo: Escalar para multiplos hospitais e adicionar inteligencia ao sistema.
 
 ---
 
-> **Notas**
-> - Itens ordenados por dependencias tecnicas e arquitetura do produto
-> - Cada item representa uma funcionalidade completa (frontend + backend) e testavel
-> - Estimativas de esforco: XS (1 dia), S (2-3 dias), M (1 semana), L (2 semanas), XL (3+ semanas)
+ana), L (2 semanas), XL (3+ semanas)
 > - Fase 1 foca em validar o fluxo core antes de adicionar complexidade
 > - Fase 2 prepara o sistema para uso em producao com hospital real
 > - Fase 3 expande para escala estadual/nacional
+
+

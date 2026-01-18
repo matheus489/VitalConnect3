@@ -24,6 +24,67 @@ type Hospital struct {
 	DeletedAt     *time.Time      `json:"deleted_at,omitempty" db:"deleted_at"`
 }
 
+// HospitalWithTenant extends Hospital with tenant information for admin views
+type HospitalWithTenant struct {
+	ID            uuid.UUID       `json:"id" db:"id"`
+	TenantID      uuid.UUID       `json:"tenant_id" db:"tenant_id"`
+	Nome          string          `json:"nome" db:"nome"`
+	Codigo        string          `json:"codigo" db:"codigo"`
+	Endereco      *string         `json:"endereco,omitempty" db:"endereco"`
+	Telefone      *string         `json:"telefone,omitempty" db:"telefone"`
+	Latitude      *float64        `json:"latitude,omitempty" db:"latitude"`
+	Longitude     *float64        `json:"longitude,omitempty" db:"longitude"`
+	ConfigConexao json.RawMessage `json:"config_conexao,omitempty" db:"config_conexao"`
+	Ativo         bool            `json:"ativo" db:"ativo"`
+	CreatedAt     time.Time       `json:"created_at" db:"created_at"`
+	UpdatedAt     time.Time       `json:"updated_at" db:"updated_at"`
+
+	// Tenant info (populated by admin queries)
+	TenantName *string `json:"tenant_name,omitempty" db:"tenant_name"`
+	TenantSlug *string `json:"tenant_slug,omitempty" db:"tenant_slug"`
+}
+
+// ToResponse converts HospitalWithTenant to HospitalWithTenantResponse
+func (h *HospitalWithTenant) ToResponse() HospitalWithTenantResponse {
+	return HospitalWithTenantResponse{
+		ID:         h.ID,
+		TenantID:   h.TenantID,
+		Nome:       h.Nome,
+		Codigo:     h.Codigo,
+		Endereco:   h.Endereco,
+		Telefone:   h.Telefone,
+		Latitude:   h.Latitude,
+		Longitude:  h.Longitude,
+		Ativo:      h.Ativo,
+		CreatedAt:  h.CreatedAt,
+		UpdatedAt:  h.UpdatedAt,
+		TenantName: h.TenantName,
+		TenantSlug: h.TenantSlug,
+	}
+}
+
+// HospitalWithTenantResponse represents the API response for a hospital with tenant info
+type HospitalWithTenantResponse struct {
+	ID         uuid.UUID `json:"id"`
+	TenantID   uuid.UUID `json:"tenant_id"`
+	Nome       string    `json:"nome"`
+	Codigo     string    `json:"codigo"`
+	Endereco   *string   `json:"endereco,omitempty"`
+	Telefone   *string   `json:"telefone,omitempty"`
+	Latitude   *float64  `json:"latitude,omitempty"`
+	Longitude  *float64  `json:"longitude,omitempty"`
+	Ativo      bool      `json:"ativo"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	TenantName *string   `json:"tenant_name,omitempty"`
+	TenantSlug *string   `json:"tenant_slug,omitempty"`
+}
+
+// AdminReassignHospitalInput represents input for reassigning a hospital to a different tenant
+type AdminReassignHospitalInput struct {
+	TenantID uuid.UUID `json:"tenant_id" validate:"required"`
+}
+
 // HospitalConfig represents the connection configuration for a hospital
 type HospitalConfig struct {
 	Tipo         string `json:"tipo,omitempty"`          // "simulado", "hl7", "fhir"

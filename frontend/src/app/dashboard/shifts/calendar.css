@@ -1,0 +1,230 @@
+/* FullCalendar Custom Styles for VitalConnect */
+
+/* Base calendar styles */
+.fc {
+  --fc-border-color: hsl(var(--border));
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: hsl(var(--muted));
+  --fc-neutral-text-color: hsl(var(--muted-foreground));
+  --fc-today-bg-color: hsl(var(--primary) / 0.1);
+  --fc-now-indicator-color: hsl(var(--primary));
+  --fc-event-border-color: transparent;
+  --fc-small-font-size: 0.75rem;
+  --fc-button-text-color: hsl(var(--foreground));
+  --fc-button-bg-color: hsl(var(--background));
+  --fc-button-border-color: hsl(var(--border));
+  --fc-button-hover-bg-color: hsl(var(--muted));
+  --fc-button-hover-border-color: hsl(var(--border));
+  --fc-button-active-bg-color: hsl(var(--primary));
+  --fc-button-active-border-color: hsl(var(--primary));
+  font-family: inherit;
+}
+
+/* Header columns */
+.fc .fc-col-header-cell {
+  padding: 0.75rem 0;
+  font-weight: 600;
+  font-size: 0.875rem;
+  background: hsl(var(--muted) / 0.3);
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: hsl(var(--foreground));
+  text-decoration: none;
+}
+
+/* Time grid styles */
+.fc .fc-timegrid-slot {
+  height: 2.5rem;
+}
+
+.fc .fc-timegrid-slot-label-cushion {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+}
+
+.fc .fc-timegrid-axis-cushion {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+}
+
+/* Day grid styles */
+.fc .fc-daygrid-day-number {
+  color: hsl(var(--foreground));
+  font-size: 0.875rem;
+  padding: 0.5rem;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background: hsl(var(--primary) / 0.1);
+}
+
+.fc .fc-daygrid-day:hover {
+  background: hsl(var(--muted) / 0.5);
+}
+
+/* Event styles */
+.fc-event {
+  border-radius: 0.375rem;
+  border: none;
+  padding: 0.125rem 0.25rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.fc-event:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.fc-event-main {
+  overflow: hidden;
+}
+
+.fc-event-title {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Time grid events */
+.fc-timegrid-event {
+  border-radius: 0.375rem;
+  border-left-width: 3px;
+}
+
+.fc-timegrid-event .fc-event-main {
+  padding: 0.25rem;
+}
+
+/* Now indicator */
+.fc .fc-timegrid-now-indicator-line {
+  border-color: hsl(var(--primary));
+  border-width: 2px;
+}
+
+.fc .fc-timegrid-now-indicator-arrow {
+  border-color: hsl(var(--primary));
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+}
+
+/* Selection */
+.fc .fc-highlight {
+  background: hsl(var(--primary) / 0.15);
+  border-radius: 0.375rem;
+}
+
+/* List view */
+.fc-list {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.fc .fc-list-day-cushion {
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.fc .fc-list-event:hover td {
+  background: hsl(var(--muted) / 0.5);
+}
+
+.fc .fc-list-event-dot {
+  border-color: currentColor;
+}
+
+.fc .fc-list-event-time,
+.fc .fc-list-event-title {
+  color: hsl(var(--foreground));
+}
+
+/* Scrollbar styles */
+.fc .fc-scroller::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.fc .fc-scroller::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 4px;
+}
+
+.fc .fc-scroller::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+
+.fc .fc-scroller::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Remove default borders from some elements */
+.fc .fc-scrollgrid {
+  border: none;
+}
+
+.fc .fc-scrollgrid-section > * {
+  border: none;
+}
+
+.fc .fc-scrollgrid-section-header > *,
+.fc .fc-scrollgrid-section-body > *,
+.fc .fc-scrollgrid-section-footer > * {
+  border-color: hsl(var(--border));
+}
+
+/* Week numbers */
+.fc .fc-daygrid-week-number {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem;
+}
+
+/* More events popover */
+.fc .fc-more-popover {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.fc .fc-more-popover .fc-popover-header {
+  background: hsl(var(--muted));
+  padding: 0.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.fc .fc-more-popover .fc-popover-body {
+  padding: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .fc .fc-col-header-cell {
+    padding: 0.5rem 0;
+    font-size: 0.75rem;
+  }
+
+  .fc .fc-timegrid-slot {
+    height: 2rem;
+  }
+
+  .fc-event {
+    font-size: 0.625rem;
+  }
+}
+
+/* Dark mode adjustments */
+.dark .fc-event {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark .fc .fc-more-popover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}

@@ -12,6 +12,12 @@ export interface User {
   nome: string;
   role: UserRole;
   hospital_id?: string;
+  tenant_id?: string;
+  is_super_admin?: boolean;
+  ativo?: boolean;
+  mobile_phone?: string;
+  email_notifications?: boolean;
+  hospitals?: { id: string; nome: string }[];
   created_at: string;
   updated_at: string;
 }

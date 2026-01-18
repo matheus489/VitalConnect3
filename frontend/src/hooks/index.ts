@@ -1,5 +1,7 @@
 export { useAuditLogs, useOccurrenceTimeline } from './useAuditLogs';
 export { useAuth, AuthProvider } from './useAuth';
+export { useDebounce } from './useDebounce';
+export { useGeocoding } from './useGeocoding';
 export { useSystemHealth, useListenerHealth, useSSEHealth } from './useHealth';
 export { useHospitals } from './useHospitals';
 export { useMapHospitals, useMapSSEHandler } from './useMap';
@@ -8,4 +10,6 @@ export { useOccurrences, useOccurrenceDetail, useOccurrenceHistory, useUpdateOcc
 export { usePushNotifications } from './usePushNotifications';
 export { useShifts, useMyShifts, useTodayShifts, useCoverageGaps, useCreateShift, useUpdateShift, useDeleteShift } from './useShifts';
 export { useSSE } from './useSSE';
+export { useSuperAdmin } from './useSuperAdmin';
+export { useTenantTheme } from './useTenantTheme';
 export { useTriagemRules, useCreateTriagemRule, useUpdateTriagemRule, useToggleTriagemRule, useDeleteTriagemRule } from './useTriagemRules';

@@ -20,6 +20,7 @@ import (
 	"github.com/vitalconnect/backend/internal/middleware"
 	"github.com/vitalconnect/backend/internal/models"
 	"github.com/vitalconnect/backend/internal/repository"
+	"github.com/vitalconnect/backend/internal/services"
 	"github.com/vitalconnect/backend/internal/services/audit"
 	"github.com/vitalconnect/backend/internal/services/auth"
 	"github.com/vitalconnect/backend/internal/services/health"
@@ -86,6 +87,16 @@ func main() {
 		log.Fatalf("Failed to initialize JWT service: %v", err)
 	}
 
+	// Initialize encryption service (optional - for system settings encryption)
+	var encryptionService *services.EncryptionService
+	encryptionService, err = services.NewEncryptionService()
+	if err != nil {
+		log.Printf("Warning: Encryption service not initialized: %v (encrypted settings will not be available)", err)
+		encryptionService = nil
+	} else {
+		log.Println("[EncryptionService] Encryption service initialized for system settings")
+	}
+
 	// Initialize repositories
 	userRepo := repository.NewUserRepository(db)
 	hospitalRepo := repository.NewHospitalRepository(db)
@@ -97,8 +108,18 @@ func main() {
 	shiftRepo := repository.NewShiftRepository(db)
 	pushSubRepo := repository.NewPushSubscriptionRepository(db)
 
+	// Initialize admin repositories
+	adminTenantRepo := repository.NewAdminTenantRepository(db)
+	adminUserRepo := repository.NewAdminUserRepository(db)
+	adminHospitalRepo := repository.NewAdminHospitalRepository(db)
+	adminTriagemRepo := repository.NewAdminTriagemTemplateRepository(db)
+	adminSettingsRepo := repository.NewAdminSettingsRepository(db, encryptionService)
+
 	// Initialize auth service
 	authService := auth.NewAuthService(jwtService, userRepo, redisClient)
+
+	// Initialize impersonation service
+	impersonateService := auth.NewImpersonationService(jwtService, userRepo, auditLogRepo)
 
 	// Initialize auth handler and set global handler
 	authHandler := handlers.NewAuthHandler(authService)
@@ -113,6 +134,16 @@ func main() {
 	handlers.SetMetricsOccurrenceRepository(occurrenceRepo)
 	handlers.SetIndicatorsRepository(indicatorsRepo)
 	handlers.SetAuditLogRepository(auditLogRepo)
+
+	// Set admin repositories for handlers
+	handlers.SetAdminTenantRepository(adminTenantRepo)
+	handlers.SetAdminUserRepository(adminUserRepo)
+	handlers.SetAdminHospitalRepository(adminHospitalRepo)
+	handlers.SetImpersonateService(impersonateService)
+	handlers.SetAdminTriagemTemplateRepository(adminTriagemRepo)
+	handlers.SetAdminSettingsRepository(adminSettingsRepo)
+	handlers.SetAdminAuditLogDB(db)
+	handlers.SetTenantThemeDB(db)
 
 	// Initialize audit service
 	auditService := audit.NewAuditService(auditLogRepo)
@@ -380,6 +411,80 @@ func main() {
 				push.GET("/subscriptions", handlers.GetMySubscriptions)
 				push.GET("/status", handlers.GetPushStatus)
 			}
+
+			// Tenant Theme (for current user's tenant)
+			tenants := protected.Group("/tenants")
+			{
+				tenants.GET("/current/theme", handlers.GetCurrentTenantTheme)
+			}
+		}
+
+		// Super Admin Backoffice Routes
+		// Protected by AuthRequired + RequireSuperAdmin middleware
+		// These routes ignore tenant_id for cross-tenant access
+		admin := v1.Group("/admin")
+		admin.Use(middleware.AuthRequired())
+		admin.Use(middleware.RequireSuperAdmin())
+		{
+			// Admin Dashboard - global metrics
+			admin.GET("", handlers.AdminDashboardMetrics)
+			admin.GET("/metrics", handlers.AdminDashboardMetrics)
+
+			// Tenant Management (Task Group 3 - Implemented)
+			adminTenants := admin.Group("/tenants")
+			{
+				adminTenants.GET("", handlers.AdminListTenants)
+				adminTenants.GET("/:id", handlers.AdminGetTenant)
+				adminTenants.POST("", handlers.AdminCreateTenant)
+				adminTenants.PUT("/:id", handlers.AdminUpdateTenant)
+				adminTenants.PUT("/:id/theme", handlers.AdminUpdateThemeConfig)
+				adminTenants.PUT("/:id/toggle", handlers.AdminToggleTenantActive)
+				adminTenants.POST("/:id/assets", handlers.AdminUploadTenantAssets)
+			}
+
+			// User Management (Task Group 4 - Implemented)
+			adminUsers := admin.Group("/users")
+			{
+				adminUsers.GET("", handlers.AdminListUsers)
+				adminUsers.GET("/:id", handlers.AdminGetUser)
+				adminUsers.POST("/:id/impersonate", handlers.AdminImpersonateUser)
+				adminUsers.PUT("/:id/role", handlers.AdminUpdateUserRole)
+				adminUsers.PUT("/:id/ban", handlers.AdminBanUser)
+				adminUsers.POST("/:id/reset-password", handlers.AdminResetPassword)
+			}
+
+			// Hospital Management (Task Group 4 - Implemented)
+			adminHospitals := admin.Group("/hospitals")
+			{
+				adminHospitals.GET("", handlers.AdminListHospitals)
+				adminHospitals.GET("/:id", handlers.AdminGetHospital)
+				adminHospitals.PUT("/:id", handlers.AdminUpdateHospital)
+				adminHospitals.PUT("/:id/reassign", handlers.AdminReassignHospitalTenant)
+			}
+
+			// Triagem Rule Templates (Task Group 5 - Implemented)
+			adminTriagemTemplates := admin.Group("/triagem-templates")
+			{
+				adminTriagemTemplates.GET("", handlers.AdminListTriagemTemplates)
+				adminTriagemTemplates.GET("/:id", handlers.AdminGetTriagemTemplate)
+				adminTriagemTemplates.POST("", handlers.AdminCreateTriagemTemplate)
+				adminTriagemTemplates.PUT("/:id", handlers.AdminUpdateTriagemTemplate)
+				adminTriagemTemplates.POST("/:id/clone", handlers.AdminCloneTriagemTemplate)
+				adminTriagemTemplates.GET("/:id/usage", handlers.AdminGetTriagemTemplateUsage)
+			}
+
+			// System Settings (Task Group 5 - Implemented)
+			adminSettings := admin.Group("/settings")
+			{
+				adminSettings.GET("", handlers.AdminListSettings)
+				adminSettings.GET("/:key", handlers.AdminGetSetting)
+				adminSettings.PUT("/:key", handlers.AdminUpsertSetting)
+				adminSettings.DELETE("/:key", handlers.AdminDeleteSetting)
+			}
+
+			// Audit Logs Global View (Task Group 5 - Implemented)
+			admin.GET("/logs", handlers.AdminListAuditLogs)
+			admin.GET("/logs/export", handlers.AdminExportAuditLogs)
 		}
 
 		// PEP Integration (API Key authentication, not user auth)

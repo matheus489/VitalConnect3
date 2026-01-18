@@ -56,6 +56,84 @@ type User struct {
 	Hospitals []Hospital `json:"hospitals,omitempty" db:"-"`
 }
 
+// UserWithTenant extends User with tenant information for admin views
+type UserWithTenant struct {
+	ID                 uuid.UUID  `json:"id" db:"id"`
+	TenantID           *uuid.UUID `json:"tenant_id,omitempty" db:"tenant_id"`
+	Email              string     `json:"email" db:"email"`
+	Nome               string     `json:"nome" db:"nome"`
+	Role               UserRole   `json:"role" db:"role"`
+	IsSuperAdmin       bool       `json:"is_super_admin" db:"is_super_admin"`
+	MobilePhone        *string    `json:"mobile_phone,omitempty" db:"mobile_phone"`
+	EmailNotifications bool       `json:"email_notifications" db:"email_notifications"`
+	Ativo              bool       `json:"ativo" db:"ativo"`
+	CreatedAt          time.Time  `json:"created_at" db:"created_at"`
+	UpdatedAt          time.Time  `json:"updated_at" db:"updated_at"`
+
+	// Tenant info (populated by admin queries)
+	TenantName *string `json:"tenant_name,omitempty" db:"tenant_name"`
+	TenantSlug *string `json:"tenant_slug,omitempty" db:"tenant_slug"`
+
+	// Related data (populated by queries) - N:N relationship with hospitals
+	Hospitals []Hospital `json:"hospitals,omitempty" db:"-"`
+}
+
+// ToResponse converts UserWithTenant to UserWithTenantResponse
+func (u *UserWithTenant) ToResponse() UserWithTenantResponse {
+	resp := UserWithTenantResponse{
+		ID:                 u.ID,
+		TenantID:           u.TenantID,
+		Email:              u.Email,
+		Nome:               u.Nome,
+		Role:               u.Role,
+		IsSuperAdmin:       u.IsSuperAdmin,
+		Hospitals:          make([]HospitalResponse, 0, len(u.Hospitals)),
+		MobilePhone:        u.MobilePhone,
+		EmailNotifications: u.EmailNotifications,
+		Ativo:              u.Ativo,
+		CreatedAt:          u.CreatedAt,
+		UpdatedAt:          u.UpdatedAt,
+		TenantName:         u.TenantName,
+		TenantSlug:         u.TenantSlug,
+	}
+
+	for _, h := range u.Hospitals {
+		resp.Hospitals = append(resp.Hospitals, h.ToResponse())
+	}
+
+	return resp
+}
+
+// UserWithTenantResponse represents the API response for a user with tenant info
+type UserWithTenantResponse struct {
+	ID                 uuid.UUID          `json:"id"`
+	TenantID           *uuid.UUID         `json:"tenant_id,omitempty"`
+	Email              string             `json:"email"`
+	Nome               string             `json:"nome"`
+	Role               UserRole           `json:"role"`
+	IsSuperAdmin       bool               `json:"is_super_admin,omitempty"`
+	Hospitals          []HospitalResponse `json:"hospitals"`
+	MobilePhone        *string            `json:"mobile_phone,omitempty"`
+	EmailNotifications bool               `json:"email_notifications"`
+	Ativo              bool               `json:"ativo"`
+	CreatedAt          time.Time          `json:"created_at"`
+	UpdatedAt          time.Time          `json:"updated_at"`
+	TenantName         *string            `json:"tenant_name,omitempty"`
+	TenantSlug         *string            `json:"tenant_slug,omitempty"`
+}
+
+// AdminUpdateUserRoleInput represents input for updating a user's role (super admin)
+type AdminUpdateUserRoleInput struct {
+	Role         *UserRole `json:"role,omitempty" validate:"omitempty,oneof=operador gestor admin"`
+	IsSuperAdmin *bool     `json:"is_super_admin,omitempty"`
+}
+
+// AdminBanUserInput represents input for banning/unbanning a user
+type AdminBanUserInput struct {
+	Banned    bool    `json:"banned"`
+	BanReason *string `json:"ban_reason,omitempty"`
+}
+
 // CreateUserInput represents input for creating a user
 type CreateUserInput struct {
 	Email              string      `json:"email" validate:"required,email,max=255"`

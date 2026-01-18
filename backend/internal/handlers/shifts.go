@@ -70,7 +70,20 @@ func (h *ShiftHandler) Create(c *gin.Context) {
 			c.JSON(http.StatusConflict, gin.H{"error": "Já existe uma escala para este operador neste horário"})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar escala"})
+		if err == models.ErrInvalidDayOfWeek {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Dia da semana inválido"})
+			return
+		}
+		if err == models.ErrInvalidStartTime {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Horário de início inválido (use formato HH:MM)"})
+			return
+		}
+		if err == models.ErrInvalidEndTime {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Horário de fim inválido (use formato HH:MM)"})
+			return
+		}
+		// Log the actual error for debugging
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar escala: " + err.Error()})
 		return
 	}
 

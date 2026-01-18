@@ -1,3 +1,4 @@
+export { DynamicDashboard } from './DynamicDashboard';
 export { MetricsCards } from './MetricsCards';
 export { OccurrencesTable } from './OccurrencesTable';
 export { OccurrenceFilters } from './OccurrenceFilters';
