@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# VitalConnect Database Migration Script
+# SIDOT Database Migration Script
 # Usage: ./migrate.sh [up|down|status]
 
 set -e
 
 # Default database URL
-DATABASE_URL="${DATABASE_URL:-postgres://postgres:postgres@localhost:5432/vitalconnect?sslmode=disable}"
+DATABASE_URL="${DATABASE_URL:-postgres://postgres:postgres@localhost:5432/sidot?sslmode=disable}"
 
 # Parse database URL to extract components
 DB_HOST=$(echo $DATABASE_URL | sed -n 's/.*@\(.*\):.*/\1/p' | cut -d':' -f1)
@@ -21,7 +21,7 @@ export PGPASSWORD="$DB_PASS"
 MIGRATIONS_DIR="$(dirname "$0")"
 ACTION="${1:-up}"
 
-echo "VitalConnect Database Migration"
+echo "SIDOT Database Migration"
 echo "================================"
 echo "Database: $DB_NAME"
 echo "Host: $DB_HOST:$DB_PORT"

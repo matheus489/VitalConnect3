@@ -7,9 +7,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/vitalconnect/backend/internal/middleware"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/repository"
+	"github.com/sidot/backend/internal/middleware"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/repository"
 )
 
 // AuditService provides audit logging functionality
@@ -34,7 +34,7 @@ func (s *AuditService) LogEvent(
 ) error {
 	// Try to get user information from context
 	var usuarioID *uuid.UUID
-	actorName := models.VitalConnectBotActor
+	actorName := models.SIDOTBotActor
 
 	// Extract HTTP context information
 	var ipAddress, userAgent *string
@@ -140,7 +140,7 @@ func (s *AuditService) LogEventWithUser(
 	return nil
 }
 
-// LogSystemEvent logs an event performed by the system (VitalConnect Bot)
+// LogSystemEvent logs an event performed by the system (SIDOT Bot)
 func (s *AuditService) LogSystemEvent(
 	ctx context.Context,
 	acao string,
@@ -153,7 +153,7 @@ func (s *AuditService) LogSystemEvent(
 	return s.LogEventWithUser(
 		ctx,
 		nil, // no user ID for system events
-		models.VitalConnectBotActor,
+		models.SIDOTBotActor,
 		acao,
 		entidadeTipo,
 		entidadeID,
@@ -215,7 +215,7 @@ func ExtractRequestInfo(c *gin.Context) (ipAddress *string, userAgent *string) {
 func GetUserInfoFromContext(c *gin.Context) (*uuid.UUID, string) {
 	claims, exists := middleware.GetUserClaims(c)
 	if !exists || claims == nil {
-		return nil, models.VitalConnectBotActor
+		return nil, models.SIDOTBotActor
 	}
 
 	uid, err := uuid.Parse(claims.UserID)

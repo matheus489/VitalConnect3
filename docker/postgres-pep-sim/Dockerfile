@@ -15,6 +15,6 @@ RUN chmod +x /docker-entrypoint-initdb.d/03-auto-insert.sh
 EXPOSE 5432
 
 # Labels
-LABEL org.opencontainers.image.source="https://github.com/vitalconnect/vitalconnect"
-LABEL org.opencontainers.image.description="Simulated PEP Database (Tasy schema) for VitalConnect"
+LABEL org.opencontainers.image.source="https://github.com/sidot/sidot"
+LABEL org.opencontainers.image.description="Simulated PEP Database (Tasy schema) for SIDOT"
 LABEL org.opencontainers.image.version="1.0.0"

@@ -1,6 +1,6 @@
-# VitalConnect
+# SIDOT - Sistema Inteligente de Doação de Órgãos e Tecidos
 
-Sistema de Captacao de Corneas - Middleware GovTech para deteccao automatica de obitos e notificacao de equipes de captacao em tempo real.
+Sistema de Captacao de Orgaos e Tecidos - Middleware GovTech para deteccao automatica de obitos e notificacao de equipes de captacao em tempo real.
 
 ## Requisitos
 
@@ -48,7 +48,7 @@ O frontend estara disponivel em: http://localhost:3000
 ## Estrutura do Projeto
 
 ```
-VitalConnect/
+SIDOT/
 ├── backend/
 │   ├── cmd/
 │   │   └── api/          # Ponto de entrada da API

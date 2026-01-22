@@ -1,4 +1,4 @@
-// Package pusher handles pushing events to the VitalConnect central server
+// Package pusher handles pushing events to the SIDOT central server
 package pusher
 
 import (
@@ -11,11 +11,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/vitalconnect/pep-agent/internal/config"
-	"github.com/vitalconnect/pep-agent/internal/models"
+	"github.com/sidot/pep-agent/internal/config"
+	"github.com/sidot/pep-agent/internal/models"
 )
 
-// Pusher sends events to the VitalConnect central server
+// Pusher sends events to the SIDOT central server
 type Pusher struct {
 	config *config.AgentConfig
 	client *http.Client
@@ -89,7 +89,7 @@ func (p *Pusher) Push(ctx context.Context, event *models.ObitoEvent) (*PushResul
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-API-Key", p.config.Central.APIKey)
-	req.Header.Set("User-Agent", "VitalConnect-PEP-Agent/1.0")
+	req.Header.Set("User-Agent", "SIDOT-PEP-Agent/1.0")
 
 	resp, err := p.client.Do(req)
 	if err != nil {
@@ -192,7 +192,7 @@ func (p *Pusher) HealthCheck(ctx context.Context) error {
 	}
 
 	req.Header.Set("X-API-Key", p.config.Central.APIKey)
-	req.Header.Set("User-Agent", "VitalConnect-PEP-Agent/1.0")
+	req.Header.Set("User-Agent", "SIDOT-PEP-Agent/1.0")
 
 	resp, err := p.client.Do(req)
 	if err != nil {

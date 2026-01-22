@@ -242,7 +242,7 @@ export function ThemePreview({
                 V
               </div>
             )}
-            <span>app.vitalconnect.com/{tenantName.toLowerCase().replace(/\s+/g, '-')}</span>
+            <span>app.sidot.com/{tenantName.toLowerCase().replace(/\s+/g, '-')}</span>
           </div>
         </div>
       </div>

@@ -136,11 +136,11 @@ export function DynamicSidebar({ collapsed, onToggle }: DynamicSidebarProps) {
                 />
               ) : (
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                  <span className="text-lg font-bold text-primary-foreground">V</span>
+                  <span className="text-lg font-bold text-primary-foreground">S</span>
                 </div>
               )}
               <span className="text-lg font-semibold text-sidebar-foreground">
-                VitalConnect
+                SIDOT
               </span>
             </Link>
           )}
@@ -154,7 +154,7 @@ export function DynamicSidebar({ collapsed, onToggle }: DynamicSidebarProps) {
                 />
               ) : (
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                  <span className="text-lg font-bold text-primary-foreground">V</span>
+                  <span className="text-lg font-bold text-primary-foreground">S</span>
                 </div>
               )}
             </Link>

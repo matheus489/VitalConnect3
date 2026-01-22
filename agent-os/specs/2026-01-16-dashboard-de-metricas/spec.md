@@ -1,7 +1,7 @@
 # Specification: Dashboard de Metricas
 
 ## Goal
-Criar um dashboard de indicadores para gestores visualizarem metricas de desempenho do sistema VitalConnect, incluindo taxa de conversao, tempos de resposta e ranking de hospitais, com dados reais consumidos via API e seed de 30 dias para demonstracao.
+Criar um dashboard de indicadores para gestores visualizarem metricas de desempenho do sistema SIDOT, incluindo taxa de conversao, tempos de resposta e ranking de hospitais, com dados reais consumidos via API e seed de 30 dias para demonstracao.
 
 ## User Stories
 - Como gestor da SES, quero visualizar metricas consolidadas de todos os hospitais para identificar oportunidades de melhoria no processo de captacao.

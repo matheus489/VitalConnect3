@@ -1,4 +1,4 @@
--- VitalConnect Database Initialization
+-- SIDOT Database Initialization
 -- This file runs on first container startup
 
 -- Enable UUID extension

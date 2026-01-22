@@ -13,16 +13,16 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/repository"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/repository"
 )
 
 const (
 	// EmailQueueKey is the Redis key for the email queue
-	EmailQueueKey = "vitalconnect:email_queue"
+	EmailQueueKey = "sidot:email_queue"
 
 	// EmailProcessingKey is the Redis key for emails being processed
-	EmailProcessingKey = "vitalconnect:email_processing"
+	EmailProcessingKey = "sidot:email_processing"
 
 	// MaxRetries is the maximum number of retry attempts
 	MaxRetries = 3

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vitalconnect/backend/internal/models"
+	"github.com/sidot/backend/internal/models"
 )
 
 // TestGenerateCSV_WritesCorrectHeader tests that CSV generation writes the correct header
@@ -145,7 +145,7 @@ func TestPDFGenerator_GeneratesValidPDF(t *testing.T) {
 
 // TestPDFGenerator_ContainsRequiredElements tests that PDF contains required elements
 func TestPDFGenerator_ContainsRequiredElements(t *testing.T) {
-	t.Run("PDF contains VitalConnect header", func(t *testing.T) {
+	t.Run("PDF contains SIDOT header", func(t *testing.T) {
 		gen := NewPDFGenerator()
 		filters := models.ReportFilters{}
 		metrics := &models.ReportMetrics{
@@ -160,9 +160,9 @@ func TestPDFGenerator_ContainsRequiredElements(t *testing.T) {
 
 		pdfContent := string(pdfBytes)
 
-		// Check for VitalConnect header
-		if !bytes.Contains(pdfBytes, []byte("VitalConnect")) {
-			t.Error("PDF should contain VitalConnect header")
+		// Check for SIDOT header
+		if !bytes.Contains(pdfBytes, []byte("SIDOT")) {
+			t.Error("PDF should contain SIDOT header")
 		}
 
 		// Check for SES header
@@ -176,7 +176,7 @@ func TestPDFGenerator_ContainsRequiredElements(t *testing.T) {
 		}
 
 		// Check for footer
-		if !bytes.Contains(pdfBytes, []byte("Gerado automaticamente por VitalConnect")) {
+		if !bytes.Contains(pdfBytes, []byte("Gerado automaticamente por SIDOT")) {
 			t.Error("PDF should contain generation footer")
 		}
 

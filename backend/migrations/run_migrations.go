@@ -16,7 +16,7 @@ func main() {
 	// Get database URL from environment or use default
 	databaseURL := os.Getenv("DATABASE_URL")
 	if databaseURL == "" {
-		databaseURL = "postgres://postgres:postgres@localhost:5432/vitalconnect?sslmode=disable"
+		databaseURL = "postgres://postgres:postgres@localhost:5432/sidot?sslmode=disable"
 	}
 
 	// Connect to database

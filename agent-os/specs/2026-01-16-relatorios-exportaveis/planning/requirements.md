@@ -18,7 +18,7 @@ Geracao de relatorios em PDF e CSV com dados de ocorrencias e metricas para pres
 **Answer:** Data, Hospital e Desfecho. Dropdowns simples na UI. Desfechos: "Captado", "Recusa Familiar", "Contraindicacao Medica", "Expirado".
 
 **Q4:** Layout do PDF - Qual formato institucional deve ser seguido?
-**Answer:** Institucional Padrao. Cabecalho: Logo VitalConnect a esquerda, "Governo do Estado de Goias - SES" (simulado) a direita. Corpo: Titulo, Periodo do Filtro, Tabela Zebrada. Rodape: "Gerado automaticamente por VitalConnect em {data_hora}".
+**Answer:** Institucional Padrao. Cabecalho: Logo SIDOT a esquerda, "Governo do Estado de Goias - SES" (simulado) a direita. Corpo: Titulo, Periodo do Filtro, Tabela Zebrada. Rodape: "Gerado automaticamente por SIDOT em {data_hora}".
 
 **Q5:** Excel/CSV - Qual formato de exportacao e prioritario?
 **Answer:** CSV (Prioridade). Justificativa: Gerar CSV em Go e trivial e performatico. Excel (.xlsx) exige bibliotecas pesadas. MVP usa botao "Exportar CSV".
@@ -68,9 +68,9 @@ Nao aplicavel.
 - Encoding UTF-8 com BOM para compatibilidade com Excel brasileiro
 
 **Exportacao PDF:**
-- Cabecalho: Logo VitalConnect (esquerda) + "Governo do Estado de Goias - SES" (direita)
+- Cabecalho: Logo SIDOT (esquerda) + "Governo do Estado de Goias - SES" (direita)
 - Corpo: Titulo do relatorio, Periodo filtrado, Tabela zebrada com dados
-- Rodape: "Gerado automaticamente por VitalConnect em {data_hora}"
+- Rodape: "Gerado automaticamente por SIDOT em {data_hora}"
 - Layout simples e funcional (sem graficos no MVP)
 
 **Metricas Agregadas no Relatorio:**

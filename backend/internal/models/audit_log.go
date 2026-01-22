@@ -160,8 +160,8 @@ const (
 	ActionTenantContextSwitch = "tenant.context_switch"
 )
 
-// VitalConnectBotActor is the name used for system actions
-const VitalConnectBotActor = "VitalConnect Bot"
+// SIDOTBotActor is the name used for system actions
+const SIDOTBotActor = "SIDOT Bot"
 
 // Entity types for audit log
 const (

@@ -4,7 +4,7 @@
 
 CRUD de usuarios com atribuicao de roles, hospitais vinculados e preferencias de notificacao.
 
-Contexto: Esta feature faz parte do VitalConnect - sistema de notificacao de doacao de orgaos. A funcionalidade permitira:
+Contexto: Esta feature faz parte do SIDOT - sistema de notificacao de doacao de orgaos. A funcionalidade permitira:
 - Criar, visualizar, atualizar e excluir usuarios
 - Atribuir roles (operador, gestor, admin)
 - Vincular usuarios a hospitais especificos
@@ -74,7 +74,7 @@ Nenhuma pergunta de follow-up necessaria. As respostas foram completas e claras.
 ## Visual Assets
 
 ### Files Provided:
-Nenhum arquivo visual encontrado na pasta `/home/matheus_rubem/VitalConnect/agent-os/specs/2026-01-16-gestao-de-usuarios/planning/visuals/`.
+Nenhum arquivo visual encontrado na pasta `/home/matheus_rubem/SIDOT/agent-os/specs/2026-01-16-gestao-de-usuarios/planning/visuals/`.
 
 ### Visual Insights:
 Nao aplicavel - sem assets visuais fornecidos.

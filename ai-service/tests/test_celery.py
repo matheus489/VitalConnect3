@@ -26,7 +26,7 @@ class TestCeleryConfiguration:
         """
         # Set up test environment
         os.environ["REDIS_URL"] = "redis://redis:6379/1"
-        os.environ["DATABASE_URL"] = "postgresql://postgres:postgres@postgres:5432/vitalconnect"
+        os.environ["DATABASE_URL"] = "postgresql://postgres:postgres@postgres:5432/sidot"
 
         from app.config import get_settings
         get_settings.cache_clear()

@@ -1,5 +1,5 @@
 """
-Celery application configuration for VitalConnect AI Service.
+Celery application configuration for SIDOT AI Service.
 
 Configures Celery with:
 - Redis as message broker
@@ -20,7 +20,7 @@ QUEUE_AI_ACTIONS = "ai_actions"
 QUEUE_AI_INDEXING = "ai_indexing"
 
 # Default exchange
-default_exchange = Exchange("vitalconnect_ai", type="direct")
+default_exchange = Exchange("sidot_ai", type="direct")
 
 # Define task queues with priorities
 # Higher x-max-priority = higher priority support
@@ -57,7 +57,7 @@ def create_celery_app() -> Celery:
 
     # Create Celery app with Redis broker
     app = Celery(
-        "vitalconnect_ai",
+        "sidot_ai",
         broker=settings.celery_broker_url,
         include=[
             "app.celery_app.tasks.base",

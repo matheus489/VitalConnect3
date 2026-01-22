@@ -53,13 +53,13 @@ Total de Tarefas: 4 Grupos de Tarefas | ~32 Sub-tarefas
 - [ ] 2.0 Completar servico de auditoria
   - [ ] 2.1 Escrever 4-6 testes focados para o servico de auditoria
     - Limitar a 4-6 testes altamente focados
-    - Testar: criacao de log com usuario, criacao de log do sistema ("VitalConnect Bot"), extracao de IP/User-Agent do contexto
+    - Testar: criacao de log com usuario, criacao de log do sistema ("SIDOT Bot"), extracao de IP/User-Agent do contexto
     - Pular testes exaustivos de todas as combinacoes
   - [ ] 2.2 Criar servico `/backend/internal/services/audit/audit_service.go`
     - Interface AuditService com metodo LogEvent
     - Assinatura: LogEvent(ctx, acao, entidadeTipo, entidadeID, hospitalID, severity, detalhes)
     - Para usuario autenticado: extrair userID e nome do contexto
-    - Para acoes do sistema: usuario_id = nil, actor_name = "VitalConnect Bot"
+    - Para acoes do sistema: usuario_id = nil, actor_name = "SIDOT Bot"
     - Extrair ip_address e user_agent do contexto HTTP
   - [ ] 2.3 Integrar servico nos handlers de Autenticacao
     - Em `/backend/internal/handlers/auth.go`
@@ -77,7 +77,7 @@ Total de Tarefas: 4 Grupos de Tarefas | ~32 Sub-tarefas
     - Em `/backend/internal/handlers/users.go`
     - Eventos: usuario.create (INFO), usuario.update (INFO), usuario.desativar (WARN)
   - [ ] 2.7 Adicionar log de triagem automatica (sistema)
-    - Onde triagem automatica ocorre, chamar servico com actor_name = "VitalConnect Bot"
+    - Onde triagem automatica ocorre, chamar servico com actor_name = "SIDOT Bot"
     - Evento: triagem.rejeicao (INFO)
   - [ ] 2.8 Garantir que testes do servico passem
     - Executar APENAS os 4-6 testes escritos em 2.1
@@ -88,7 +88,7 @@ Total de Tarefas: 4 Grupos de Tarefas | ~32 Sub-tarefas
 - Os 4-6 testes escritos em 2.1 passam
 - Servico registra eventos corretamente com todos os campos
 - Acoes de usuario incluem usuario_id e actor_name do usuario
-- Acoes do sistema usam "VitalConnect Bot" como actor_name
+- Acoes do sistema usam "SIDOT Bot" como actor_name
 - IP e User-Agent sao capturados corretamente
 
 ---

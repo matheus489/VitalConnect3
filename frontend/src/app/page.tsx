@@ -9,10 +9,10 @@ export default function Home() {
         {/* Logo/Title */}
         <div className="space-y-4">
           <h1 className="text-4xl font-bold tracking-tight text-sky-600 sm:text-5xl">
-            VitalConnect
+            SIDOT
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl">
-            Sistema de Captacao de Corneas
+            Sistema Inteligente de Doação de Órgãos e Tecidos
           </p>
         </div>
 

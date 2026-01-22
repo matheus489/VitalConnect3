@@ -156,12 +156,12 @@ func TestSystemSetting_CRUD(t *testing.T) {
 		setting := &SystemSetting{
 			ID:          uuid.New(),
 			Key:         "app_name",
-			Value:       json.RawMessage(`"VitalConnect"`),
+			Value:       json.RawMessage(`"SIDOT"`),
 			IsEncrypted: false,
 		}
 
 		response := setting.ToMaskedResponse()
-		assert.Equal(t, `"VitalConnect"`, response.Value)
+		assert.Equal(t, `"SIDOT"`, response.Value)
 	})
 }
 

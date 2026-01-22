@@ -80,7 +80,7 @@ func NewJWTService(accessSecret, refreshSecret string, accessDuration, refreshDu
 		refreshSecret:   []byte(refreshSecret),
 		accessDuration:  accessDuration,
 		refreshDuration: refreshDuration,
-		issuer:          "vitalconnect",
+		issuer:          "sidot",
 	}, nil
 }
 

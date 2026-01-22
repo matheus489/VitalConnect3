@@ -1,4 +1,4 @@
-// VitalConnect Type Definitions
+// SIDOT Type Definitions
 
 // =============================================================================
 // User & Authentication

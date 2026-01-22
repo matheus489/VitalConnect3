@@ -50,7 +50,7 @@ Implementar notificacoes push via Web Push (PWA) usando Firebase Cloud Messaging
 **Conteudo da Notificacao Push**
 - Titulo: "ALERTA DE TRANSPLANTE" (emoji vermelho se suportado pelo FCM: usar unicode)
 - Corpo: "Hosp: {hospital_name} | Paciente: {idade} anos. Toque para iniciar protocolo."
-- Icone: Usar logo VitalConnect (criar `/public/icons/notification-icon.png` 192x192 fundo branco)
+- Icone: Usar logo SIDOT (criar `/public/icons/notification-icon.png` 192x192 fundo branco)
 - Data payload: incluir `occurrence_id` e `click_action` URL para deep link
 - Deep link ao clicar: `/dashboard/occurrences/{occurrence_id}`
 
@@ -84,7 +84,7 @@ Nenhum asset visual fornecido. Seguir padroes visuais existentes do dashboard:
 **backend/internal/services/notification/email_queue.go**
 - Padrao de worker com Redis para processamento assincrono (EmailQueueWorker)
 - Considerar criar PushQueueWorker similar se volume de notificacoes for alto
-- Reutilizar constantes de Redis keys com prefixo "vitalconnect:push_queue"
+- Reutilizar constantes de Redis keys com prefixo "sidot:push_queue"
 
 **backend/migrations/007_create_notifications.sql**
 - Padrao de migration com UP/DOWN, indexes, comments

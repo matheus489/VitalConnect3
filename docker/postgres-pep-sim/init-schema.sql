@@ -1,4 +1,4 @@
--- VitalConnect PEP Simulator - Schema Initialization
+-- SIDOT PEP Simulator - Schema Initialization
 -- Simulates Tasy (Philips) hospital system database schema
 -- This is a read-only simulation for development and demo purposes
 
@@ -45,7 +45,7 @@ CREATE INDEX IF NOT EXISTS idx_obito_cd_paciente ON TASY.TB_PACIENTE_OBITO(CD_PA
 CREATE INDEX IF NOT EXISTS idx_obito_nr_cns ON TASY.TB_PACIENTE_OBITO(NR_CNS);
 CREATE INDEX IF NOT EXISTS idx_obito_dt_atualizacao ON TASY.TB_PACIENTE_OBITO(DT_ATUALIZACAO DESC);
 
--- View for simplified access (matches VitalConnect field expectations)
+-- View for simplified access (matches SIDOT field expectations)
 CREATE OR REPLACE VIEW TASY.VW_OBITOS_RECENTES AS
 SELECT
     CD_PACIENTE_OBITO,

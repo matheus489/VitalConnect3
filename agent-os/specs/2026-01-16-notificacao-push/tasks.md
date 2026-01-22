@@ -130,7 +130,7 @@ Total de Tarefas: 4 grupos principais
   - [ ] 3.3 Criar icone de notificacao
     - Arquivo: `frontend/public/icons/notification-icon.png`
     - Dimensoes: 192x192 pixels
-    - Fundo branco com logo VitalConnect
+    - Fundo branco com logo SIDOT
   - [ ] 3.4 Criar hook usePushNotifications
     - Arquivo: `frontend/src/hooks/usePushNotifications.ts`
     - Seguir padrao do useSSE.tsx existente

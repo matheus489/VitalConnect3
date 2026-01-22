@@ -108,7 +108,7 @@ describe('Backoffice Integration Tests - Task Group 10', () => {
     it('should allow super-admin access', async () => {
       const mockSuperAdmin = {
         id: '1',
-        email: 'superadmin@vitalconnect.com',
+        email: 'superadmin@sidot.com',
         nome: 'Super Admin',
         role: 'admin' as const,
         is_super_admin: true,
@@ -334,7 +334,7 @@ describe('Backoffice Integration Tests - Task Group 10', () => {
     it('should show actual value for non-encrypted settings', () => {
       const nonEncryptedSetting = {
         key: 'app_name',
-        value: 'VitalConnect',
+        value: 'SIDOT',
         is_encrypted: false,
       };
 

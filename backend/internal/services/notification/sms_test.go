@@ -56,7 +56,7 @@ func TestBuildSMSMessage_WithinLimit(t *testing.T) {
 	}
 
 	// Check message contains required parts
-	if !containsAll(message, []string{"[VitalConnect]", "ALERTA CRITICO", "Hosp:", "Idade:", "Janela:", "Acao:"}) {
+	if !containsAll(message, []string{"[SIDOT]", "ALERTA CRITICO", "Hosp:", "Idade:", "Janela:", "Acao:"}) {
 		t.Error("Message missing required parts")
 	}
 }

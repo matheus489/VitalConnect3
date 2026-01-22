@@ -1,7 +1,7 @@
 # Specification: Multi-Tenant Support
 
 ## Goal
-Implement multi-tenant architecture in VitalConnect to enable multiple Transplant Centers (Centrais de Transplante) to operate on the same instance with complete data isolation and independent configurations.
+Implement multi-tenant architecture in SIDOT to enable multiple Transplant Centers (Centrais de Transplante) to operate on the same instance with complete data isolation and independent configurations.
 
 ## User Stories
 - As a Central de Transplantes operator, I want to access only my organization's data so that patient information remains isolated and secure

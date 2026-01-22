@@ -1,7 +1,7 @@
-// VitalConnect Service Worker for Push Notifications
+// SIDOT Service Worker for Push Notifications
 // Version: 1.0.0
 
-const CACHE_NAME = 'vitalconnect-v1';
+const CACHE_NAME = 'sidot-v1';
 
 // Install event - cache essential assets
 self.addEventListener('install', (event) => {
@@ -29,7 +29,7 @@ self.addEventListener('push', (event) => {
   console.log('[ServiceWorker] Push received:', event);
 
   let data = {
-    title: 'VitalConnect',
+    title: 'SIDOT',
     body: 'Nova notificacao',
     icon: '/icons/icon-192x192.png',
     badge: '/icons/badge-72x72.png',
@@ -58,7 +58,7 @@ self.addEventListener('push', (event) => {
     badge: data.badge,
     vibrate: [200, 100, 200],
     data: data.data,
-    tag: data.data?.occurrence_id || 'vitalconnect-notification',
+    tag: data.data?.occurrence_id || 'sidot-notification',
     renotify: true,
     requireInteraction: true,
     actions: [

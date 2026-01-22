@@ -31,12 +31,12 @@ Implementar integracao com gateway SMS (Twilio) para envio de alertas criticos d
 
 **Worker SMS com Fila Redis**
 - Criar `SMSQueueWorker` seguindo exatamente o padrao de `EmailQueueWorker` existente
-- Usar Redis key `vitalconnect:sms_queue` para fila e `vitalconnect:sms_processing` para processamento
+- Usar Redis key `sidot:sms_queue` para fila e `sidot:sms_processing` para processamento
 - Implementar backoff exponencial: 1s, 2s, 4s, 8s, 16s (5 tentativas antes de DLQ)
 - Criar struct `SMSQueueItem` com campos: `id`, `occurrence_id`, `user_id`, `phone_number`, `message`, `retries`, `created_at`, `last_attempt_at`, `next_retry_at`, `error`
 
 **Template de Mensagem SMS**
-- Template fixo: `[VitalConnect] ALERTA CRITICO: Obito PCR detectado. Hosp: {hospital_name} Idade: {age} Janela: {hours_left}h restantes. Acao: {short_link}`
+- Template fixo: `[SIDOT] ALERTA CRITICO: Obito PCR detectado. Hosp: {hospital_name} Idade: {age} Janela: {hours_left}h restantes. Acao: {short_link}`
 - Criar funcao `BuildSMSMessage()` que recebe dados da ocorrencia e retorna string formatada
 - Gerar short link para URL da ocorrencia (ex: `/ocorrencias/{id}`)
 - Limite de 160 caracteres para evitar fragmentacao

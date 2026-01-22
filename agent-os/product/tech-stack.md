@@ -2,7 +2,7 @@
 
 ## Visao Geral da Arquitetura
 
-O VitalConnect utiliza uma arquitetura orientada a eventos com servicos desacoplados, priorizando alta disponibilidade, baixa latencia e facilidade de implantacao em ambientes hospitalares com recursos limitados.
+O SIDOT utiliza uma arquitetura orientada a eventos com servicos desacoplados, priorizando alta disponibilidade, baixa latencia e facilidade de implantacao em ambientes hospitalares com recursos limitados.
 
 ---
 

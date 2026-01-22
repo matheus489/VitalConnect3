@@ -1,4 +1,4 @@
-module github.com/vitalconnect/backend
+module github.com/sidot/backend
 
 go 1.21
 

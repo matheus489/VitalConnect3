@@ -22,7 +22,7 @@ CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 CREATE INDEX IF NOT EXISTS idx_users_ativo ON users(ativo);
 
 -- Comments
-COMMENT ON TABLE users IS 'Usuarios do sistema VitalConnect';
+COMMENT ON TABLE users IS 'Usuarios do sistema SIDOT';
 COMMENT ON COLUMN users.role IS 'Perfil do usuario: operador, gestor ou admin';
 COMMENT ON COLUMN users.hospital_id IS 'Hospital vinculado (opcional para admin)';
 COMMENT ON COLUMN users.password_hash IS 'Hash bcrypt da senha (cost factor 12)';

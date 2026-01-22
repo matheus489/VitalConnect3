@@ -139,7 +139,7 @@ function CreateTenantDialog({ open, onClose, onCreated }: CreateTenantDialogProp
         <DialogHeader>
           <DialogTitle>Criar Novo Tenant</DialogTitle>
           <DialogDescription className="text-slate-400">
-            Adicione um novo tenant ao sistema VitalConnect
+            Adicione um novo tenant ao sistema SIDOT
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">

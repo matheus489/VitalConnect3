@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/vitalconnect/backend/internal/middleware"
+	"github.com/sidot/backend/internal/middleware"
 )
 
 func TestTenantFilter(t *testing.T) {

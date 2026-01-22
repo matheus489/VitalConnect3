@@ -350,7 +350,7 @@ export default function ContactPage() {
               className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4"
             >
               Estamos prontos para responder suas duvidas e apresentar como o
-              <span className="text-primary font-semibold"> VitalConnect</span> pode transformar
+              <span className="text-primary font-semibold"> SIDOT</span> pode transformar
               a captacao de corneas na sua instituicao
             </motion.p>
 
@@ -599,9 +599,9 @@ export default function ContactPage() {
               <ContactCard
                 icon={Mail}
                 title="Email"
-                content="contato@vitalconnect.com.br"
+                content="contato@sidot.com.br"
                 description="Resposta em ate 24 horas uteis"
-                href="mailto:contato@vitalconnect.com.br"
+                href="mailto:contato@sidot.com.br"
                 delay={0}
               />
 
@@ -677,7 +677,7 @@ export default function ContactPage() {
           >
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">Links Rapidos</h2>
-              <p className="text-muted-foreground">Acesse informacoes importantes sobre o VitalConnect</p>
+              <p className="text-muted-foreground">Acesse informacoes importantes sobre o SIDOT</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -751,7 +751,7 @@ export default function ContactPage() {
                   <TeamMemberCard
                     name="Carlos Eduardo"
                     role="Suporte Tecnico"
-                    email="suporte@vitalconnect.com.br"
+                    email="suporte@sidot.com.br"
                     delay={0.2}
                   />
                 </div>
@@ -854,7 +854,7 @@ export default function ContactPage() {
             >
               <div className="flex items-center gap-2 mb-4">
                 <Heart className="h-6 w-6" />
-                <span className="text-xl font-bold">VitalConnect</span>
+                <span className="text-xl font-bold">SIDOT</span>
               </div>
               <p className="text-white/80 text-sm">
                 Transformando a captacao de corneas atraves da tecnologia e salvando vidas.
@@ -870,7 +870,7 @@ export default function ContactPage() {
               <div className="space-y-2 text-white/80 text-sm">
                 <p className="flex items-center gap-2">
                   <Mail className="h-4 w-4" />
-                  contato@vitalconnect.com.br
+                  contato@sidot.com.br
                 </p>
                 <p className="flex items-center gap-2">
                   <Phone className="h-4 w-4" />
@@ -907,7 +907,7 @@ export default function ContactPage() {
           </div>
           <div className="border-t border-white/20 pt-8 text-center">
             <p className="text-white/60 text-sm">
-              VitalConnect - Sistema de Captacao de Corneas
+              SIDOT - Sistema de Captacao de Corneas
             </p>
             <p className="text-white/40 text-sm mt-2">
               Desenvolvido para o bem da saude publica

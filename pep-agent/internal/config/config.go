@@ -31,7 +31,7 @@ type DatabaseConfig struct {
 	SSLMode  string `yaml:"ssl_mode"` // disable, require, verify-full
 }
 
-// MappingConfig defines the field mapping from PEP to VitalConnect
+// MappingConfig defines the field mapping from PEP to SIDOT
 type MappingConfig struct {
 	SourceTable  string       `yaml:"source_table"`  // e.g., "TASY.TB_PACIENTE_OBITO"
 	Fields       FieldMapping `yaml:"fields"`
@@ -39,7 +39,7 @@ type MappingConfig struct {
 	CustomQuery  string       `yaml:"custom_query"`  // optional: override auto-generated query
 }
 
-// FieldMapping maps PEP database columns to VitalConnect standard fields
+// FieldMapping maps PEP database columns to SIDOT standard fields
 type FieldMapping struct {
 	// Required fields
 	ID             string `yaml:"id"`              // unique identifier in source
@@ -60,9 +60,9 @@ type FieldMapping struct {
 	IdentificacaoDesconhecida string `yaml:"identificacao_desconhecida"` // 'S' or 'N'
 }
 
-// CentralConfig defines the connection to the VitalConnect central server
+// CentralConfig defines the connection to the SIDOT central server
 type CentralConfig struct {
-	URL      string `yaml:"url"`      // e.g., "https://vitalconnect.example.com/api/v1/pep/eventos"
+	URL      string `yaml:"url"`      // e.g., "https://sidot.example.com/api/v1/pep/eventos"
 	APIKey   string `yaml:"api_key"`  // supports ${ENV_VAR} syntax
 	Insecure bool   `yaml:"insecure"` // skip TLS verification (dev only)
 	Timeout  string `yaml:"timeout"`  // request timeout (default: 30s)
@@ -70,7 +70,7 @@ type CentralConfig struct {
 
 // AgentSettings defines operational parameters for the agent
 type AgentSettings struct {
-	HospitalID     string `yaml:"hospital_id"`     // UUID of the hospital in VitalConnect
+	HospitalID     string `yaml:"hospital_id"`     // UUID of the hospital in SIDOT
 	PollInterval   string `yaml:"poll_interval"`   // polling interval (default: 3s)
 	StateFile      string `yaml:"state_file"`      // path to watermark state file
 	LogLevel       string `yaml:"log_level"`       // debug, info, warn, error

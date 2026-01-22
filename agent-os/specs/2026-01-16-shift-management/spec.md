@@ -2,7 +2,7 @@
 
 ## Goal
 
-Implementar sistema de gerenciamento de escalas de plantao para o VitalConnect, permitindo que hospitais configurem turnos de trabalho e direcionem notificacoes de obitos elegiveis para a equipe correta baseado no horario do evento.
+Implementar sistema de gerenciamento de escalas de plantao para o SIDOT, permitindo que hospitais configurem turnos de trabalho e direcionem notificacoes de obitos elegiveis para a equipe correta baseado no horario do evento.
 
 ## User Stories
 
@@ -64,7 +64,7 @@ Implementar sistema de gerenciamento de escalas de plantao para o VitalConnect, 
 
 ## Visual Design
 
-Nenhum asset visual foi fornecido. Seguir padroes visuais existentes do sistema (shadcn/ui, cores do VitalConnect).
+Nenhum asset visual foi fornecido. Seguir padroes visuais existentes do sistema (shadcn/ui, cores do SIDOT).
 
 ## Existing Code to Leverage
 

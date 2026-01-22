@@ -11,7 +11,7 @@ import (
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
-	"github.com/vitalconnect/backend/config"
+	"github.com/sidot/backend/config"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -129,12 +129,12 @@ func main() {
 
 	if seedAll {
 		log.Println("\n========================================")
-		log.Println("VitalConnect seed data created successfully!")
+		log.Println("SIDOT seed data created successfully!")
 		log.Println("========================================")
 		log.Println("\nTest credentials:")
-		log.Println("  Admin:    admin@vitalconnect.gov.br / demo123")
-		log.Println("  Gestor:   gestor@vitalconnect.gov.br / demo123")
-		log.Println("  Operador: operador@vitalconnect.gov.br / demo123")
+		log.Println("  Admin:    admin@sidot.gov.br / demo123")
+		log.Println("  Gestor:   gestor@sidot.gov.br / demo123")
+		log.Println("  Operador: operador@sidot.gov.br / demo123")
 		log.Println("\nHospitals:")
 		log.Println("  HGG:  Hospital Geral de Goiania")
 		log.Println("  HUGO: Hospital de Urgencias de Goias")
@@ -255,21 +255,21 @@ func seedUsers(ctx context.Context, db *sql.DB) error {
 	}{
 		{
 			ID:          uuid.MustParse("aaaa0000-0000-0000-0000-000000000001"),
-			Email:       "admin@vitalconnect.gov.br",
+			Email:       "admin@sidot.gov.br",
 			Nome:        "Administrador Sistema",
 			Role:        "admin",
 			HospitalIDs: []uuid.UUID{hggID, hugoID}, // Admin has access to all hospitals
 		},
 		{
 			ID:          uuid.MustParse("aaaa0000-0000-0000-0000-000000000002"),
-			Email:       "gestor@vitalconnect.gov.br",
+			Email:       "gestor@sidot.gov.br",
 			Nome:        "Gestor Central Transplantes",
 			Role:        "gestor",
 			HospitalIDs: []uuid.UUID{hggID, hugoID}, // Gestor has access to all hospitals
 		},
 		{
 			ID:          uuid.MustParse("aaaa0000-0000-0000-0000-000000000003"),
-			Email:       "operador@vitalconnect.gov.br",
+			Email:       "operador@sidot.gov.br",
 			Nome:        "Operador Plantao",
 			Role:        "operador",
 			HospitalIDs: []uuid.UUID{hggID}, // Operador only has access to HGG

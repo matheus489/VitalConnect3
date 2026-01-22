@@ -2,7 +2,7 @@
 
 ## Visao Geral
 
-O desenvolvimento do VitalConnect segue uma abordagem incremental, priorizando a entrega de valor o mais rapido possivel. O foco inicial e criar um fluxo funcional de ponta a ponta (deteccao -> triagem -> notificacao) antes de adicionar funcionalidades secundarias.
+O desenvolvimento do SIDOT segue uma abordagem incremental, priorizando a entrega de valor o mais rapido possivel. O foco inicial e criar um fluxo funcional de ponta a ponta (deteccao -> triagem -> notificacao) antes de adicionar funcionalidades secundarias.
 
 ---
 

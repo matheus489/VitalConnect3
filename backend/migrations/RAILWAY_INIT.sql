@@ -1,5 +1,5 @@
 -- =====================================================
--- VITALCONNECT - SCRIPT DE INICIALIZACAO PARA RAILWAY
+-- SIDOT - SCRIPT DE INICIALIZACAO PARA RAILWAY
 -- Execute este script no PostgreSQL do Railway
 -- =====================================================
 
@@ -273,9 +273,9 @@ INSERT INTO users (id, tenant_id, email, password_hash, nome, role, ativo)
 VALUES (
     'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
     '00000000-0000-0000-0000-000000000001',
-    'admin@vitalconnect.gov.br',
+    'admin@sidot.gov.br',
     '$2a$10$N9qo8uLOickgx2ZMRZoMye/eDKsYqLhLrJC9L7uVvKdLdJYK6H5VO',
-    'Administrador VitalConnect',
+    'Administrador SIDOT',
     'admin',
     true
 )
@@ -283,6 +283,6 @@ ON CONFLICT (email) DO NOTHING;
 
 -- =====================================================
 -- FIM DO SCRIPT
--- Usuario: admin@vitalconnect.gov.br
+-- Usuario: admin@sidot.gov.br
 -- Senha: admin123
 -- =====================================================

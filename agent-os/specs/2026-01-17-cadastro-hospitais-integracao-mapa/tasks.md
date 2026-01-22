@@ -12,8 +12,8 @@ Estimated Total Complexity: Medium-High
 **Dependencies:** None
 **Complexity:** Low
 **Files to modify:**
-- `/home/matheus_rubem/VitalConnect/backend/migrations/018_add_telefone_to_hospitals.sql` (new)
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/hospital.go`
+- `/home/matheus_rubem/SIDOT/backend/migrations/018_add_telefone_to_hospitals.sql` (new)
+- `/home/matheus_rubem/SIDOT/backend/internal/models/hospital.go`
 
 - [x] 1.0 Complete database layer for telefone field
   - [x] 1.1 Write 3-4 focused tests for Hospital model with telefone
@@ -53,7 +53,7 @@ Estimated Total Complexity: Medium-High
 **Dependencies:** Task Group 1
 **Complexity:** Low
 **Files to modify:**
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/hospital_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/hospital_repository.go`
 
 - [x] 2.0 Complete repository layer updates
   - [x] 2.1 Write 2-3 focused tests for repository telefone handling
@@ -82,8 +82,8 @@ Estimated Total Complexity: Medium-High
 **Dependencies:** Task Group 2
 **Complexity:** Low
 **Files to modify:**
-- `/home/matheus_rubem/VitalConnect/backend/internal/handlers/hospitals.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/hospital.go` (validation rules)
+- `/home/matheus_rubem/SIDOT/backend/internal/handlers/hospitals.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/models/hospital.go` (validation rules)
 
 - [x] 3.0 Complete backend validation for coordinates requirement
   - [x] 3.1 Write 3-4 focused tests for API validation
@@ -118,8 +118,8 @@ Estimated Total Complexity: Medium-High
 **Dependencies:** Task Group 3
 **Complexity:** Low
 **Files to modify:**
-- `/home/matheus_rubem/VitalConnect/frontend/src/types/index.ts`
-- `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useHospitals.ts`
+- `/home/matheus_rubem/SIDOT/frontend/src/types/index.ts`
+- `/home/matheus_rubem/SIDOT/frontend/src/hooks/useHospitals.ts`
 
 - [x] 4.0 Complete frontend types and API integration
   - [x] 4.1 Write 2-3 focused tests for hospital mutations
@@ -161,8 +161,8 @@ Estimated Total Complexity: Medium-High
 **Dependencies:** None (can run in parallel with Task Groups 1-4)
 **Complexity:** Medium
 **Files to modify:**
-- `/home/matheus_rubem/VitalConnect/frontend/src/services/nominatim.ts` (new)
-- `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useGeocoding.ts` (new)
+- `/home/matheus_rubem/SIDOT/frontend/src/services/nominatim.ts` (new)
+- `/home/matheus_rubem/SIDOT/frontend/src/hooks/useGeocoding.ts` (new)
 
 - [x] 5.0 Complete Nominatim geocoding integration
   - [x] 5.1 Write 3-4 focused tests for geocoding service
@@ -200,7 +200,7 @@ Estimated Total Complexity: Medium-High
 **Dependencies:** Task Group 5
 **Complexity:** Medium-High
 **Files to modify:**
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/map/LocationPickerMap.tsx` (new)
+- `/home/matheus_rubem/SIDOT/frontend/src/components/map/LocationPickerMap.tsx` (new)
 
 - [x] 6.0 Complete interactive map component for location selection
   - [x] 6.1 Write 3-4 focused tests for LocationPickerMap
@@ -245,7 +245,7 @@ Estimated Total Complexity: Medium-High
 **Dependencies:** Task Groups 4, 5, 6
 **Complexity:** High
 **Files to modify:**
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/forms/HospitalForm.tsx` (new)
+- `/home/matheus_rubem/SIDOT/frontend/src/components/forms/HospitalForm.tsx` (new)
 
 - [x] 7.0 Complete hospital registration/edit form
   - [x] 7.1 Write 4-5 focused tests for HospitalForm
@@ -310,7 +310,7 @@ Estimated Total Complexity: Medium-High
 **Dependencies:** Task Group 7
 **Complexity:** Medium
 **Files to modify:**
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/hospitals/HospitalFormDrawer.tsx` (new)
+- `/home/matheus_rubem/SIDOT/frontend/src/components/hospitals/HospitalFormDrawer.tsx` (new)
 
 - [x] 8.0 Complete drawer wrapper for hospital form
   - [x] 8.1 Write 2-3 focused tests for HospitalFormDrawer
@@ -353,7 +353,7 @@ Estimated Total Complexity: Medium-High
 **Dependencies:** Task Group 8
 **Complexity:** Medium
 **Files to modify:**
-- `/home/matheus_rubem/VitalConnect/frontend/src/app/dashboard/hospitals/page.tsx`
+- `/home/matheus_rubem/SIDOT/frontend/src/app/dashboard/hospitals/page.tsx`
 
 - [x] 9.0 Complete hospitals page with create/edit functionality
   - [x] 9.1 Write 3-4 focused tests for hospitals page
@@ -506,17 +506,17 @@ Phase 6: Testing
 ## Files Created/Modified Summary
 
 ### New Files
-- `/home/matheus_rubem/VitalConnect/backend/migrations/018_add_telefone_to_hospitals.sql`
-- `/home/matheus_rubem/VitalConnect/frontend/src/services/nominatim.ts`
-- `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useGeocoding.ts`
-- `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useDebounce.ts`
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/map/LocationPickerMap.tsx`
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/forms/HospitalForm.tsx`
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/hospitals/HospitalFormDrawer.tsx`
+- `/home/matheus_rubem/SIDOT/backend/migrations/018_add_telefone_to_hospitals.sql`
+- `/home/matheus_rubem/SIDOT/frontend/src/services/nominatim.ts`
+- `/home/matheus_rubem/SIDOT/frontend/src/hooks/useGeocoding.ts`
+- `/home/matheus_rubem/SIDOT/frontend/src/hooks/useDebounce.ts`
+- `/home/matheus_rubem/SIDOT/frontend/src/components/map/LocationPickerMap.tsx`
+- `/home/matheus_rubem/SIDOT/frontend/src/components/forms/HospitalForm.tsx`
+- `/home/matheus_rubem/SIDOT/frontend/src/components/hospitals/HospitalFormDrawer.tsx`
 
 ### Modified Files
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/hospital.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/hospital_repository.go`
-- `/home/matheus_rubem/VitalConnect/frontend/src/types/index.ts`
-- `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useHospitals.ts`
-- `/home/matheus_rubem/VitalConnect/frontend/src/app/dashboard/hospitals/page.tsx`
+- `/home/matheus_rubem/SIDOT/backend/internal/models/hospital.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/hospital_repository.go`
+- `/home/matheus_rubem/SIDOT/frontend/src/types/index.ts`
+- `/home/matheus_rubem/SIDOT/frontend/src/hooks/useHospitals.ts`
+- `/home/matheus_rubem/SIDOT/frontend/src/app/dashboard/hospitals/page.tsx`

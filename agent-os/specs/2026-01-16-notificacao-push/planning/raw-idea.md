@@ -7,7 +7,7 @@ Implementar push notifications via web e/ou app mobile para alertas em tempo rea
 
 ## Context
 
-This is part of VitalConnect - a system for organ donation notification. This feature will:
+This is part of SIDOT - a system for organ donation notification. This feature will:
 - Send push notifications to browsers (Web Push) and/or mobile devices
 - Alert users in real-time even when the app is closed/minimized
 - Work alongside existing email, SMS and dashboard notifications

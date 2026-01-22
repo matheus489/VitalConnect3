@@ -1,4 +1,4 @@
-# VitalConnect - Documentacao Completa
+# SIDOT - Documentacao Completa
 
 Sistema GovTech para deteccao automatica de obitos e notificacao em tempo real de equipes de captacao de orgaos.
 
@@ -22,7 +22,7 @@ Sistema GovTech para deteccao automatica de obitos e notificacao em tempo real d
 
 ## Visao Geral
 
-O VitalConnect e um middleware que integra multiplas fontes de dados hospitalares (PEP - Plataforma de Notificacao de Obitos) e fornece um dashboard completo para gerenciamento de hospitais e rastreamento de ocorrencias de potenciais doadores de orgaos.
+O SIDOT e um middleware que integra multiplas fontes de dados hospitalares (PEP - Plataforma de Notificacao de Obitos) e fornece um dashboard completo para gerenciamento de hospitais e rastreamento de ocorrencias de potenciais doadores de orgaos.
 
 ### Objetivos Principais
 
@@ -489,7 +489,7 @@ CREATE TYPE audit_severity AS ENUM ('INFO', 'WARN', 'CRITICAL');
 ### Estrutura de Arquivos
 
 ```
-VitalConnect/
+SIDOT/
 ├── backend/
 │   ├── Dockerfile
 │   ├── cmd/api/main.go
@@ -582,7 +582,7 @@ CMD ["node", "server.js"]
 | `SMTP_PORT` | Porta SMTP | `587` |
 | `SMTP_USER` | Usuario SMTP | `user@gmail.com` |
 | `SMTP_PASSWORD` | Senha SMTP | `...` |
-| `SMTP_FROM` | Email remetente | `noreply@vitalconnect.com` |
+| `SMTP_FROM` | Email remetente | `noreply@sidot.com` |
 
 ### Frontend
 
@@ -599,9 +599,9 @@ CMD ["node", "server.js"]
 1. Acesse [render.com](https://render.com)
 2. Clique em **New +** > **PostgreSQL**
 3. Configure:
-   - Name: `vitalconnect-db`
-   - Database: `vitalconnect_db`
-   - User: `vitalconnect_db_user`
+   - Name: `sidot-db`
+   - Database: `sidot_db`
+   - User: `sidot_db_user`
    - Region: Ohio (US East)
    - Instance Type: Free
 
@@ -609,7 +609,7 @@ CMD ["node", "server.js"]
 
 1. Clique em **New +** > **Redis**
 2. Configure:
-   - Name: `vitalconnect-redis`
+   - Name: `sidot-redis`
    - Region: Ohio (US East)
    - Instance Type: Free
 
@@ -618,7 +618,7 @@ CMD ["node", "server.js"]
 1. Clique em **New +** > **Web Service**
 2. Conecte ao repositorio GitHub
 3. Configure:
-   - Name: `vitalconnect-backend`
+   - Name: `sidot-backend`
    - Root Directory: `backend`
    - Runtime: Docker
    - Dockerfile Path: `./Dockerfile`
@@ -664,7 +664,7 @@ PGPASSWORD=<senha> psql -h <host> -U <user> <database> -f backend/migrations/RAI
 1. Clique em **New +** > **Web Service**
 2. Conecte ao mesmo repositorio GitHub
 3. Configure:
-   - Name: `vitalconnect-frontend`
+   - Name: `sidot-frontend`
    - Root Directory: `frontend`
    - Runtime: Docker
    - Dockerfile Path: `./Dockerfile`
@@ -672,22 +672,22 @@ PGPASSWORD=<senha> psql -h <host> -U <user> <database> -f backend/migrations/RAI
 
 4. Adicione variavel de ambiente:
 ```
-NEXT_PUBLIC_API_URL=https://vitalconnect-backend.onrender.com/api/v1
+NEXT_PUBLIC_API_URL=https://sidot-backend.onrender.com/api/v1
 ```
 
 ### 6. Atualizar CORS no Backend
 
 Apos obter a URL do frontend, atualize `CORS_ORIGINS` no backend:
 ```
-CORS_ORIGINS=https://vitalconnect-frontend.onrender.com
+CORS_ORIGINS=https://sidot-frontend.onrender.com
 ```
 
 ### 7. Acessar o Sistema
 
-**URL**: `https://vitalconnect-frontend.onrender.com`
+**URL**: `https://sidot-frontend.onrender.com`
 
 **Credenciais padrao**:
-- Email: `admin@vitalconnect.gov.br`
+- Email: `admin@sidot.gov.br`
 - Senha: `admin123`
 
 **IMPORTANTE**: Altere a senha apos primeiro acesso!
@@ -711,7 +711,7 @@ go run -e 'package main; import ("fmt"; "golang.org/x/crypto/bcrypt"); func main
 ```sql
 UPDATE users
 SET password_hash = '$2a$10$...'
-WHERE email = 'admin@vitalconnect.gov.br';
+WHERE email = 'admin@sidot.gov.br';
 ```
 
 ### Criar Ocorrencia de Teste
@@ -759,4 +759,4 @@ INSERT INTO occurrences (
 
 ---
 
-*Documentacao gerada automaticamente - VitalConnect v1.0.0*
+*Documentacao gerada automaticamente - SIDOT v1.0.0*

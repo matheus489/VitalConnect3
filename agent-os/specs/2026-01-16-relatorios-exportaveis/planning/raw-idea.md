@@ -6,7 +6,7 @@
 Geração de relatórios em PDF e Excel com dados de ocorrências e métricas para prestação de contas.
 
 ## Context
-This is part of VitalConnect - a system for organ donation notification.
+This is part of SIDOT - a system for organ donation notification.
 
 ## Key Capabilities
 - Generate PDF reports with occurrence data and metrics

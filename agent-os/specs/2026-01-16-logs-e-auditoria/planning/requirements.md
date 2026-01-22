@@ -2,7 +2,7 @@
 
 ## Initial Description
 
-Sistema de logs e auditoria para o VitalConnect, conforme item 18 do roadmap (Fase 2): "Registro detalhado de todas as acoes do sistema e usuarios, com tela de consulta para rastreabilidade."
+Sistema de logs e auditoria para o SIDOT, conforme item 18 do roadmap (Fase 2): "Registro detalhado de todas as acoes do sistema e usuarios, com tela de consulta para rastreabilidade."
 
 Este sistema e critico para:
 - Conformidade com LGPD e normas do CFM
@@ -54,7 +54,7 @@ Este sistema e critico para:
 **Q7:** Como tratar eventos automaticos do sistema (ex: triagem automatica)?
 **Answer:** Tabela unificada (audit_logs) com autor "System":
 - usuario_id: null
-- actor_name: "VitalConnect Bot"
+- actor_name: "SIDOT Bot"
 - acao: ex. "triagem.rejeicao"
 - Permite timeline completa: "Bot rejeitou -> Humano forcou aprovacao"
 
@@ -145,7 +145,7 @@ N/A - Usuario confirmou que nao ha mockups ou wireframes para esta feature.
 - API REST para consulta de logs com filtros
 - Tela de listagem para Admin e Gestor
 - Timeline de eventos dentro de Ocorrencia para Operador
-- Registro automatico de eventos do sistema ("VitalConnect Bot")
+- Registro automatico de eventos do sistema ("SIDOT Bot")
 - Campo de severidade (INFO, WARN, CRITICAL)
 - Politica de imutabilidade (WORM simulado)
 - Retencao de 5 anos

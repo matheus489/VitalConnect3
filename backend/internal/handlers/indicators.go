@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/vitalconnect/backend/internal/middleware"
-	"github.com/vitalconnect/backend/internal/repository"
+	"github.com/sidot/backend/internal/middleware"
+	"github.com/sidot/backend/internal/repository"
 )
 
 var indicatorsRepo *repository.IndicatorsRepository

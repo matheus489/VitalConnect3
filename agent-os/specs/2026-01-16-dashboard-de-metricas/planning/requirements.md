@@ -2,7 +2,7 @@
 
 ## Initial Description
 
-**Feature:** Dashboard de Metricas para VitalConnect
+**Feature:** Dashboard de Metricas para SIDOT
 
 **Contexto:** Sistema de notificacao de doacao de orgaos com deadline de demonstracao em 26 de Janeiro (MVP/video).
 
@@ -69,7 +69,7 @@ Nenhuma pergunta de follow-up foi necessaria. As respostas do usuario foram comp
 ## Visual Assets
 
 ### Files Provided:
-Nenhum arquivo visual encontrado na pasta `/home/matheus_rubem/VitalConnect/agent-os/specs/2026-01-16-dashboard-de-metricas/planning/visuals/`.
+Nenhum arquivo visual encontrado na pasta `/home/matheus_rubem/SIDOT/agent-os/specs/2026-01-16-dashboard-de-metricas/planning/visuals/`.
 
 ### Visual Insights:
 Nao aplicavel - usuario confirmou que nao ha visual assets.

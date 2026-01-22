@@ -1,5 +1,5 @@
 """
-Base Tool Class for VitalConnect AI Assistant.
+Base Tool Class for SIDOT AI Assistant.
 
 Provides abstract base class for all tools with:
 - Permission validation before execution
@@ -157,7 +157,7 @@ class ToolContext:
 
 class BaseTool(ABC):
     """
-    Abstract base class for all VitalConnect AI tools.
+    Abstract base class for all SIDOT AI tools.
 
     Provides common functionality for:
     - Permission validation

@@ -67,7 +67,7 @@ func Load() (*Config, error) {
 		ServerPort:  getEnv("SERVER_PORT", "8080"),
 
 		// Database
-		DatabaseURL: getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/vitalconnect?sslmode=disable"),
+		DatabaseURL: getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/sidot?sslmode=disable"),
 
 		// Redis
 		RedisURL: getEnv("REDIS_URL", "redis://localhost:6379/0"),
@@ -83,7 +83,7 @@ func Load() (*Config, error) {
 		SMTPPort:     getIntEnv("SMTP_PORT", 587),
 		SMTPUser:     getEnv("SMTP_USER", ""),
 		SMTPPassword: getEnv("SMTP_PASS", ""),
-		SMTPFrom:     getEnv("SMTP_FROM", "noreply@vitalconnect.gov.br"),
+		SMTPFrom:     getEnv("SMTP_FROM", "noreply@sidot.gov.br"),
 
 		// Twilio (SMS)
 		TwilioAccountSID:  getEnv("TWILIO_ACCOUNT_SID", ""),

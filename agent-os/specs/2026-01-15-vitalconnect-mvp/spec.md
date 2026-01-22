@@ -1,8 +1,8 @@
-# Specification: VitalConnect MVP
+# Specification: SIDOT MVP
 
 ## Goal
 
-Desenvolver o MVP do VitalConnect, um middleware GovTech que detecta automaticamente obitos em sistemas hospitalares, aplica triagem inteligente para elegibilidade de doacao de corneas, e notifica equipes de captacao em tempo real dentro da janela critica de 6 horas.
+Desenvolver o MVP do SIDOT, um middleware GovTech que detecta automaticamente obitos em sistemas hospitalares, aplica triagem inteligente para elegibilidade de doacao de corneas, e notifica equipes de captacao em tempo real dentro da janela critica de 6 horas.
 
 ## User Stories
 
@@ -90,7 +90,7 @@ Desenvolver o MVP do VitalConnect, um middleware GovTech que detecta automaticam
 - 1 obito programado para T+10 segundos apos inicio (captura ao vivo no video)
 - Distribuir obitos entre HGG e HUGO
 - Incluir casos elegiveis e inelegiveis para demonstrar triagem
-- Usuarios de teste: admin@vitalconnect.gov.br, gestor@vitalconnect.gov.br, operador@vitalconnect.gov.br
+- Usuarios de teste: admin@sidot.gov.br, gestor@sidot.gov.br, operador@sidot.gov.br
 - Senha padrao para todos: "demo123" (apenas ambiente de desenvolvimento)
 
 ## Visual Design

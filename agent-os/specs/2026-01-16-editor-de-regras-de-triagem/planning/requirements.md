@@ -4,7 +4,7 @@
 
 Interface visual para gestores criarem e editarem regras de elegibilidade sem necessidade de alteracao de codigo.
 
-**Contexto:** Esta funcionalidade faz parte do VitalConnect - sistema de notificacao de doacao de orgaos. A feature permitira:
+**Contexto:** Esta funcionalidade faz parte do SIDOT - sistema de notificacao de doacao de orgaos. A feature permitira:
 - Interface visual para gestores criarem/editarem regras de elegibilidade
 - Configuracao de criterios como: idade maxima, causas de obito excludentes, tempo maximo decorrido
 - Nenhuma alteracao de codigo necessaria para modificar regras

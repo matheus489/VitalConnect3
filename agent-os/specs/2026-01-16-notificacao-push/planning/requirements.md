@@ -5,7 +5,7 @@
 Implementar push notifications via web e/ou app mobile para alertas em tempo real mesmo com app fechado.
 
 **Contexto do Produto:**
-- Sistema VitalConnect para notificacao de captacao de orgaos e tecidos
+- Sistema SIDOT para notificacao de captacao de orgaos e tecidos
 - Janela critica de 6 horas para captacao de corneas
 - Equipes de plantao 24h que precisam de alertas imediatos
 - Complementa canais existentes (email, SMS, dashboard)
@@ -27,7 +27,7 @@ Implementar push notifications via web e/ou app mobile para alertas em tempo rea
 **Answer:** Solicitacao via Botao no Dashboard. UX: Componente de alerta no topo: "Ative as notificacoes para nao perder alertas criticos" [Botao: Ativar]. Motivo: Navegadores bloqueiam solicitacoes automaticas no login. Fluxo: Clicar -> Browser pede permissao -> Obter Token FCM -> Enviar para Backend (tabela push_subscriptions).
 
 **Q5:** Qual o conteudo da notificacao - formato simples ou dados completos do caso?
-**Answer:** Alerta Visual Forte. Titulo: "ALERTA DE TRANSPLANTE" (emoji vermelho se FCM permitir). Corpo: "Hosp: {hospital_name} | Paciente: {age} anos. Toque para iniciar protocolo." Icone: Logo VitalConnect (fundo branco para contraste).
+**Answer:** Alerta Visual Forte. Titulo: "ALERTA DE TRANSPLANTE" (emoji vermelho se FCM permitir). Corpo: "Hosp: {hospital_name} | Paciente: {age} anos. Toque para iniciar protocolo." Icone: Logo SIDOT (fundo branco para contraste).
 
 **Q6:** Service Workers serao necessarios - ja existe um ou precisamos criar?
 **Answer:** Sim, obrigatorio. Implementacao: next-pwa ou firebase-messaging-sw.js manual na pasta public. Requisito tecnico inevitavel para Push.
@@ -85,7 +85,7 @@ Nao aplicavel - nenhum asset visual fornecido.
 **Conteudo da Notificacao:**
 - Titulo: "ALERTA DE TRANSPLANTE" (com emoji vermelho se suportado)
 - Corpo: "Hosp: {hospital_name} | Paciente: {age} anos. Toque para iniciar protocolo."
-- Icone: Logo VitalConnect com fundo branco
+- Icone: Logo SIDOT com fundo branco
 - Deep link: /ocorrencias/{id_ocorrencia}
 
 **Backend:**

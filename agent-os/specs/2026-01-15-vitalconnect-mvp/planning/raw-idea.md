@@ -1,8 +1,8 @@
-# VitalConnect MVP - Ideia Inicial
+# SIDOT MVP - Ideia Inicial
 
 ## Descrição da Feature
 
-MVP completo do VitalConnect incluindo:
+MVP completo do SIDOT incluindo:
 
 1. Detecção automática de óbitos via integração com sistemas hospitalares
 2. Triagem inteligente para elegibilidade de doação de córneas

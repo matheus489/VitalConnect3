@@ -55,7 +55,7 @@ const settingSections: SettingSection[] = [
       { key: 'user', label: 'Usuario', type: 'email', placeholder: 'email@example.com', required: true },
       { key: 'password', label: 'Senha', type: 'password', placeholder: '********', required: true, sensitive: true },
       { key: 'from_address', label: 'Email de Origem', type: 'email', placeholder: 'noreply@example.com', required: true },
-      { key: 'from_name', label: 'Nome de Origem', type: 'text', placeholder: 'VitalConnect' },
+      { key: 'from_name', label: 'Nome de Origem', type: 'text', placeholder: 'SIDOT' },
     ],
   },
   {

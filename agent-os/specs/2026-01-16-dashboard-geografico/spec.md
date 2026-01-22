@@ -70,28 +70,28 @@ Nenhum arquivo visual foi fornecido.
 
 ## Existing Code to Leverage
 
-**Hook useSSE (`/home/matheus_rubem/VitalConnect/frontend/src/hooks/useSSE.tsx`)**
+**Hook useSSE (`/home/matheus_rubem/SIDOT/frontend/src/hooks/useSSE.tsx`)**
 - Hook existente para conexao SSE com backend
 - Reutilizar para receber eventos de novas ocorrencias e atualizacoes de status em tempo real
 - Ja implementa reconexao automatica e gerenciamento de estado de conexao
 
-**DashboardLayout (`/home/matheus_rubem/VitalConnect/frontend/src/components/layout/DashboardLayout.tsx`)**
+**DashboardLayout (`/home/matheus_rubem/SIDOT/frontend/src/components/layout/DashboardLayout.tsx`)**
 - Layout base do dashboard com Sidebar, Header e area de conteudo principal
 - Ja integrado com useSSE para notificacoes globais
 - Usar como wrapper para a pagina do mapa
 
-**OccurrenceDetailModal (`/home/matheus_rubem/VitalConnect/frontend/src/components/dashboard/OccurrenceDetailModal.tsx`)**
+**OccurrenceDetailModal (`/home/matheus_rubem/SIDOT/frontend/src/components/dashboard/OccurrenceDetailModal.tsx`)**
 - Modal existente para exibir detalhes completos de uma ocorrencia
 - Pode ser reutilizado ou servir de referencia para o Drawer de resumo do mapa
 - Padrao de Dialog/Modal ja estabelecido com shadcn/ui
 
-**Hooks useShifts e useTodayShifts (`/home/matheus_rubem/VitalConnect/frontend/src/hooks/useShifts.ts`)**
+**Hooks useShifts e useTodayShifts (`/home/matheus_rubem/SIDOT/frontend/src/hooks/useShifts.ts`)**
 - Hooks existentes para buscar escalas de plantao
 - useTodayShifts retorna operadores escalados para o dia atual com flag is_active
 - Reutilizar para identificar operador responsavel por cada hospital
 
 **Modelo Occurrence e Hospital (Backend)**
-- Modelos existentes em `/home/matheus_rubem/VitalConnect/backend/internal/models/`
+- Modelos existentes em `/home/matheus_rubem/SIDOT/backend/internal/models/`
 - Hospital ja possui campo endereco para extrair coordenadas
 - Occurrence possui JanelaExpiraEm para calculo de tempo restante e urgencia
 

@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/vitalconnect/backend/internal/integration"
-	"github.com/vitalconnect/backend/internal/middleware"
+	"github.com/sidot/backend/internal/integration"
+	"github.com/sidot/backend/internal/middleware"
 )
 
 // setupAIProxyTestRouter creates a test router for AI proxy tests

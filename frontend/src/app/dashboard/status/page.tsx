@@ -126,7 +126,7 @@ export default function StatusPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Status do Sistema</h1>
           <p className="text-muted-foreground">
-            Monitoramento de saude dos servicos do VitalConnect
+            Monitoramento de saude dos servicos do SIDOT
           </p>
         </div>
         <Button

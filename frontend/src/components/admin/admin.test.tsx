@@ -89,12 +89,12 @@ describe('AdminSidebar', () => {
     expect(dashboardLink).toBeInTheDocument();
   });
 
-  it('displays VitalConnect Admin branding', () => {
+  it('displays SIDOT Admin branding', () => {
     render(<AdminSidebar collapsed={false} onToggle={() => {}} />, {
       wrapper: createWrapper(),
     });
 
-    expect(screen.getByText('VitalConnect')).toBeInTheDocument();
+    expect(screen.getByText('SIDOT')).toBeInTheDocument();
     expect(screen.getByText('Admin')).toBeInTheDocument();
   });
 });

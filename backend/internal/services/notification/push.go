@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/vitalconnect/backend/internal/models"
+	"github.com/sidot/backend/internal/models"
 )
 
 // PushConfig holds Firebase Cloud Messaging configuration

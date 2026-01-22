@@ -48,7 +48,7 @@ export interface UseAIChatReturn {
   markAsRead: () => void;
 }
 
-const SESSION_KEY = 'vitalconnect_ai_session_id';
+const SESSION_KEY = 'sidot_ai_session_id';
 
 /**
  * Hook to manage AI chat state and communication

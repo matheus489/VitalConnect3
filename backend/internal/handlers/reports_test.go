@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/vitalconnect/backend/internal/models"
+	"github.com/sidot/backend/internal/models"
 )
 
 func init() {

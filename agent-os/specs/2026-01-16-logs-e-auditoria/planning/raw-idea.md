@@ -7,7 +7,7 @@ Registro detalhado de todas as ações do sistema e usuários, com tela de consu
 
 ## Context
 
-This is part of VitalConnect - a system for organ donation notification. This feature will:
+This is part of SIDOT - a system for organ donation notification. This feature will:
 - Log all system and user actions
 - Provide audit trail for compliance
 - Allow searching/filtering logs

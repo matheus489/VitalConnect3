@@ -1,6 +1,6 @@
-# VitalConnect MVP - Guia de Execucao
+# SIDOT MVP - Guia de Execucao
 
-Este documento contem os comandos necessarios para executar o VitalConnect MVP.
+Este documento contem os comandos necessarios para executar o SIDOT MVP.
 
 ## Pre-requisitos
 
@@ -14,7 +14,7 @@ Este documento contem os comandos necessarios para executar o VitalConnect MVP.
 
 ```bash
 # Na raiz do projeto
-cd /home/matheus_rubem/VitalConnect
+cd /home/matheus_rubem/SIDOT
 
 # Iniciar PostgreSQL e Redis via Docker Compose
 docker-compose up -d
@@ -26,15 +26,15 @@ docker-compose ps
 Saida esperada:
 ```
 NAME                COMMAND                  SERVICE             STATUS
-vitalconnect-db     "docker-entrypoint.s..." postgres            running
-vitalconnect-redis  "docker-entrypoint.s..." redis               running
+sidot-db     "docker-entrypoint.s..." postgres            running
+sidot-redis  "docker-entrypoint.s..." redis               running
 ```
 
 ## 2. Executar Migrations
 
 ```bash
 # Entrar no diretorio do backend
-cd /home/matheus_rubem/VitalConnect/backend
+cd /home/matheus_rubem/SIDOT/backend
 
 # Executar script de migrations
 ./migrations/migrate.sh
@@ -47,7 +47,7 @@ go run migrations/run_migrations.go
 
 ```bash
 # Executar seeder completo (hospitais, usuarios, regras, obitos)
-cd /home/matheus_rubem/VitalConnect/backend
+cd /home/matheus_rubem/SIDOT/backend
 go run cmd/seeder/main.go
 
 # Opcoes do seeder:
@@ -62,9 +62,9 @@ go run cmd/seeder/main.go
 **Dados criados pelo seeder:**
 
 Usuarios:
-- admin@vitalconnect.gov.br (Admin) - Senha: demo123
-- gestor@vitalconnect.gov.br (Gestor) - Senha: demo123
-- operador@vitalconnect.gov.br (Operador) - Senha: demo123
+- admin@sidot.gov.br (Admin) - Senha: demo123
+- gestor@sidot.gov.br (Gestor) - Senha: demo123
+- operador@sidot.gov.br (Operador) - Senha: demo123
 
 Hospitais:
 - HGG: Hospital Geral de Goiania
@@ -79,10 +79,10 @@ Regras de Triagem:
 ## 4. Iniciar Backend
 
 ```bash
-cd /home/matheus_rubem/VitalConnect/backend
+cd /home/matheus_rubem/SIDOT/backend
 
 # Configurar variaveis de ambiente (opcional - usa defaults em desenvolvimento)
-export DATABASE_URL="postgres://postgres:postgres@localhost:5432/vitalconnect?sslmode=disable"
+export DATABASE_URL="postgres://postgres:postgres@localhost:5432/sidot?sslmode=disable"
 export REDIS_URL="redis://localhost:6379/0"
 
 # Iniciar servidor
@@ -91,7 +91,7 @@ go run cmd/api/main.go
 
 Saida esperada:
 ```
-VitalConnect API server starting on port 8080
+SIDOT API server starting on port 8080
 ```
 
 O servidor estara disponivel em: http://localhost:8080
@@ -108,7 +108,7 @@ O servidor estara disponivel em: http://localhost:8080
 
 ```bash
 # Em outro terminal
-cd /home/matheus_rubem/VitalConnect/frontend
+cd /home/matheus_rubem/SIDOT/frontend
 
 # Instalar dependencias (primeira vez)
 npm install
@@ -131,7 +131,7 @@ Para demonstrar a deteccao em tempo real:
 
 ```bash
 # Em um terminal separado, com backend e frontend ja rodando
-cd /home/matheus_rubem/VitalConnect/backend
+cd /home/matheus_rubem/SIDOT/backend
 
 # Executar script de demo ao vivo
 go run cmd/demo/live_demo.go
@@ -155,7 +155,7 @@ O script ira:
 ### Backend (Go)
 
 ```bash
-cd /home/matheus_rubem/VitalConnect/backend
+cd /home/matheus_rubem/SIDOT/backend
 
 # Executar todos os testes
 go test ./... -v
@@ -175,7 +175,7 @@ go test ./internal/handlers/... -v
 ### Frontend (TypeScript/Vitest)
 
 ```bash
-cd /home/matheus_rubem/VitalConnect/frontend
+cd /home/matheus_rubem/SIDOT/frontend
 
 # Executar todos os testes
 npm test
@@ -209,7 +209,7 @@ docker-compose restart
 
 ```bash
 # Limpar dados do seeder e reinserir
-cd /home/matheus_rubem/VitalConnect/backend
+cd /home/matheus_rubem/SIDOT/backend
 go run cmd/seeder/main.go --clear
 ```
 
@@ -217,11 +217,11 @@ go run cmd/seeder/main.go --clear
 
 ```bash
 # Backend
-cd /home/matheus_rubem/VitalConnect/backend
-go build -o vitalconnect-api cmd/api/main.go
+cd /home/matheus_rubem/SIDOT/backend
+go build -o sidot-api cmd/api/main.go
 
 # Frontend
-cd /home/matheus_rubem/VitalConnect/frontend
+cd /home/matheus_rubem/SIDOT/frontend
 npm run build
 ```
 
@@ -299,6 +299,6 @@ Solucao:
 
 | Usuario | Email | Senha | Permissoes |
 |---------|-------|-------|------------|
-| Admin | admin@vitalconnect.gov.br | demo123 | Todas |
-| Gestor | gestor@vitalconnect.gov.br | demo123 | Regras, Metricas, Ocorrencias |
-| Operador | operador@vitalconnect.gov.br | demo123 | Operar Ocorrencias |
+| Admin | admin@sidot.gov.br | demo123 | Todas |
+| Gestor | gestor@sidot.gov.br | demo123 | Regras, Metricas, Ocorrencias |
+| Operador | operador@sidot.gov.br | demo123 | Operar Ocorrencias |

@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/repository"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/repository"
 )
 
 var hospitalRepo *repository.HospitalRepository

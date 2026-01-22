@@ -143,7 +143,7 @@ The `implementation/` folder is empty. No formal implementation reports were cre
 
 **Status:** No Updates Needed
 
-The roadmap at `/home/matheus_rubem/VitalConnect/agent-os/product/roadmap.md` does not have a specific item for "Backoffice Administrativo". The closest related items are:
+The roadmap at `/home/matheus_rubem/SIDOT/agent-os/product/roadmap.md` does not have a specific item for "Backoffice Administrativo". The closest related items are:
 
 - Item 21 (Multi-Tenant) - Already marked complete `[x]`
 - Other admin/management items - Already complete

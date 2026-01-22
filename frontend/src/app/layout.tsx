@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'VitalConnect - Sistema de Captacao de Corneas',
+  title: 'SIDOT - Sistema Inteligente de Doação de Órgãos e Tecidos',
   description:
-    'Middleware GovTech para deteccao automatica de obitos e notificacao de equipes de captacao de corneas em tempo real.',
+    'Middleware GovTech para deteccao automatica de obitos e notificacao de equipes de captacao de orgaos e tecidos em tempo real.',
   keywords: ['transplante', 'cornea', 'captacao', 'govtech', 'saude'],
 };
 

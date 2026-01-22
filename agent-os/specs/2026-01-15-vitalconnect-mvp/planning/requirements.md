@@ -1,8 +1,8 @@
-# Spec Requirements: VitalConnect MVP
+# Spec Requirements: SIDOT MVP
 
 ## Initial Description
 
-MVP completo do VitalConnect incluindo:
+MVP completo do SIDOT incluindo:
 
 1. Deteccao automatica de obitos via integracao com sistemas hospitalares
 2. Triagem inteligente para elegibilidade de doacao de corneas
@@ -78,7 +78,7 @@ Nenhuma pergunta de follow-up necessaria. As respostas foram completas e detalha
 ## Visual Assets
 
 ### Files Provided:
-Nenhum arquivo visual encontrado na pasta `/home/matheus_rubem/VitalConnect/agent-os/specs/2026-01-15-vitalconnect-mvp/planning/visuals/`.
+Nenhum arquivo visual encontrado na pasta `/home/matheus_rubem/SIDOT/agent-os/specs/2026-01-15-sidot-mvp/planning/visuals/`.
 
 ### Visual Insights:
 Nao aplicavel - seguir guidelines de design definidas nas respostas:
@@ -206,4 +206,4 @@ Nao aplicavel - seguir guidelines de design definidas nas respostas:
 ---
 
 *Requisitos documentados em: 2026-01-15*
-*Spec Path: /home/matheus_rubem/VitalConnect/agent-os/specs/2026-01-15-vitalconnect-mvp*
+*Spec Path: /home/matheus_rubem/SIDOT/agent-os/specs/2026-01-15-sidot-mvp*

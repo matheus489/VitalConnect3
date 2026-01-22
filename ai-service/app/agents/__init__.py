@@ -1,7 +1,7 @@
 """
-AI Agents module for VitalConnect AI Assistant.
+AI Agents module for SIDOT AI Assistant.
 
-Contains agent configurations for the VitalConnect co-pilot.
+Contains agent configurations for the SIDOT co-pilot.
 
 The SimpleAgent provides:
 - Portuguese language support

@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Hospital represents a hospital integrated with VitalConnect
+// Hospital represents a hospital integrated with SIDOT
 type Hospital struct {
 	ID            uuid.UUID       `json:"id" db:"id"`
 	TenantID      uuid.UUID       `json:"tenant_id" db:"tenant_id"`

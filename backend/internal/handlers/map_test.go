@@ -10,7 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/vitalconnect/backend/internal/models"
+	"github.com/sidot/backend/internal/models"
 )
 
 // MockMapRepository simula o repositorio do mapa para testes

@@ -1,4 +1,4 @@
-# Requisitos do Agente Assistente Pessoal VitalConnect
+# Requisitos do Agente Assistente Pessoal SIDOT
 
 ## 1. Escopo e Capacidades (Agente Híbrido)
 

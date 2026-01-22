@@ -1,5 +1,5 @@
 """
-Occurrence Tools for VitalConnect AI Assistant.
+Occurrence Tools for SIDOT AI Assistant.
 
 Provides tools for querying and managing occurrences (organ capture events).
 These tools communicate with the Go backend API to perform operations.

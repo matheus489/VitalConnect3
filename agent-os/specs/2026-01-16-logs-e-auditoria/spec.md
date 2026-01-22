@@ -2,7 +2,7 @@
 
 ## Goal
 
-Implementar um sistema completo de logs de auditoria para o VitalConnect, garantindo rastreabilidade de acoes de usuarios e do sistema, conformidade com LGPD e normas do CFM, com tela de consulta para Admin e Gestor, e timeline de eventos dentro de ocorrencias para Operadores.
+Implementar um sistema completo de logs de auditoria para o SIDOT, garantindo rastreabilidade de acoes de usuarios e do sistema, conformidade com LGPD e normas do CFM, com tela de consulta para Admin e Gestor, e timeline de eventos dentro de ocorrencias para Operadores.
 
 ## User Stories
 
@@ -12,7 +12,7 @@ Implementar um sistema completo de logs de auditoria para o VitalConnect, garant
 ## Specific Requirements
 
 **Tabela audit_logs no PostgreSQL**
-- Campos obrigatorios: id (UUID), timestamp, usuario_id (nullable para acoes do sistema), actor_name (nome do usuario ou "VitalConnect Bot")
+- Campos obrigatorios: id (UUID), timestamp, usuario_id (nullable para acoes do sistema), actor_name (nome do usuario ou "SIDOT Bot")
 - Campo acao como VARCHAR descritivo (ex: "regra.update", "ocorrencia.aceitar", "auth.login")
 - Campos entidade_tipo e entidade_id para identificar o registro afetado
 - Campo hospital_id para filtrar por hospital (visao do Gestor)
@@ -37,7 +37,7 @@ Implementar um sistema completo de logs de auditoria para o VitalConnect, garant
 **Servico de Auditoria Reutilizavel**
 - Criar servico/package interno para registrar eventos de qualquer parte do sistema
 - Assinatura: LogAuditEvent(ctx, acao, entidadeTipo, entidadeID, userID, severity, detalhes)
-- Para acoes do sistema: usuario_id = nil, actor_name = "VitalConnect Bot"
+- Para acoes do sistema: usuario_id = nil, actor_name = "SIDOT Bot"
 - Integracao com handlers existentes de Ocorrencias, Regras de Triagem e Auth
 
 **Eventos a Rastrear com Severidade**

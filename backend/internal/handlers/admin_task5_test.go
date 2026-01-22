@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/services"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/services"
 )
 
 // TestTriagemRuleTemplateInputValidation tests the CreateTriagemRuleTemplateInput validation

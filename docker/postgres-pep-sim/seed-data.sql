@@ -1,4 +1,4 @@
--- VitalConnect PEP Simulator - Seed Data
+-- SIDOT PEP Simulator - Seed Data
 -- Realistic Brazilian patient data for demo purposes
 -- Names and data are completely fictional
 

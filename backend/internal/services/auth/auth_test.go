@@ -66,7 +66,7 @@ func TestJWTGenerationAndValidation(t *testing.T) {
 
 	// Test data
 	userID := uuid.New().String()
-	email := "test@vitalconnect.gov.br"
+	email := "test@sidot.gov.br"
 	role := "operador"
 	hospitalID := uuid.New().String()
 
@@ -119,7 +119,7 @@ func TestRefreshTokenFlow(t *testing.T) {
 
 	// Test data
 	userID := uuid.New().String()
-	email := "gestor@vitalconnect.gov.br"
+	email := "gestor@sidot.gov.br"
 	role := "gestor"
 	hospitalID := ""
 
@@ -277,7 +277,7 @@ func TestAuthServiceLogin(t *testing.T) {
 	passwordHash, _ := HashPassword("demo123")
 	testUser := &User{
 		ID:           uuid.New(),
-		Email:        "operador@vitalconnect.gov.br",
+		Email:        "operador@sidot.gov.br",
 		PasswordHash: passwordHash,
 		Nome:         "Operador Teste",
 		Role:         "operador",
@@ -290,7 +290,7 @@ func TestAuthServiceLogin(t *testing.T) {
 
 	// Test successful login
 	ctx := context.Background()
-	result, err := authService.Login(ctx, "operador@vitalconnect.gov.br", "demo123")
+	result, err := authService.Login(ctx, "operador@sidot.gov.br", "demo123")
 	if err != nil {
 		t.Fatalf("Login failed: %v", err)
 	}
@@ -309,7 +309,7 @@ func TestAuthServiceLogin(t *testing.T) {
 	}
 
 	// Test login with wrong password
-	_, err = authService.Login(ctx, "operador@vitalconnect.gov.br", "wrongpassword")
+	_, err = authService.Login(ctx, "operador@sidot.gov.br", "wrongpassword")
 	if err != ErrInvalidCredentials {
 		t.Errorf("Expected ErrInvalidCredentials, got: %v", err)
 	}
@@ -323,7 +323,7 @@ func TestAuthServiceLogin(t *testing.T) {
 	// Test login with inactive user
 	inactiveUser := &User{
 		ID:           uuid.New(),
-		Email:        "inactive@vitalconnect.gov.br",
+		Email:        "inactive@sidot.gov.br",
 		PasswordHash: passwordHash,
 		Nome:         "Inactive User",
 		Role:         "operador",
@@ -331,7 +331,7 @@ func TestAuthServiceLogin(t *testing.T) {
 	}
 	userRepo.AddUser(inactiveUser)
 
-	_, err = authService.Login(ctx, "inactive@vitalconnect.gov.br", "demo123")
+	_, err = authService.Login(ctx, "inactive@sidot.gov.br", "demo123")
 	if err != ErrUserInactive {
 		t.Errorf("Expected ErrUserInactive, got: %v", err)
 	}

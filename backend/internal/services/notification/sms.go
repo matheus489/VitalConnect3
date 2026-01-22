@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/twilio/twilio-go"
 	openapi "github.com/twilio/twilio-go/rest/api/v2010"
-	"github.com/vitalconnect/backend/internal/models"
+	"github.com/sidot/backend/internal/models"
 )
 
 var (
@@ -117,7 +117,7 @@ type SMSNotificationData struct {
 }
 
 // BuildSMSMessage builds the SMS message from occurrence data
-// Template: [VitalConnect] ALERTA CRITICO: Obito PCR detectado. Hosp: {hospital_name} Idade: {age} Janela: {hours_left}h restantes. Acao: {short_link}
+// Template: [SIDOT] ALERTA CRITICO: Obito PCR detectado. Hosp: {hospital_name} Idade: {age} Janela: {hours_left}h restantes. Acao: {short_link}
 // Max 160 characters to avoid fragmentation
 func BuildSMSMessage(data *SMSNotificationData) string {
 	// Build the short link
@@ -130,12 +130,12 @@ func BuildSMSMessage(data *SMSNotificationData) string {
 	hospitalName := data.HospitalNome
 
 	// Calculate available space for hospital name
-	// Fixed parts: "[VitalConnect] ALERTA CRITICO: Obito PCR detectado. Hosp: " (59 chars)
+	// Fixed parts: "[SIDOT] ALERTA CRITICO: Obito PCR detectado. Hosp: " (59 chars)
 	// "Idade: XX Janela: Xh restantes. Acao: " (38 chars max)
 	// URL part varies but typically around 50 chars
 	// Total fixed: ~147 chars, leaving ~13 chars for hospital name with some buffer
 
-	baseMessage := fmt.Sprintf("[VitalConnect] ALERTA CRITICO: Obito PCR detectado. Hosp: %s Idade: %d Janela: %dh restantes. Acao: %s",
+	baseMessage := fmt.Sprintf("[SIDOT] ALERTA CRITICO: Obito PCR detectado. Hosp: %s Idade: %d Janela: %dh restantes. Acao: %s",
 		hospitalName, data.Idade, data.HorasRestante, shortLink)
 
 	// If message is too long, truncate hospital name
@@ -147,7 +147,7 @@ func BuildSMSMessage(data *SMSNotificationData) string {
 		} else {
 			hospitalName = hospitalName[:10] + "..." // Minimum truncation
 		}
-		baseMessage = fmt.Sprintf("[VitalConnect] ALERTA CRITICO: Obito PCR detectado. Hosp: %s Idade: %d Janela: %dh restantes. Acao: %s",
+		baseMessage = fmt.Sprintf("[SIDOT] ALERTA CRITICO: Obito PCR detectado. Hosp: %s Idade: %d Janela: %dh restantes. Acao: %s",
 			hospitalName, data.Idade, data.HorasRestante, shortLink)
 	}
 

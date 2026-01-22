@@ -94,31 +94,31 @@ None - all tasks have been marked complete and verified.
 ### Implementation Files Created/Modified
 
 #### New Files:
-- `/home/matheus_rubem/VitalConnect/backend/migrations/019_create_tenants.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/020_add_tenant_id_to_users.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/021_add_tenant_id_to_hospitals.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/022_add_tenant_id_to_data_tables.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/023_add_tenant_id_to_user_hospitals.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/024_seed_sesgo_tenant.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/025_backfill_tenant_id.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/026_enforce_tenant_id_not_null.sql`
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/tenant.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/tenant_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/tenant_scope.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/triagem_rules_template.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/middleware/tenant.go`
+- `/home/matheus_rubem/SIDOT/backend/migrations/019_create_tenants.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/020_add_tenant_id_to_users.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/021_add_tenant_id_to_hospitals.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/022_add_tenant_id_to_data_tables.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/023_add_tenant_id_to_user_hospitals.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/024_seed_sesgo_tenant.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/025_backfill_tenant_id.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/026_enforce_tenant_id_not_null.sql`
+- `/home/matheus_rubem/SIDOT/backend/internal/models/tenant.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/tenant_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/tenant_scope.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/triagem_rules_template.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/middleware/tenant.go`
 
 #### Test Files:
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/tenant_test.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/middleware/tenant_test.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/tenant_scope_test.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/services/auth/jwt_test.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/models/tenant_test.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/middleware/tenant_test.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/tenant_scope_test.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/services/auth/jwt_test.go`
 
 #### Modified Files:
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/user.go` - Added TenantID and IsSuperAdmin fields
-- `/home/matheus_rubem/VitalConnect/backend/internal/services/auth/jwt.go` - Extended JWT claims with tenant context
-- `/home/matheus_rubem/VitalConnect/backend/internal/services/auth/service.go` - Login includes tenant_id in tokens
-- `/home/matheus_rubem/VitalConnect/backend/internal/middleware/auth.go` - UserClaims includes TenantID/IsSuperAdmin
+- `/home/matheus_rubem/SIDOT/backend/internal/models/user.go` - Added TenantID and IsSuperAdmin fields
+- `/home/matheus_rubem/SIDOT/backend/internal/services/auth/jwt.go` - Extended JWT claims with tenant context
+- `/home/matheus_rubem/SIDOT/backend/internal/services/auth/service.go` - Login includes tenant_id in tokens
+- `/home/matheus_rubem/SIDOT/backend/internal/middleware/auth.go` - UserClaims includes TenantID/IsSuperAdmin
 
 ### Missing Documentation
 
@@ -134,7 +134,7 @@ None - Implementation is code-complete. The implementation folder is empty but a
 - [x] **Multi-Tenant** (Item 21) - Suporte a multiplas Centrais de Transplante operando na mesma instancia, com isolamento de dados e configuracoes independentes. `L` *(tenant_id em todas as tabelas, JWT claims com tenant context, middleware de isolamento)*
 
 ### Notes
-The Multi-Tenant feature in Phase 3 (Expansao e Melhorias v2.0) has been marked as complete in `/home/matheus_rubem/VitalConnect/agent-os/product/roadmap.md`.
+The Multi-Tenant feature in Phase 3 (Expansao e Melhorias v2.0) has been marked as complete in `/home/matheus_rubem/SIDOT/agent-os/product/roadmap.md`.
 
 ---
 
@@ -243,4 +243,4 @@ The Multi-Tenant feature implementation is **complete and functional**. All 7 ta
 6. **Migration Layer:** Legacy data migrated to SES-GO tenant with NOT NULL constraints enforced
 7. **Template System:** Triagem rules template allows copying rules to new tenants
 
-The implementation follows the spec requirements and enables multiple Centrais de Transplante to operate on the same VitalConnect instance with full data isolation.
+The implementation follows the spec requirements and enables multiple Centrais de Transplante to operate on the same SIDOT instance with full data isolation.

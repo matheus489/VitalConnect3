@@ -38,7 +38,7 @@
     - Porta 5433:5432
     - Healthcheck configurado
     - Volume para persistencia
-    - Rede `vitalconnect-network`
+    - Rede `sidot-network`
 
 **Criterios de Aceite:**
 - Container inicia sem erros

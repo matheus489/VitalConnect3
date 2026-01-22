@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/vitalconnect/backend/internal/services/listener"
-	"github.com/vitalconnect/backend/internal/services/notification"
-	"github.com/vitalconnect/backend/internal/services/triagem"
+	"github.com/sidot/backend/internal/services/listener"
+	"github.com/sidot/backend/internal/services/notification"
+	"github.com/sidot/backend/internal/services/triagem"
 )
 
 const (
@@ -26,8 +26,8 @@ const (
 	DefaultTimeout = 2 * time.Second
 
 	// Redis keys for storing health state
-	LastStatesKey    = "vitalconnect:health:last_states"
-	AlertCooldownKey = "vitalconnect:health:alert_cooldowns"
+	LastStatesKey    = "sidot:health:last_states"
+	AlertCooldownKey = "sidot:health:alert_cooldowns"
 
 	// Latency thresholds in milliseconds
 	LatencyThresholdOK       = 500   // < 500ms = up

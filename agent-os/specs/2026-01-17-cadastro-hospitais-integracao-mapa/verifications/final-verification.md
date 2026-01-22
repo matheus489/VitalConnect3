@@ -105,23 +105,23 @@ None - All tasks have been verified as complete.
 The following implementation files were verified:
 
 **Backend Files:**
-- `/home/matheus_rubem/VitalConnect/backend/migrations/018_add_telefone_to_hospitals.sql` - Migration for telefone column
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/hospital.go` - Hospital model with telefone, coordinates, validation
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/hospital_repository.go` - Repository with CRUD operations
+- `/home/matheus_rubem/SIDOT/backend/migrations/018_add_telefone_to_hospitals.sql` - Migration for telefone column
+- `/home/matheus_rubem/SIDOT/backend/internal/models/hospital.go` - Hospital model with telefone, coordinates, validation
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/hospital_repository.go` - Repository with CRUD operations
 
 **Frontend Files:**
-- `/home/matheus_rubem/VitalConnect/frontend/src/types/index.ts` - TypeScript types including Hospital, CreateHospitalInput, UpdateHospitalInput, NominatimResult
-- `/home/matheus_rubem/VitalConnect/frontend/src/services/nominatim.ts` - Nominatim geocoding service
-- `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useDebounce.ts` - Generic debounce hook
-- `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useGeocoding.ts` - Geocoding hook with debounce
-- `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useHospitals.ts` - Hospital mutations hook
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/map/LocationPickerMap.tsx` - Interactive map with draggable marker
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/forms/HospitalForm.tsx` - Hospital form with address autocomplete
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/hospitals/HospitalFormDrawer.tsx` - Drawer wrapper for form
-- `/home/matheus_rubem/VitalConnect/frontend/src/app/dashboard/hospitals/page.tsx` - Hospitals page with role-based access
+- `/home/matheus_rubem/SIDOT/frontend/src/types/index.ts` - TypeScript types including Hospital, CreateHospitalInput, UpdateHospitalInput, NominatimResult
+- `/home/matheus_rubem/SIDOT/frontend/src/services/nominatim.ts` - Nominatim geocoding service
+- `/home/matheus_rubem/SIDOT/frontend/src/hooks/useDebounce.ts` - Generic debounce hook
+- `/home/matheus_rubem/SIDOT/frontend/src/hooks/useGeocoding.ts` - Geocoding hook with debounce
+- `/home/matheus_rubem/SIDOT/frontend/src/hooks/useHospitals.ts` - Hospital mutations hook
+- `/home/matheus_rubem/SIDOT/frontend/src/components/map/LocationPickerMap.tsx` - Interactive map with draggable marker
+- `/home/matheus_rubem/SIDOT/frontend/src/components/forms/HospitalForm.tsx` - Hospital form with address autocomplete
+- `/home/matheus_rubem/SIDOT/frontend/src/components/hospitals/HospitalFormDrawer.tsx` - Drawer wrapper for form
+- `/home/matheus_rubem/SIDOT/frontend/src/app/dashboard/hospitals/page.tsx` - Hospitals page with role-based access
 
 ### Verification Documentation
-- Verification screenshots available in `/home/matheus_rubem/VitalConnect/agent-os/specs/2026-01-17-cadastro-hospitais-integracao-mapa/verification/screenshots/`
+- Verification screenshots available in `/home/matheus_rubem/SIDOT/agent-os/specs/2026-01-17-cadastro-hospitais-integracao-mapa/verification/screenshots/`
 
 ### Missing Documentation
 None - All implementation artifacts are present.
@@ -133,7 +133,7 @@ None - All implementation artifacts are present.
 **Status:** No Updates Needed
 
 ### Updated Roadmap Items
-The roadmap was reviewed at `/home/matheus_rubem/VitalConnect/agent-os/product/roadmap.md`. The hospital registration feature is part of the existing "Configuracao de Hospitais" item which was already marked complete in Phase 1 (item 10). The geographic dashboard feature (item 28) was previously completed. No new roadmap items were directly tied to this spec's enhancements.
+The roadmap was reviewed at `/home/matheus_rubem/SIDOT/agent-os/product/roadmap.md`. The hospital registration feature is part of the existing "Configuracao de Hospitais" item which was already marked complete in Phase 1 (item 10). The geographic dashboard feature (item 28) was previously completed. No new roadmap items were directly tied to this spec's enhancements.
 
 ### Notes
 This spec enhanced existing hospital management functionality by adding:

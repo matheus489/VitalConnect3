@@ -14,7 +14,7 @@ import (
 // PEPEventInput represents the event received from PEP agents
 type PEPEventInput struct {
 	HospitalIDOrigem  string `json:"hospital_id_origem"`          // ID from source PEP system
-	HospitalID        string `json:"hospital_id" binding:"required"` // VitalConnect hospital UUID
+	HospitalID        string `json:"hospital_id" binding:"required"` // SIDOT hospital UUID
 	NomePaciente      string `json:"nome_paciente" binding:"required"`
 	DataObito         string `json:"data_obito" binding:"required"`
 	CausaMortis       string `json:"causa_mortis" binding:"required"`

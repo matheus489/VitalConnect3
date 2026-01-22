@@ -21,7 +21,7 @@ Criar um agente Go standalone para conexao direta read-only com bancos de dados 
 
 **Configuracao via YAML (mapping.yaml)**
 - Definir conexao com banco: host, port, database, user, password (criptografado ou via env vars)
-- Mapear campos de origem para campos padrao do VitalConnect
+- Mapear campos de origem para campos padrao do SIDOT
 - Suportar query SQL customizada ou definicao de tabela/view com filtros
 - Incluir configuracao do endpoint central para push dos eventos
 - Exemplo de estrutura: `source_table`, `fields`, `filter_column`, `poll_interval`

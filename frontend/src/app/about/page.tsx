@@ -561,8 +561,8 @@ function FAQAccordion() {
 
   const faqs = [
     {
-      question: 'Como o VitalConnect se integra aos sistemas hospitalares existentes?',
-      answer: 'O VitalConnect utiliza o padrao HL7 FHIR para integracao, permitindo conexao com a maioria dos sistemas de prontuario eletronico e gestao hospitalar. A integracao e feita via API RESTful ou mensageria, sem necessidade de alteracoes nos sistemas existentes.',
+      question: 'Como o SIDOT se integra aos sistemas hospitalares existentes?',
+      answer: 'O SIDOT utiliza o padrao HL7 FHIR para integracao, permitindo conexao com a maioria dos sistemas de prontuario eletronico e gestao hospitalar. A integracao e feita via API RESTful ou mensageria, sem necessidade de alteracoes nos sistemas existentes.',
     },
     {
       question: 'Qual e o tempo de implementacao do sistema?',
@@ -570,7 +570,7 @@ function FAQAccordion() {
     },
     {
       question: 'O sistema esta em conformidade com a LGPD?',
-      answer: 'Sim, o VitalConnect foi desenvolvido com privacidade por design. Utilizamos criptografia AES-256, minimizacao de dados, anonimizacao para relatorios e controles de acesso rigorosos. Todos os processos sao auditaveis.',
+      answer: 'Sim, o SIDOT foi desenvolvido com privacidade por design. Utilizamos criptografia AES-256, minimizacao de dados, anonimizacao para relatorios e controles de acesso rigorosos. Todos os processos sao auditaveis.',
     },
     {
       question: 'Como funciona o sistema de alertas em tempo real?',
@@ -578,7 +578,7 @@ function FAQAccordion() {
     },
     {
       question: 'Qual e o custo de manutencao do sistema?',
-      answer: 'O VitalConnect opera em infraestrutura cloud com modelo pay-as-you-go, resultando em custos operacionais baixos. Estimamos um custo mensal de R$ 2.000 a R$ 5.000 dependendo do volume, com suporte e atualizacoes inclusos.',
+      answer: 'O SIDOT opera em infraestrutura cloud com modelo pay-as-you-go, resultando em custos operacionais baixos. Estimamos um custo mensal de R$ 2.000 a R$ 5.000 dependendo do volume, com suporte e atualizacoes inclusos.',
     },
   ];
 
@@ -772,7 +772,7 @@ export default function AboutPage() {
                 <Heart className="h-8 w-8 text-white" />
               </motion.div>
               <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary to-sky-600 bg-clip-text text-transparent">
-                VitalConnect
+                SIDOT
               </h1>
             </motion.div>
 
@@ -1081,7 +1081,7 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3"
               >
-                A Solucao: <span className="text-primary">VitalConnect</span>
+                A Solucao: <span className="text-primary">SIDOT</span>
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -1736,7 +1736,7 @@ export default function AboutPage() {
                 </motion.div>
                 <div>
                   <CardTitle className="text-2xl">Perguntas Frequentes</CardTitle>
-                  <CardDescription>Tire suas duvidas sobre o VitalConnect</CardDescription>
+                  <CardDescription>Tire suas duvidas sobre o SIDOT</CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -1760,7 +1760,7 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 className="text-3xl md:text-4xl font-bold mb-4"
               >
-                Quer saber mais sobre o VitalConnect?
+                Quer saber mais sobre o SIDOT?
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -1803,7 +1803,7 @@ export default function AboutPage() {
             >
               <div className="flex items-center gap-2 mb-4">
                 <Heart className="h-6 w-6" />
-                <span className="text-xl font-bold">VitalConnect</span>
+                <span className="text-xl font-bold">SIDOT</span>
               </div>
               <p className="text-white/80 text-sm">
                 Transformando a captacao de corneas atraves da tecnologia e salvando vidas.
@@ -1834,7 +1834,7 @@ export default function AboutPage() {
           </div>
           <div className="border-t border-white/20 pt-8 text-center">
             <p className="text-white/60 text-sm">
-              VitalConnect - Sistema de Captacao de Corneas
+              SIDOT - Sistema de Captacao de Corneas
             </p>
             <p className="text-white/40 text-sm mt-2">
               Versao 1.0.0 - Desenvolvido para o bem da saude publica

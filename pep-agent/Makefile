@@ -1,4 +1,4 @@
-# VitalConnect PEP Agent Makefile
+# SIDOT PEP Agent Makefile
 
 # Build variables
 BINARY_NAME=pep-agent
@@ -69,7 +69,7 @@ deps:
 
 # Show help
 help:
-	@echo "VitalConnect PEP Agent Build System"
+	@echo "SIDOT PEP Agent Build System"
 	@echo ""
 	@echo "Targets:"
 	@echo "  build        Build for current platform"

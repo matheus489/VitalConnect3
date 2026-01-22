@@ -88,7 +88,7 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
               </div>
               <div className="flex flex-col">
                 <span className="text-lg font-semibold text-white">
-                  VitalConnect
+                  SIDOT
                 </span>
                 <span className="text-xs font-medium text-violet-400">
                   Admin

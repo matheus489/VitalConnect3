@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/vitalconnect/backend/internal/middleware"
+	"github.com/sidot/backend/internal/middleware"
 )
 
 // Errors for tenant scoping

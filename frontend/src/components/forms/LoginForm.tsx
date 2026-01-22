@@ -78,7 +78,7 @@ export function LoginForm() {
               <FormControl>
                 <Input
                   type="email"
-                  placeholder="seu.email@vitalconnect.gov.br"
+                  placeholder="seu.email@sidot.gov.br"
                   autoComplete="email"
                   disabled={isLoading}
                   {...field}

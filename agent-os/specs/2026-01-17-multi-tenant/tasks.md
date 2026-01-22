@@ -24,15 +24,15 @@ Complexity: High (architectural change affecting entire codebase)
     - Table: `tenants` (global table, no tenant_id)
     - Fields: `id` (UUID PRIMARY KEY DEFAULT gen_random_uuid()), `name` (VARCHAR(255) NOT NULL), `slug` (VARCHAR(100) UNIQUE NOT NULL), `created_at` (TIMESTAMPTZ DEFAULT NOW()), `updated_at` (TIMESTAMPTZ DEFAULT NOW())
     - Index on `slug` for lookups
-    - File: `/home/matheus_rubem/VitalConnect/backend/migrations/019_create_tenants.sql`
+    - File: `/home/matheus_rubem/SIDOT/backend/migrations/019_create_tenants.sql`
   - [x] 1.3 Create Tenant model struct
     - Fields: ID (uuid.UUID), Name (string), Slug (string), CreatedAt, UpdatedAt
     - Add validation methods (ValidateSlug - alphanumeric with hyphens only)
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/models/tenant.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/models/tenant.go`
   - [x] 1.4 Create TenantRepository with basic CRUD
     - Methods: Create, GetByID, GetBySlug, List
     - Follow existing repository patterns (use context.Context, db.QueryContext)
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/tenant_repository.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/tenant_repository.go`
   - [x] 1.5 Ensure tenant table tests pass
     - Run ONLY the 4-6 tests written in 1.1
     - Verify migration runs successfully
@@ -44,9 +44,9 @@ Complexity: High (architectural change affecting entire codebase)
 - Slug uniqueness enforced at database level
 
 **Files to Modify/Create:**
-- `/home/matheus_rubem/VitalConnect/backend/migrations/019_create_tenants.sql` (new)
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/tenant.go` (new)
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/tenant_repository.go` (new)
+- `/home/matheus_rubem/SIDOT/backend/migrations/019_create_tenants.sql` (new)
+- `/home/matheus_rubem/SIDOT/backend/internal/models/tenant.go` (new)
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/tenant_repository.go` (new)
 
 ---
 
@@ -66,18 +66,18 @@ Complexity: High (architectural change affecting entire codebase)
     - Add `is_super_admin` (BOOLEAN DEFAULT FALSE) column to `users` table
     - Add foreign key constraint to tenants(id)
     - Create index on `tenant_id`
-    - File: `/home/matheus_rubem/VitalConnect/backend/migrations/020_add_tenant_id_to_users.sql`
+    - File: `/home/matheus_rubem/SIDOT/backend/migrations/020_add_tenant_id_to_users.sql`
   - [x] 2.3 Create migration `021_add_tenant_id_to_hospitals.sql`
     - Add `tenant_id` (UUID) column to `hospitals` table
     - Add foreign key constraint and index
-    - File: `/home/matheus_rubem/VitalConnect/backend/migrations/021_add_tenant_id_to_hospitals.sql`
+    - File: `/home/matheus_rubem/SIDOT/backend/migrations/021_add_tenant_id_to_hospitals.sql`
   - [x] 2.4 Create migration `022_add_tenant_id_to_data_tables.sql`
     - Add `tenant_id` to: `occurrences`, `obitos_simulados`, `triagem_rules`, `shifts`, `notifications`, `audit_logs`
     - Add foreign key constraints and indexes for each
-    - File: `/home/matheus_rubem/VitalConnect/backend/migrations/022_add_tenant_id_to_data_tables.sql`
+    - File: `/home/matheus_rubem/SIDOT/backend/migrations/022_add_tenant_id_to_data_tables.sql`
   - [x] 2.5 Create migration `023_add_tenant_id_to_user_hospitals.sql`
     - Add `tenant_id` to `user_hospitals` junction table for integrity
-    - File: `/home/matheus_rubem/VitalConnect/backend/migrations/023_add_tenant_id_to_user_hospitals.sql`
+    - File: `/home/matheus_rubem/SIDOT/backend/migrations/023_add_tenant_id_to_user_hospitals.sql`
   - [x] 2.6 Ensure tenant_id migration tests pass
     - Run ONLY the 4-6 tests written in 2.1
     - Verify all migrations run successfully in sequence
@@ -90,10 +90,10 @@ Complexity: High (architectural change affecting entire codebase)
 - Migrations reversible (down methods)
 
 **Files to Create:**
-- `/home/matheus_rubem/VitalConnect/backend/migrations/020_add_tenant_id_to_users.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/021_add_tenant_id_to_hospitals.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/022_add_tenant_id_to_data_tables.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/023_add_tenant_id_to_user_hospitals.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/020_add_tenant_id_to_users.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/021_add_tenant_id_to_hospitals.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/022_add_tenant_id_to_data_tables.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/023_add_tenant_id_to_user_hospitals.sql`
 
 ---
 
@@ -114,24 +114,24 @@ Complexity: High (architectural change affecting entire codebase)
     - Add `TenantID` (string) field to Claims struct
     - Add `IsSuperAdmin` (bool) field to Claims struct
     - Update JWT claim constants
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/services/auth/jwt.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/services/auth/jwt.go`
   - [x] 3.3 Update GenerateAccessToken method
     - Accept tenant_id and is_super_admin as parameters
     - Include tenant_id and is_super_admin in JWT payload
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/services/auth/jwt.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/services/auth/jwt.go`
   - [x] 3.4 Update GenerateRefreshToken method
     - Include tenant_id in refresh token claims
     - Ensure is_super_admin persists through refresh
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/services/auth/jwt.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/services/auth/jwt.go`
   - [x] 3.5 Update UserClaims struct in auth middleware
     - Add `TenantID` (string) field
     - Add `IsSuperAdmin` (bool) field
     - Update AuthRequired middleware to extract new claims
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/middleware/auth.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/middleware/auth.go`
   - [x] 3.6 Update login handler to include tenant_id in token generation
     - Fetch user's tenant_id from database during login
     - Pass tenant_id and is_super_admin to token generation
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/services/auth/service.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/services/auth/service.go`
   - [x] 3.7 Ensure JWT tests pass
     - Run ONLY the 4-6 tests written in 3.1
     - Verify existing auth tests still pass
@@ -144,9 +144,9 @@ Complexity: High (architectural change affecting entire codebase)
 - Backwards compatible with existing tokens during migration
 
 **Files to Modify:**
-- `/home/matheus_rubem/VitalConnect/backend/internal/services/auth/jwt.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/middleware/auth.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/services/auth/service.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/services/auth/jwt.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/middleware/auth.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/services/auth/service.go`
 
 ---
 
@@ -165,22 +165,22 @@ Complexity: High (architectural change affecting entire codebase)
   - [x] 4.2 Create TenantContext struct
     - Fields: TenantID (string), IsSuperAdmin (bool), EffectiveTenantID (string)
     - EffectiveTenantID = switched context for super-admin or original tenant_id
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/middleware/tenant.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/middleware/tenant.go`
   - [x] 4.3 Create TenantContext middleware
     - Extract tenant_id from user claims (set by AuthRequired)
     - Check for X-Tenant-Context header (super-admin only)
     - Validate super-admin permission for context switch
     - Store TenantContext in Gin context
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/middleware/tenant.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/middleware/tenant.go`
   - [x] 4.4 Create GetTenantContext helper function
     - Retrieve TenantContext from Gin context
     - Return error if not found
     - Pattern matches existing GetUserClaims helper
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/middleware/tenant.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/middleware/tenant.go`
   - [x] 4.5 Create RequireTenant middleware
     - Ensures tenant context is present
     - Returns 403 if missing or invalid
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/middleware/tenant.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/middleware/tenant.go`
   - [x] 4.6 Ensure tenant middleware tests pass
     - Run ONLY the 4-6 tests written in 4.1
     - Verify middleware chain works correctly
@@ -193,10 +193,10 @@ Complexity: High (architectural change affecting entire codebase)
 - Middleware integrates seamlessly with existing auth flow
 
 **Files to Create:**
-- `/home/matheus_rubem/VitalConnect/backend/internal/middleware/tenant.go` (new)
+- `/home/matheus_rubem/SIDOT/backend/internal/middleware/tenant.go` (new)
 
 **Files to Modify:**
-- `/home/matheus_rubem/VitalConnect/backend/internal/middleware/auth.go` (update UserClaims usage)
+- `/home/matheus_rubem/SIDOT/backend/internal/middleware/auth.go` (update UserClaims usage)
 
 ---
 
@@ -219,48 +219,48 @@ Complexity: High (architectural change affecting entire codebase)
     - Create `TenantScope(tenantID string) string` - returns WHERE fragment
     - Create `WithTenantScope(ctx context.Context, baseQuery string) string` - appends tenant filter
     - Create `GetTenantIDFromContext(ctx context.Context) (string, error)` - extracts tenant from ctx
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/tenant_scope.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/tenant_scope.go`
   - [x] 5.3 Update User model with tenant fields
     - Add TenantID (uuid.UUID) field
     - Add IsSuperAdmin (bool) field
     - Update struct tags for JSON and DB mapping
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/models/user.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/models/user.go`
   - [x] 5.4 Update UserRepository with tenant scoping
     - Add tenant_id filter to all SELECT queries
     - Add tenant_id to INSERT statements
     - Exception: GetByID for super-admin can bypass (explicit flag)
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/user_repository.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/user_repository.go`
   - [x] 5.5 Update HospitalRepository with tenant scoping (pattern provided)
     - Add tenant_id filter to List, GetByID queries
     - Add tenant_id to Create statement
     - Ensure map queries filter by tenant
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/hospital_repository.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/hospital_repository.go`
   - [x] 5.6 Update OccurrenceRepository with tenant scoping (pattern provided)
     - Add tenant_id filter to all queries
     - Include tenant_id in occurrence creation
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/occurrence_repository.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/occurrence_repository.go`
   - [x] 5.7 Update ObitoRepository with tenant scoping (pattern provided)
     - Add tenant_id filter to all queries
     - Include tenant_id in obito_simulado creation
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/obito_repository.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/obito_repository.go`
   - [x] 5.8 Update TriagemRuleRepository with tenant scoping (pattern provided)
     - Add tenant_id filter to rule queries
     - Critical: Rules must be tenant-specific
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/triagem_rule_repository.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/triagem_rule_repository.go`
   - [x] 5.9 Update ShiftRepository with tenant scoping (pattern provided)
     - Add tenant_id filter to shift queries
     - Include tenant_id in shift creation
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/shift_repository.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/shift_repository.go`
   - [x] 5.10 Update NotificationRepository with tenant scoping (pattern provided)
     - Add tenant_id filter to notification queries
     - Include tenant_id in notification creation
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/notification_repository.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/notification_repository.go`
   - [x] 5.11 Update AuditLogRepository with tenant scoping
     - Add tenant_id filter to queries
     - Add TenantID field to AuditLog model
     - Add new action constants: ActionTenantContextSwitch, ActionCrossTenantAccess
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/audit_log_repository.go`
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/models/audit_log.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/audit_log_repository.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/models/audit_log.go`
   - [x] 5.12 Update remaining repositories (pattern provided)
     - IndicatorsRepository: Add tenant filtering
     - OccurrenceHistoryRepository: Add tenant filtering
@@ -278,23 +278,23 @@ Complexity: High (architectural change affecting entire codebase)
 - Existing functionality preserved
 
 **Files to Create:**
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/tenant_scope.go` (new)
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/tenant_scope.go` (new)
 
 **Files to Modify:**
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/user.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/audit_log.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/user_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/hospital_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/occurrence_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/obito_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/triagem_rule_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/shift_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/notification_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/audit_log_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/indicators_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/occurrence_history_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/push_subscription_repository.go`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/user_notification_preferences_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/models/user.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/models/audit_log.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/user_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/hospital_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/occurrence_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/obito_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/triagem_rule_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/shift_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/notification_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/audit_log_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/indicators_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/occurrence_history_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/push_subscription_repository.go`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/user_notification_preferences_repository.go`
 
 ---
 
@@ -314,28 +314,28 @@ Complexity: High (architectural change affecting entire codebase)
   - [x] 6.2 Create migration `024_seed_ses_go_tenant.sql`
     - INSERT SES-GO tenant with predefined stable UUID
     - UUID should be documented and consistent across environments
-    - File: `/home/matheus_rubem/VitalConnect/backend/migrations/024_seed_sesgo_tenant.sql`
+    - File: `/home/matheus_rubem/SIDOT/backend/migrations/024_seed_sesgo_tenant.sql`
   - [x] 6.3 Create migration `025_backfill_tenant_id_legacy_data.sql`
     - Set DEFAULT on tenant_id columns to SES-GO UUID
     - UPDATE all existing records to set tenant_id = SES-GO UUID
     - Tables: users, hospitals, occurrences, obitos_simulados, triagem_rules, shifts, notifications, audit_logs, user_hospitals
     - Execute in single atomic transaction
-    - File: `/home/matheus_rubem/VitalConnect/backend/migrations/025_backfill_tenant_id.sql`
+    - File: `/home/matheus_rubem/SIDOT/backend/migrations/025_backfill_tenant_id.sql`
   - [x] 6.4 Create migration `026_enforce_tenant_id_not_null.sql`
     - Remove DEFAULT constraint from all tenant_id columns
     - Add NOT NULL constraint to all tenant_id columns
     - Must run after data backfill
-    - File: `/home/matheus_rubem/VitalConnect/backend/migrations/026_enforce_tenant_id_not_null.sql`
+    - File: `/home/matheus_rubem/SIDOT/backend/migrations/026_enforce_tenant_id_not_null.sql`
   - [x] 6.5 Create default triagem rules template seed
     - Define template rules based on federal legislation
     - Store as SQL seed data for copying to new tenants
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/triagem_rules_template.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/triagem_rules_template.go`
   - [x] 6.6 Create new tenant provisioning helper (CopyTriagemRulesToTenant method)
     - Method to create new tenant with template rules copy
     - Accept: name, slug as parameters
     - Copy triagem_rules from template with new tenant_id
     - Document usage in function comments
-    - File: `/home/matheus_rubem/VitalConnect/backend/internal/repository/triagem_rules_template.go`
+    - File: `/home/matheus_rubem/SIDOT/backend/internal/repository/triagem_rules_template.go`
   - [x] 6.7 Ensure migration tests pass
     - Run ONLY the 4-6 tests written in 6.1
     - Verify complete migration flow
@@ -350,10 +350,10 @@ Complexity: High (architectural change affecting entire codebase)
 - Tenant creation script documented and functional
 
 **Files to Create:**
-- `/home/matheus_rubem/VitalConnect/backend/migrations/024_seed_sesgo_tenant.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/025_backfill_tenant_id.sql`
-- `/home/matheus_rubem/VitalConnect/backend/migrations/026_enforce_tenant_id_not_null.sql`
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/triagem_rules_template.go`
+- `/home/matheus_rubem/SIDOT/backend/migrations/024_seed_sesgo_tenant.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/025_backfill_tenant_id.sql`
+- `/home/matheus_rubem/SIDOT/backend/migrations/026_enforce_tenant_id_not_null.sql`
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/triagem_rules_template.go`
 
 ---
 
@@ -401,11 +401,11 @@ Complexity: High (architectural change affecting entire codebase)
 - No more than 10 additional tests written
 
 **Test Files to Create/Modify:**
-- `/home/matheus_rubem/VitalConnect/backend/internal/middleware/tenant_test.go` (new)
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/tenant_repository_test.go` (new)
-- `/home/matheus_rubem/VitalConnect/backend/internal/services/auth/jwt_test.go` (modify)
-- `/home/matheus_rubem/VitalConnect/backend/internal/repository/tenant_scope_test.go` (new)
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/tenant_test.go` (new)
+- `/home/matheus_rubem/SIDOT/backend/internal/middleware/tenant_test.go` (new)
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/tenant_repository_test.go` (new)
+- `/home/matheus_rubem/SIDOT/backend/internal/services/auth/jwt_test.go` (modify)
+- `/home/matheus_rubem/SIDOT/backend/internal/repository/tenant_scope_test.go` (new)
+- `/home/matheus_rubem/SIDOT/backend/internal/models/tenant_test.go` (new)
 
 ---
 

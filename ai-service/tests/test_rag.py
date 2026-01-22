@@ -54,7 +54,7 @@ class TestDocumentIndexing:
         markdown_content = """
         # Test Document
 
-        This is a test document for VitalConnect.
+        This is a test document for SIDOT.
 
         ## Section 1
 

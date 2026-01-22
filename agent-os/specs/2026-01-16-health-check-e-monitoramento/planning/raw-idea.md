@@ -7,7 +7,7 @@ Endpoints de status dos serviços, alertas de falha do listener e dashboard de s
 
 ## Context
 
-This is part of VitalConnect - a system for organ donation notification. This feature will:
+This is part of SIDOT - a system for organ donation notification. This feature will:
 - Provide health check endpoints for all services
 - Alert when the death listener fails or stops responding
 - Show system health dashboard
@@ -15,6 +15,6 @@ This is part of VitalConnect - a system for organ donation notification. This fe
 
 ## Project Information
 
-- Project: VitalConnect
-- Location: /home/matheus_rubem/VitalConnect
+- Project: SIDOT
+- Location: /home/matheus_rubem/SIDOT
 - Date Initiated: 2026-01-16

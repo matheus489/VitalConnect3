@@ -85,14 +85,14 @@
     - Tratar erros especificos: rate limit, numero invalido, credenciais expiradas
     - Mascarar telefone em logs (+55119****9999)
   - [ ] 2.4 Criar funcao `BuildSMSMessage()` para template
-    - Template: `[VitalConnect] ALERTA CRITICO: Obito PCR detectado. Hosp: {hospital_name} Idade: {age} Janela: {hours_left}h restantes. Acao: {short_link}`
+    - Template: `[SIDOT] ALERTA CRITICO: Obito PCR detectado. Hosp: {hospital_name} Idade: {age} Janela: {hours_left}h restantes. Acao: {short_link}`
     - Receber dados da ocorrencia e retornar string formatada
     - Gerar short link: `/ocorrencias/{id}`
     - Garantir limite de 160 caracteres (truncar hospital_name se necessario)
   - [ ] 2.5 Criar `SMSQueueItem` e `SMSQueueWorker` em `internal/services/notification/sms_queue.go`
     - Seguir EXATAMENTE o padrao do `EmailQueueWorker` existente
     - Struct `SMSQueueItem`: `ID`, `OccurrenceID`, `UserID`, `PhoneNumber`, `Message`, `Retries`, `CreatedAt`, `LastAttemptAt`, `NextRetryAt`, `Error`
-    - Redis keys: `vitalconnect:sms_queue` e `vitalconnect:sms_processing`
+    - Redis keys: `sidot:sms_queue` e `sidot:sms_processing`
     - Constantes: `MaxRetries = 5`, `BaseBackoffDelay = 1 * time.Second`
   - [ ] 2.6 Implementar metodos do `SMSQueueWorker`
     - `NewSMSQueueWorker()` para criacao

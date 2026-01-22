@@ -12,10 +12,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/vitalconnect/pep-agent/internal/config"
-	"github.com/vitalconnect/pep-agent/internal/database"
-	"github.com/vitalconnect/pep-agent/internal/models"
-	"github.com/vitalconnect/pep-agent/internal/pusher"
+	"github.com/sidot/pep-agent/internal/config"
+	"github.com/sidot/pep-agent/internal/database"
+	"github.com/sidot/pep-agent/internal/models"
+	"github.com/sidot/pep-agent/internal/pusher"
 )
 
 // Poller polls the PEP database and pushes events to central server

@@ -20,7 +20,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_hospitals_codigo ON hospitals(codigo) WHER
 CREATE INDEX IF NOT EXISTS idx_hospitals_ativo ON hospitals(ativo) WHERE deleted_at IS NULL;
 
 -- Comments
-COMMENT ON TABLE hospitals IS 'Tabela de hospitais integrados ao VitalConnect';
+COMMENT ON TABLE hospitals IS 'Tabela de hospitais integrados ao SIDOT';
 COMMENT ON COLUMN hospitals.codigo IS 'Codigo unico do hospital (ex: HGG, HUGO)';
 COMMENT ON COLUMN hospitals.config_conexao IS 'Configuracoes de integracao em formato JSON';
 COMMENT ON COLUMN hospitals.deleted_at IS 'Soft delete - data de exclusao logica';
@@ -51,7 +51,7 @@ CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 CREATE INDEX IF NOT EXISTS idx_users_ativo ON users(ativo);
 
 -- Comments
-COMMENT ON TABLE users IS 'Usuarios do sistema VitalConnect';
+COMMENT ON TABLE users IS 'Usuarios do sistema SIDOT';
 COMMENT ON COLUMN users.role IS 'Perfil do usuario: operador, gestor ou admin';
 COMMENT ON COLUMN users.hospital_id IS 'Hospital vinculado (opcional para admin)';
 COMMENT ON COLUMN users.password_hash IS 'Hash bcrypt da senha (cost factor 12)';
@@ -364,7 +364,7 @@ DROP INDEX IF EXISTS idx_users_hospital_id;
 ALTER TABLE users DROP COLUMN IF EXISTS hospital_id;
 
 -- Comments
-COMMENT ON TABLE users IS 'Usuarios do sistema VitalConnect - relacao N:N com hospitais via user_hospitals';
+COMMENT ON TABLE users IS 'Usuarios do sistema SIDOT - relacao N:N com hospitais via user_hospitals';
 
 -- DOWN (for rollback - complex, requires recreating column)
 -- ALTER TABLE users ADD COLUMN hospital_id UUID REFERENCES hospitals(id) ON DELETE SET NULL;
@@ -487,7 +487,7 @@ COMMENT ON TABLE audit_logs IS 'Logs de auditoria do sistema - tabela imutavel p
 COMMENT ON COLUMN audit_logs.id IS 'Identificador unico do registro de auditoria';
 COMMENT ON COLUMN audit_logs.timestamp IS 'Data/hora do evento';
 COMMENT ON COLUMN audit_logs.usuario_id IS 'ID do usuario que realizou a acao (NULL para acoes do sistema)';
-COMMENT ON COLUMN audit_logs.actor_name IS 'Nome do usuario ou "VitalConnect Bot" para acoes automaticas';
+COMMENT ON COLUMN audit_logs.actor_name IS 'Nome do usuario ou "SIDOT Bot" para acoes automaticas';
 COMMENT ON COLUMN audit_logs.acao IS 'Tipo de acao realizada (ex: regra.update, auth.login)';
 COMMENT ON COLUMN audit_logs.entidade_tipo IS 'Tipo de entidade afetada (ex: Ocorrencia, Regra)';
 COMMENT ON COLUMN audit_logs.entidade_id IS 'ID da entidade afetada';

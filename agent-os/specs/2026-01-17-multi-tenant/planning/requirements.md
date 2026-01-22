@@ -2,13 +2,13 @@
 
 ## Initial Description
 
-Implementar suporte a Multi-Tenant no VitalConnect para permitir que multiplas Centrais de Transplante operem na mesma instancia, com isolamento de dados e configuracoes independentes. Este item corresponde ao item #21 do Roadmap (Fase 3: Expansao e Melhorias v2.0).
+Implementar suporte a Multi-Tenant no SIDOT para permitir que multiplas Centrais de Transplante operem na mesma instancia, com isolamento de dados e configuracoes independentes. Este item corresponde ao item #21 do Roadmap (Fase 3: Expansao e Melhorias v2.0).
 
 ## Requirements Discussion
 
 ### First Round Questions
 
-**Q1:** O que define um "tenant" no contexto do VitalConnect? (Central de Transplantes Estadual, Regional, ou outro nivel?)
+**Q1:** O que define um "tenant" no contexto do SIDOT? (Central de Transplantes Estadual, Regional, ou outro nivel?)
 **Answer:** Tenant = Central de Transplantes (Estadual/Regional). Exemplos: "SES-GO", "SES-PE", "SES-SP". Hospitais sao filhos de um Tenant. Ocorrencias pertencem a um Tenant.
 
 **Q2:** Como os usuarios serao associados a tenants e como sera feita a identificacao do tenant no momento do acesso?

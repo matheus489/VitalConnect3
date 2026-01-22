@@ -2,7 +2,7 @@
 
 ## Descricao Inicial
 
-**Feature:** Dashboard de Metricas para VitalConnect
+**Feature:** Dashboard de Metricas para SIDOT
 
 **Contexto:** Sistema de notificacao de doacao de orgaos com deadline de demonstracao em 26 de Janeiro (MVP/video).
 

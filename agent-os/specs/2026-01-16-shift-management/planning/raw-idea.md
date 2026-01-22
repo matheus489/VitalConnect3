@@ -6,7 +6,7 @@
 Cadastro de escalas de plantão com horários e responsáveis, direcionando notificações para a equipe correta do turno.
 
 ## Context
-This is part of VitalConnect - a system for organ donation notification.
+This is part of SIDOT - a system for organ donation notification.
 
 ## Key Capabilities
 This feature will allow:

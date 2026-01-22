@@ -20,7 +20,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_hospitals_codigo ON hospitals(codigo) WHER
 CREATE INDEX IF NOT EXISTS idx_hospitals_ativo ON hospitals(ativo) WHERE deleted_at IS NULL;
 
 -- Comments
-COMMENT ON TABLE hospitals IS 'Tabela de hospitais integrados ao VitalConnect';
+COMMENT ON TABLE hospitals IS 'Tabela de hospitais integrados ao SIDOT';
 COMMENT ON COLUMN hospitals.codigo IS 'Codigo unico do hospital (ex: HGG, HUGO)';
 COMMENT ON COLUMN hospitals.config_conexao IS 'Configuracoes de integracao em formato JSON';
 COMMENT ON COLUMN hospitals.deleted_at IS 'Soft delete - data de exclusao logica';

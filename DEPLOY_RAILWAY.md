@@ -1,6 +1,6 @@
-# Deploy VitalConnect no Railway
+# Deploy SIDOT no Railway
 
-Este guia explica como fazer deploy do VitalConnect no Railway.app.
+Este guia explica como fazer deploy do SIDOT no Railway.app.
 
 ## Pre-requisitos
 
@@ -14,7 +14,7 @@ Se ainda nao tem o projeto no GitHub:
 
 ```bash
 # Na pasta do projeto
-cd /home/matheus_rubem/VitalConnect
+cd /home/matheus_rubem/SIDOT
 
 # Criar repositorio no GitHub e fazer push
 git add .
@@ -28,7 +28,7 @@ git push origin main
 2. Clique em **"New Project"**
 3. Selecione **"Deploy from GitHub repo"**
 4. Autorize o Railway a acessar seu GitHub
-5. Selecione o repositorio **VitalConnect**
+5. Selecione o repositorio **SIDOT**
 
 ## Passo 3: Adicionar Servicos
 
@@ -179,7 +179,7 @@ VALUES (
 
 ## Dominio Personalizado (Opcional)
 
-Para usar seu proprio dominio (ex: vitalconnect.com.br):
+Para usar seu proprio dominio (ex: sidot.gov.br):
 
 1. No servico, va em **Settings** > **Networking**
 2. Clique em **"+ Custom Domain"**

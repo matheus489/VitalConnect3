@@ -11,8 +11,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/repository"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/repository"
 )
 
 const (
@@ -23,7 +23,7 @@ const (
 	DefaultPollInterval = 3 * time.Second
 
 	// Heartbeat constants
-	HeartbeatKey      = "vitalconnect:listener:heartbeat"
+	HeartbeatKey      = "sidot:listener:heartbeat"
 	HeartbeatInterval = 5 * time.Second
 	HeartbeatTTL      = 15 * time.Second
 

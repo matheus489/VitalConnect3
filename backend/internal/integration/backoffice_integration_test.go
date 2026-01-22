@@ -7,8 +7,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/services"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/services"
 )
 
 // ============================================================================
@@ -24,7 +24,7 @@ func TestSuperAdminAuthenticationFlow(t *testing.T) {
 		// Simulate JWT claims for a super admin
 		claims := map[string]interface{}{
 			"user_id":        uuid.New().String(),
-			"email":          "superadmin@vitalconnect.com",
+			"email":          "superadmin@sidot.com",
 			"role":           "admin",
 			"tenant_id":      uuid.New().String(),
 			"is_super_admin": true,
@@ -191,7 +191,7 @@ func TestImpersonationSecurity(t *testing.T) {
 		targetUserID := uuid.New()
 
 		detalhes := map[string]interface{}{
-			"admin_email":       "superadmin@vitalconnect.com",
+			"admin_email":       "superadmin@sidot.com",
 			"admin_id":          adminID.String(),
 			"target_user_email": "user@hospital.com",
 			"target_user_id":    targetUserID.String(),

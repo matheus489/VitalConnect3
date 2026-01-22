@@ -4,7 +4,7 @@
 Dashboard Geográfico
 
 ## Description
-Mapa interativo mostrando hospitais, ocorrências ativas e equipes de captação em tempo real. Esta funcionalidade faz parte da Fase 3 (Expansão e Melhorias v2.0) do produto VitalConnect - um sistema de detecção e notificação para captação de órgãos para transplante.
+Mapa interativo mostrando hospitais, ocorrências ativas e equipes de captação em tempo real. Esta funcionalidade faz parte da Fase 3 (Expansão e Melhorias v2.0) do produto SIDOT - um sistema de detecção e notificação para captação de órgãos para transplante.
 
 ## Context from Roadmap
 - Item #28 do roadmap

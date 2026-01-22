@@ -1,5 +1,5 @@
 """
-AI Tools module for VitalConnect AI Assistant.
+AI Tools module for SIDOT AI Assistant.
 
 Contains tool definitions for function calling capabilities.
 All tools inherit from BaseTool and provide:

@@ -2,7 +2,7 @@
 
 ## Goal
 
-Implementar CRUD completo de usuarios com atribuicao de multiplos hospitais (N:N), preferencias de notificacao por email e edicao de perfil proprio, permitindo que administradores gerenciem a equipe do sistema VitalConnect.
+Implementar CRUD completo de usuarios com atribuicao de multiplos hospitais (N:N), preferencias de notificacao por email e edicao de perfil proprio, permitindo que administradores gerenciem a equipe do sistema SIDOT.
 
 ## User Stories
 

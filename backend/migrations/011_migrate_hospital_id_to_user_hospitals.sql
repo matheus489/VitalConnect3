@@ -21,7 +21,7 @@ DROP INDEX IF EXISTS idx_users_hospital_id;
 ALTER TABLE users DROP COLUMN IF EXISTS hospital_id;
 
 -- Comments
-COMMENT ON TABLE users IS 'Usuarios do sistema VitalConnect - relacao N:N com hospitais via user_hospitals';
+COMMENT ON TABLE users IS 'Usuarios do sistema SIDOT - relacao N:N com hospitais via user_hospitals';
 
 -- DOWN (for rollback - complex, requires recreating column)
 -- ALTER TABLE users ADD COLUMN hospital_id UUID REFERENCES hospitals(id) ON DELETE SET NULL;

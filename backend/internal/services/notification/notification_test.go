@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/vitalconnect/backend/internal/models"
+	"github.com/sidot/backend/internal/models"
 )
 
 // TestSSEEventPublish tests SSE event creation and format
@@ -137,7 +137,7 @@ func TestEmailTemplateFormat(t *testing.T) {
 		t.Error("Email should indicate urgency")
 	}
 
-	if !strings.Contains(body, "VitalConnect") {
+	if !strings.Contains(body, "SIDOT") {
 		t.Error("Email should contain system name")
 	}
 }
@@ -149,7 +149,7 @@ func TestNotificationRecording(t *testing.T) {
 	userID := uuid.New()
 
 	metadata := &models.NotificationMetadata{
-		EmailTo:       "operador@vitalconnect.gov.br",
+		EmailTo:       "operador@sidot.gov.br",
 		EmailSubject:  "[URGENTE] Nova Ocorrencia Elegivel - HGG",
 		HospitalNome:  "Hospital Geral de Goiania",
 		Setor:         "UTI",
@@ -189,8 +189,8 @@ func TestNotificationRecording(t *testing.T) {
 		t.Fatalf("Failed to parse metadata: %v", err)
 	}
 
-	if parsedMetadata.EmailTo != "operador@vitalconnect.gov.br" {
-		t.Errorf("Expected email to 'operador@vitalconnect.gov.br', got '%s'", parsedMetadata.EmailTo)
+	if parsedMetadata.EmailTo != "operador@sidot.gov.br" {
+		t.Errorf("Expected email to 'operador@sidot.gov.br', got '%s'", parsedMetadata.EmailTo)
 	}
 
 	if parsedMetadata.HospitalNome != "Hospital Geral de Goiania" {

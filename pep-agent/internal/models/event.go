@@ -7,13 +7,13 @@ import (
 	"unicode"
 )
 
-// ObitoEvent represents a death event to be sent to VitalConnect central server
+// ObitoEvent represents a death event to be sent to SIDOT central server
 // This structure mirrors the ObitoEvent in the main backend for compatibility
 type ObitoEvent struct {
 	// Unique identifier from the source PEP system
 	HospitalIDOrigem string `json:"hospital_id_origem"`
 
-	// Hospital UUID in VitalConnect
+	// Hospital UUID in SIDOT
 	HospitalID string `json:"hospital_id"`
 
 	// Detection timestamp (when the agent detected this event)

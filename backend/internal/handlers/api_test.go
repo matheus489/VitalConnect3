@@ -13,8 +13,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/vitalconnect/backend/internal/middleware"
-	"github.com/vitalconnect/backend/internal/models"
+	"github.com/sidot/backend/internal/middleware"
+	"github.com/sidot/backend/internal/models"
 )
 
 // MockOccurrenceRepository for testing
@@ -156,7 +156,7 @@ func mockAuthMiddleware(userID, role string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		claims := &middleware.UserClaims{
 			UserID: userID,
-			Email:  "test@vitalconnect.gov.br",
+			Email:  "test@sidot.gov.br",
 			Role:   role,
 		}
 		c.Set("user_claims", claims)

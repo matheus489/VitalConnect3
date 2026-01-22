@@ -53,7 +53,7 @@ COMMENT ON TABLE audit_logs IS 'Logs de auditoria do sistema - tabela imutavel p
 COMMENT ON COLUMN audit_logs.id IS 'Identificador unico do registro de auditoria';
 COMMENT ON COLUMN audit_logs.timestamp IS 'Data/hora do evento';
 COMMENT ON COLUMN audit_logs.usuario_id IS 'ID do usuario que realizou a acao (NULL para acoes do sistema)';
-COMMENT ON COLUMN audit_logs.actor_name IS 'Nome do usuario ou "VitalConnect Bot" para acoes automaticas';
+COMMENT ON COLUMN audit_logs.actor_name IS 'Nome do usuario ou "SIDOT Bot" para acoes automaticas';
 COMMENT ON COLUMN audit_logs.acao IS 'Tipo de acao realizada (ex: regra.update, auth.login)';
 COMMENT ON COLUMN audit_logs.entidade_tipo IS 'Tipo de entidade afetada (ex: Ocorrencia, Regra)';
 COMMENT ON COLUMN audit_logs.entidade_id IS 'ID da entidade afetada';

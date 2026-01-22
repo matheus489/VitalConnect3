@@ -1,5 +1,5 @@
 """
-Celery tasks package for VitalConnect AI Service.
+Celery tasks package for SIDOT AI Service.
 
 Contains task definitions organized by functionality:
 - base.py: Base task class with audit logging

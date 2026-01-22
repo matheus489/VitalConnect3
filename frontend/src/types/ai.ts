@@ -1,4 +1,4 @@
-// VitalConnect AI Assistant Type Definitions
+// SIDOT AI Assistant Type Definitions
 
 // =============================================================================
 // AI Chat Types

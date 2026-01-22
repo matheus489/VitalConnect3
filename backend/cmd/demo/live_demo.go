@@ -9,12 +9,12 @@ import (
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
-	"github.com/vitalconnect/backend/config"
+	"github.com/sidot/backend/config"
 )
 
 func main() {
 	log.Println("========================================")
-	log.Println("VitalConnect - Live Demo Script")
+	log.Println("SIDOT - Live Demo Script")
 	log.Println("========================================")
 
 	// Load configuration

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/vitalconnect/backend/internal/models"
+	"github.com/sidot/backend/internal/models"
 )
 
 // TestAdminUpdateUserRoleInputValidation tests the AdminUpdateUserRoleInput validation

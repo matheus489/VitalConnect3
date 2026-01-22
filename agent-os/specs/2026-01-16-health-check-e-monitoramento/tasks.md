@@ -20,7 +20,7 @@
   - [ ] 1.2 Implementar goroutine de heartbeat no ObitoListener
     - Arquivo: `/backend/internal/services/listener/obito_listener.go`
     - Publicar heartbeat a cada 5 segundos
-    - Chave Redis: `vitalconnect:listener:heartbeat`
+    - Chave Redis: `sidot:listener:heartbeat`
     - TTL: 15 segundos
     - Incluir timestamp do ultimo heartbeat
   - [ ] 1.3 Adicionar metodo para verificar status do heartbeat
@@ -424,9 +424,9 @@ Os seguintes grupos podem ser executados em paralelo:
 ## Notas Tecnicas
 
 ### Chaves Redis Utilizadas
-- `vitalconnect:listener:heartbeat` - heartbeat do Listener (TTL 15s)
-- `vitalconnect:health:last_states` - ultimo estado conhecido de cada servico
-- `vitalconnect:health:alert_cooldowns` - timestamps de ultimos alertas
+- `sidot:listener:heartbeat` - heartbeat do Listener (TTL 15s)
+- `sidot:health:last_states` - ultimo estado conhecido de cada servico
+- `sidot:health:alert_cooldowns` - timestamps de ultimos alertas
 
 ### Thresholds de Status
 - **Up (Verde):** latencia < 500ms

@@ -2,7 +2,7 @@
 
 ## Descricao
 
-Feature de Health Check e Monitoramento para o VitalConnect - sistema de notificacao de doacao de orgaos.
+Feature de Health Check e Monitoramento para o SIDOT - sistema de notificacao de doacao de orgaos.
 
 ## Requisitos Iniciais
 

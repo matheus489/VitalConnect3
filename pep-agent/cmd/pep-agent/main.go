@@ -1,8 +1,8 @@
-// PEP Agent - VitalConnect Hospital Integration Agent
+// PEP Agent - SIDOT Hospital Integration Agent
 //
 // This agent runs on-premise at hospital servers and polls the local PEP
 // (Prontuario Eletronico do Paciente) database for death records.
-// Detected events are pushed to the VitalConnect central server via HTTPS.
+// Detected events are pushed to the SIDOT central server via HTTPS.
 //
 // Features:
 // - Multi-driver support: PostgreSQL, MySQL, Oracle
@@ -26,8 +26,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/vitalconnect/pep-agent/internal/config"
-	"github.com/vitalconnect/pep-agent/internal/poller"
+	"github.com/sidot/pep-agent/internal/config"
+	"github.com/sidot/pep-agent/internal/poller"
 )
 
 const (
@@ -43,13 +43,13 @@ func main() {
 
 	// Show version
 	if *showVersion {
-		fmt.Printf("VitalConnect PEP Agent v%s\n", version)
+		fmt.Printf("SIDOT PEP Agent v%s\n", version)
 		os.Exit(0)
 	}
 
 	// Set up logging
 	logger := log.New(os.Stdout, "[PEP-Agent] ", log.LstdFlags|log.Lmsgprefix)
-	logger.Printf("VitalConnect PEP Agent v%s starting...", version)
+	logger.Printf("SIDOT PEP Agent v%s starting...", version)
 
 	// Load configuration
 	cfg, err := config.Load(*configPath)

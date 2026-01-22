@@ -64,27 +64,27 @@ None - all tasks completed successfully.
 ### Implementation Files
 
 **Backend:**
-- `/home/matheus_rubem/VitalConnect/backend/migrations/017_add_coordinates_to_hospitals.sql` - Migration for coordinates
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/map.go` - Map response structs
-- `/home/matheus_rubem/VitalConnect/backend/internal/models/hospital.go` - Updated with Latitude/Longitude
-- `/home/matheus_rubem/VitalConnect/backend/internal/handlers/map.go` - Map endpoint handler
-- `/home/matheus_rubem/VitalConnect/backend/internal/handlers/map_test.go` - 6 backend tests
+- `/home/matheus_rubem/SIDOT/backend/migrations/017_add_coordinates_to_hospitals.sql` - Migration for coordinates
+- `/home/matheus_rubem/SIDOT/backend/internal/models/map.go` - Map response structs
+- `/home/matheus_rubem/SIDOT/backend/internal/models/hospital.go` - Updated with Latitude/Longitude
+- `/home/matheus_rubem/SIDOT/backend/internal/handlers/map.go` - Map endpoint handler
+- `/home/matheus_rubem/SIDOT/backend/internal/handlers/map_test.go` - 6 backend tests
 
 **Frontend:**
-- `/home/matheus_rubem/VitalConnect/frontend/src/types/index.ts` - MapHospital, MapOccurrence, MapOperator, UrgencyLevel types
-- `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useMap.ts` - useMapHospitals and useMapSSEHandler hooks
-- `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useMap.test.ts` - 15 hook tests
-- `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useMapSSE.test.ts` - 3 SSE tests
-- `/home/matheus_rubem/VitalConnect/frontend/src/lib/map-utils.ts` - Urgency utilities and GOIAS_BOUNDS
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/map/MapContainer.tsx` - Leaflet map component
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/map/HospitalMarker.tsx` - Custom marker with urgency colors
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/map/HospitalDrawer.tsx` - Sheet drawer component
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/map/MapComponents.test.tsx` - 9 component tests
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/map/MapIntegration.test.tsx` - 5 integration tests
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/map/index.ts` - Barrel export
-- `/home/matheus_rubem/VitalConnect/frontend/src/app/dashboard/map/page.tsx` - Map page
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/layout/Sidebar.tsx` - Updated with Mapa nav item
-- `/home/matheus_rubem/VitalConnect/frontend/src/components/layout/MobileNav.tsx` - Updated with Mapa nav item
+- `/home/matheus_rubem/SIDOT/frontend/src/types/index.ts` - MapHospital, MapOccurrence, MapOperator, UrgencyLevel types
+- `/home/matheus_rubem/SIDOT/frontend/src/hooks/useMap.ts` - useMapHospitals and useMapSSEHandler hooks
+- `/home/matheus_rubem/SIDOT/frontend/src/hooks/useMap.test.ts` - 15 hook tests
+- `/home/matheus_rubem/SIDOT/frontend/src/hooks/useMapSSE.test.ts` - 3 SSE tests
+- `/home/matheus_rubem/SIDOT/frontend/src/lib/map-utils.ts` - Urgency utilities and GOIAS_BOUNDS
+- `/home/matheus_rubem/SIDOT/frontend/src/components/map/MapContainer.tsx` - Leaflet map component
+- `/home/matheus_rubem/SIDOT/frontend/src/components/map/HospitalMarker.tsx` - Custom marker with urgency colors
+- `/home/matheus_rubem/SIDOT/frontend/src/components/map/HospitalDrawer.tsx` - Sheet drawer component
+- `/home/matheus_rubem/SIDOT/frontend/src/components/map/MapComponents.test.tsx` - 9 component tests
+- `/home/matheus_rubem/SIDOT/frontend/src/components/map/MapIntegration.test.tsx` - 5 integration tests
+- `/home/matheus_rubem/SIDOT/frontend/src/components/map/index.ts` - Barrel export
+- `/home/matheus_rubem/SIDOT/frontend/src/app/dashboard/map/page.tsx` - Map page
+- `/home/matheus_rubem/SIDOT/frontend/src/components/layout/Sidebar.tsx` - Updated with Mapa nav item
+- `/home/matheus_rubem/SIDOT/frontend/src/components/layout/MobileNav.tsx` - Updated with Mapa nav item
 
 ### Missing Documentation
 None - implementation folder exists but specific implementation reports were not created per task. All code files serve as documentation.

@@ -95,7 +95,7 @@ export function AdminMobileNav({ open, onClose }: AdminMobileNavProps) {
               </div>
               <div className="flex flex-col">
                 <span className="text-lg font-semibold text-white">
-                  VitalConnect
+                  SIDOT
                 </span>
                 <span className="text-xs font-medium text-violet-400">
                   Admin
@@ -144,7 +144,7 @@ export function AdminMobileNav({ open, onClose }: AdminMobileNavProps) {
           {/* Footer */}
           <div className="border-t border-slate-700 p-4">
             <p className="text-xs text-slate-500 text-center">
-              VitalConnect Admin v1.0
+              SIDOT Admin v1.0
             </p>
           </div>
         </div>

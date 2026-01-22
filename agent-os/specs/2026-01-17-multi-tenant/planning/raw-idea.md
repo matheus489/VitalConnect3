@@ -13,4 +13,4 @@ Suporte a múltiplas Centrais de Transplante operando na mesma instância, com i
 - Shared infrastructure
 
 **Context:**
-This is a complex feature that will allow multiple Transplant Centers to operate on the same VitalConnect instance while maintaining complete separation of their data and configurations, yet sharing the underlying infrastructure for efficiency.
+This is a complex feature that will allow multiple Transplant Centers to operate on the same SIDOT instance while maintaining complete separation of their data and configurations, yet sharing the underlying infrastructure for efficiency.

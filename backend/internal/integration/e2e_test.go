@@ -7,11 +7,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/services/auth"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/services/auth"
 )
 
-// E2E Test Suite for VitalConnect
+// E2E Test Suite for SIDOT
 // These tests verify complete user flows from start to finish
 
 // =============================================================================
@@ -20,7 +20,7 @@ import (
 
 func TestE2E_AuthenticationFlow(t *testing.T) {
 	// Test data
-	testEmail := "e2e_test@vitalconnect.gov.br"
+	testEmail := "e2e_test@sidot.gov.br"
 	testPassword := "securePassword123"
 
 	// Step 1: Hash password (simulating user creation)

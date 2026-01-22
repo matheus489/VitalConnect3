@@ -1,7 +1,7 @@
 # Requisitos da Spec: Dashboard Geografico
 
 ## Descricao Inicial
-Mapa interativo mostrando hospitais, ocorrencias ativas e equipes de captacao em tempo real. Esta funcionalidade faz parte da Fase 3 (Expansao e Melhorias v2.0) do produto VitalConnect - um sistema de deteccao e notificacao para captacao de orgaos para transplante.
+Mapa interativo mostrando hospitais, ocorrencias ativas e equipes de captacao em tempo real. Esta funcionalidade faz parte da Fase 3 (Expansao e Melhorias v2.0) do produto SIDOT - um sistema de deteccao e notificacao para captacao de orgaos para transplante.
 
 **Contexto do Roadmap:**
 - Item #28 do roadmap
@@ -43,16 +43,16 @@ Mapa interativo mostrando hospitais, ocorrencias ativas e equipes de captacao em
 
 **Features Similares Identificadas:**
 
-- Feature: Hook useSSE - Path: `/home/matheus_rubem/VitalConnect/frontend/src/hooks/useSSE.tsx`
+- Feature: Hook useSSE - Path: `/home/matheus_rubem/SIDOT/frontend/src/hooks/useSSE.tsx`
   - Reutilizar a arquitetura SSE existente para atualizacoes em tempo real do mapa
 
-- Feature: Dashboard de Ocorrencias - Path: `/home/matheus_rubem/VitalConnect/frontend/src/app/dashboard/`
+- Feature: Dashboard de Ocorrencias - Path: `/home/matheus_rubem/SIDOT/frontend/src/app/dashboard/`
   - Interface existente de gestao de ocorrencias (destino do botao "Ver Detalhes")
 
 - Feature: Gestao de Plantoes (Item 14) - Path: backend e frontend existentes
   - Base de dados de escalas para determinar "quem esta de plantao agora" em cada hospital
 
-- Feature: DashboardLayout - Path: `/home/matheus_rubem/VitalConnect/frontend/src/components/layout/DashboardLayout.tsx`
+- Feature: DashboardLayout - Path: `/home/matheus_rubem/SIDOT/frontend/src/components/layout/DashboardLayout.tsx`
   - Layout base do dashboard para manter consistencia visual
 
 ### Perguntas de Follow-up

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/vitalconnect/backend/internal/models"
+	"github.com/sidot/backend/internal/models"
 )
 
 // PDFGenerator generates PDF reports
@@ -47,9 +47,9 @@ func (g *PDFGenerator) GenerateReport(filters models.ReportFilters, metrics *mod
 	var content bytes.Buffer
 	content.WriteString("BT\n")
 
-	// Header - VitalConnect logo placeholder and SES text
+	// Header - SIDOT logo placeholder and SES text
 	yPos := 750
-	content.WriteString(fmt.Sprintf("/F1 16 Tf\n50 %d Td\n(VitalConnect) Tj\n", yPos))
+	content.WriteString(fmt.Sprintf("/F1 16 Tf\n50 %d Td\n(SIDOT) Tj\n", yPos))
 	content.WriteString(fmt.Sprintf("/F1 10 Tf\n350 %d Td\n(Governo do Estado de Goias - SES) Tj\n", yPos))
 
 	// Title
@@ -149,7 +149,7 @@ func (g *PDFGenerator) GenerateReport(filters models.ReportFilters, metrics *mod
 	// Footer
 	content.WriteString("ET\n")
 	content.WriteString("BT\n")
-	content.WriteString(fmt.Sprintf("/F1 8 Tf\n50 30 Td\n(Gerado automaticamente por VitalConnect em %s) Tj\n", time.Now().Format("02/01/2006 15:04")))
+	content.WriteString(fmt.Sprintf("/F1 8 Tf\n50 30 Td\n(Gerado automaticamente por SIDOT em %s) Tj\n", time.Now().Format("02/01/2006 15:04")))
 	content.WriteString(fmt.Sprintf("500 30 Td\n(Pagina 1) Tj\n"))
 	content.WriteString("ET\n")
 

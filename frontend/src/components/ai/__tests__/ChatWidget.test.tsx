@@ -50,7 +50,7 @@ describe('ChatWidget', () => {
     await user.click(fabButton);
 
     // Panel should be open - check for the header text
-    expect(screen.getByText('Assistente VitalConnect')).toBeInTheDocument();
+    expect(screen.getByText('Assistente SIDOT')).toBeInTheDocument();
 
     // Click to close (the FAB button now shows X icon)
     const closeButton = screen.getByRole('button', { name: /fechar assistente/i });
@@ -182,7 +182,7 @@ describe('ChatWidget', () => {
     const fabButton = screen.getByRole('button', { name: /abrir assistente/i });
     await user.click(fabButton);
 
-    expect(screen.getByText('Assistente VitalConnect')).toBeInTheDocument();
+    expect(screen.getByText('Assistente SIDOT')).toBeInTheDocument();
 
     // Press escape
     await user.keyboard('{Escape}');

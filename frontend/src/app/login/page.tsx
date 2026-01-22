@@ -37,13 +37,13 @@ function LoginPageContent() {
           <Link href="/" className="inline-block">
             <div className="flex items-center justify-center gap-2">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary">
-                <span className="text-2xl font-bold text-primary-foreground">V</span>
+                <span className="text-2xl font-bold text-primary-foreground">S</span>
               </div>
-              <span className="text-2xl font-bold text-primary">VitalConnect</span>
+              <span className="text-2xl font-bold text-primary">SIDOT</span>
             </div>
           </Link>
           <p className="mt-2 text-muted-foreground">
-            Sistema de Captacao de Corneas
+            Sistema Inteligente de Doação de Órgãos e Tecidos
           </p>
         </div>
 
@@ -68,13 +68,13 @@ function LoginPageContent() {
             </p>
             <div className="space-y-1 text-sm text-muted-foreground">
               <p>
-                <span className="font-medium">Admin:</span> admin@vitalconnect.gov.br
+                <span className="font-medium">Admin:</span> admin@sidot.gov.br
               </p>
               <p>
-                <span className="font-medium">Gestor:</span> gestor@vitalconnect.gov.br
+                <span className="font-medium">Gestor:</span> gestor@sidot.gov.br
               </p>
               <p>
-                <span className="font-medium">Operador:</span> operador@vitalconnect.gov.br
+                <span className="font-medium">Operador:</span> operador@sidot.gov.br
               </p>
               <p className="mt-2">
                 <span className="font-medium">Senha:</span> demo123

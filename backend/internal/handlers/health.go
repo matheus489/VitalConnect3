@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/vitalconnect/backend/internal/services/health"
-	"github.com/vitalconnect/backend/internal/services/listener"
-	"github.com/vitalconnect/backend/internal/services/triagem"
+	"github.com/sidot/backend/internal/services/health"
+	"github.com/sidot/backend/internal/services/listener"
+	"github.com/sidot/backend/internal/services/triagem"
 )
 
 var (

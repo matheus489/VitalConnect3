@@ -255,14 +255,14 @@ const obitoNotificationTemplate = `<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VitalConnect - Nova Ocorrencia</title>
+    <title>SIDOT - Nova Ocorrencia</title>
 </head>
 <body style="font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background-color: #f3f4f6;">
     <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
         <!-- Header -->
         <tr>
             <td style="background-color: #0EA5E9; padding: 20px; text-align: center;">
-                <h1 style="color: #ffffff; margin: 0; font-size: 24px;">VitalConnect</h1>
+                <h1 style="color: #ffffff; margin: 0; font-size: 24px;">SIDOT</h1>
                 <p style="color: #e0f2fe; margin: 5px 0 0 0; font-size: 14px;">Sistema de Notificacao de Obitos</p>
             </td>
         </tr>
@@ -348,7 +348,7 @@ const obitoNotificationTemplate = `<!DOCTYPE html>
         <tr>
             <td style="background-color: #f3f4f6; padding: 20px; text-align: center;">
                 <p style="color: #6b7280; font-size: 12px; margin: 0;">
-                    VitalConnect - Sistema de Gestao de Doacao de Corneas
+                    SIDOT - Sistema de Gestao de Doacao de Corneas
                 </p>
                 <p style="color: #9ca3af; font-size: 11px; margin: 10px 0 0 0;">
                     Esta e uma mensagem automatica. Por favor, nao responda diretamente.
@@ -365,14 +365,14 @@ const infrastructureAlertTemplate = `<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VitalConnect - Alerta de Infraestrutura</title>
+    <title>SIDOT - Alerta de Infraestrutura</title>
 </head>
 <body style="font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background-color: #f3f4f6;">
     <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
         <!-- Header -->
         <tr>
             <td style="background-color: #1f2937; padding: 20px; text-align: center;">
-                <h1 style="color: #ffffff; margin: 0; font-size: 24px;">VitalConnect</h1>
+                <h1 style="color: #ffffff; margin: 0; font-size: 24px;">SIDOT</h1>
                 <p style="color: #9ca3af; margin: 5px 0 0 0; font-size: 14px;">Alerta de Infraestrutura</p>
             </td>
         </tr>
@@ -474,7 +474,7 @@ const infrastructureAlertTemplate = `<!DOCTYPE html>
         <tr>
             <td style="background-color: #1f2937; padding: 20px; text-align: center;">
                 <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-                    VitalConnect - Sistema de Gestao de Doacao de Corneas
+                    SIDOT - Sistema de Gestao de Doacao de Corneas
                 </p>
                 <p style="color: #6b7280; font-size: 11px; margin: 10px 0 0 0;">
                     Alerta automatico de monitoramento de infraestrutura

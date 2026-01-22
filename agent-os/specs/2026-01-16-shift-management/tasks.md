@@ -220,7 +220,7 @@ Total de Tarefas: 6 Grupos de Tarefas
 - Os 2-8 testes escritos em 5.1 passam
 - Componentes renderizam corretamente
 - Formularios validam e submetem
-- Design segue padroes visuais do VitalConnect (shadcn/ui)
+- Design segue padroes visuais do SIDOT (shadcn/ui)
 
 ---
 

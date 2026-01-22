@@ -31,9 +31,9 @@ Total de Tarefas: 4 grupos principais com subtarefas
     - Colunas: Hospital, Data/Hora Obito, Iniciais Paciente, Idade, Status Final, Tempo de Reacao (min), Usuario Responsavel
   - [ ] 1.5 Implementar geracao PDF institucional
     - Usar biblioteca `gofpdf` ou `go-pdf` para geracao leve
-    - Cabecalho: Logo VitalConnect (esquerda) + "Governo do Estado de Goias - SES" (direita)
+    - Cabecalho: Logo SIDOT (esquerda) + "Governo do Estado de Goias - SES" (direita)
     - Corpo: Titulo "Relatorio de Ocorrencias", Periodo filtrado, Metricas agregadas, Tabela zebrada
-    - Rodape: "Gerado automaticamente por VitalConnect em {data_hora}" + numero de pagina
+    - Rodape: "Gerado automaticamente por SIDOT em {data_hora}" + numero de pagina
   - [ ] 1.6 Implementar calculo de metricas agregadas
     - Total de ocorrencias por desfecho (Captado, Recusa Familiar, Contraindicacao Medica, Expirado)
     - Taxa de Perda Operacional: % de notificacoes CANCELADAS por tempo apos 6h sem acao

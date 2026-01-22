@@ -1,5 +1,5 @@
 """
-RAG Query Engine for VitalConnect AI Assistant.
+RAG Query Engine for SIDOT AI Assistant.
 
 Provides context-aware query processing with tenant isolation,
 hybrid search (vector + keyword), and response synthesis.
@@ -19,7 +19,7 @@ from app.rag.vector_store import VectorStoreManager, get_vector_store_manager
 logger = logging.getLogger(__name__)
 
 # System prompt for RAG responses in Portuguese
-SYSTEM_PROMPT_PT = """Você é um assistente especializado do VitalConnect, um sistema de gestão hospitalar para captação de órgãos.
+SYSTEM_PROMPT_PT = """Você é um assistente especializado do SIDOT, um sistema de gestão hospitalar para captação de órgãos.
 
 Sua função é responder perguntas dos usuários com base no contexto fornecido.
 

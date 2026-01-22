@@ -2,7 +2,7 @@
 
 ## Initial Description
 
-Feature para gerenciamento de escalas de plantao no VitalConnect - sistema de notificacao de doacao de orgaos.
+Feature para gerenciamento de escalas de plantao no SIDOT - sistema de notificacao de doacao de orgaos.
 
 ### Funcionalidades Solicitadas:
 - Cadastro de escalas de plantao com horarios e responsaveis

@@ -4,29 +4,29 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
-    container_name: vitalconnect-postgres
+    container_name: sidot-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: vitalconnect
+      POSTGRES_DB: sidot
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/migrations/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d vitalconnect"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sidot"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - vitalconnect-network
+      - sidot-network
 
   # Redis Cache and Message Queue
   redis:
     image: redis:7-alpine
-    container_name: vitalconnect-redis
+    container_name: sidot-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -39,12 +39,12 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - vitalconnect-network
+      - sidot-network
 
   # Qdrant Vector Store for AI Service RAG
   qdrant:
     image: qdrant/qdrant:v1.7.4
-    container_name: vitalconnect-qdrant
+    container_name: sidot-qdrant
     restart: unless-stopped
     ports:
       - "6333:6333"
@@ -59,14 +59,14 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - vitalconnect-network
+      - sidot-network
 
   # AI Service - Python microservice for RAG and Function Calling
   ai-service:
     build:
       context: ./ai-service
       dockerfile: Dockerfile
-    container_name: vitalconnect-ai-service
+    container_name: sidot-ai-service
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -75,14 +75,14 @@ services:
       DEBUG: "true"
       HOST: "0.0.0.0"
       PORT: "8000"
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/vitalconnect
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/sidot
       REDIS_URL: redis://redis:6379/1
       JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-change-in-production}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       AI_MODEL: ${AI_MODEL:-gpt-4o}
       EMBEDDING_MODEL: ${EMBEDDING_MODEL:-multilingual-e5-large}
       QDRANT_URL: http://qdrant:6333
-      QDRANT_COLLECTION_PREFIX: vitalconnect_
+      QDRANT_COLLECTION_PREFIX: sidot_
       GO_BACKEND_URL: http://backend:8080
     depends_on:
       postgres:
@@ -98,7 +98,7 @@ services:
       start_period: 10s
       retries: 3
     networks:
-      - vitalconnect-network
+      - sidot-network
     volumes:
       - ./ai-service/app:/app/app:ro
 
@@ -107,19 +107,19 @@ services:
     build:
       context: ./ai-service
       dockerfile: Dockerfile
-    container_name: vitalconnect-ai-worker
+    container_name: sidot-ai-worker
     restart: unless-stopped
     command: celery -A app.celery_app.celery_config worker --loglevel=info --queues=ai_query,ai_actions,ai_indexing
     environment:
       ENVIRONMENT: development
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/vitalconnect
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/sidot
       REDIS_URL: redis://redis:6379/1
       JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-change-in-production}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       AI_MODEL: ${AI_MODEL:-gpt-4o}
       EMBEDDING_MODEL: ${EMBEDDING_MODEL:-multilingual-e5-large}
       QDRANT_URL: http://qdrant:6333
-      QDRANT_COLLECTION_PREFIX: vitalconnect_
+      QDRANT_COLLECTION_PREFIX: sidot_
       GO_BACKEND_URL: http://backend:8080
     depends_on:
       postgres:
@@ -129,14 +129,14 @@ services:
       ai-service:
         condition: service_healthy
     networks:
-      - vitalconnect-network
+      - sidot-network
     profiles:
       - ai
 
   # Adminer - Database UI (development only)
   adminer:
     image: adminer:latest
-    container_name: vitalconnect-adminer
+    container_name: sidot-adminer
     restart: unless-stopped
     ports:
       - "8081:8080"
@@ -144,14 +144,14 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - vitalconnect-network
+      - sidot-network
     profiles:
       - dev
 
   # Redis Commander - Redis UI (development only)
   redis-commander:
     image: rediscommander/redis-commander:latest
-    container_name: vitalconnect-redis-commander
+    container_name: sidot-redis-commander
     restart: unless-stopped
     environment:
       REDIS_HOSTS: local:redis:6379
@@ -161,7 +161,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - vitalconnect-network
+      - sidot-network
     profiles:
       - dev
 
@@ -170,7 +170,7 @@ services:
     build:
       context: ./docker/postgres-pep-sim
       dockerfile: Dockerfile
-    container_name: vitalconnect-pep-sim
+    container_name: sidot-pep-sim
     restart: unless-stopped
     environment:
       POSTGRES_USER: pep_reader
@@ -186,21 +186,21 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - vitalconnect-network
+      - sidot-network
     profiles:
       - dev
 
 volumes:
   postgres_data:
-    name: vitalconnect-postgres-data
+    name: sidot-postgres-data
   redis_data:
-    name: vitalconnect-redis-data
+    name: sidot-redis-data
   pep_sim_data:
-    name: vitalconnect-pep-sim-data
+    name: sidot-pep-sim-data
   qdrant_data:
-    name: vitalconnect-qdrant-data
+    name: sidot-qdrant-data
 
 networks:
-  vitalconnect-network:
-    name: vitalconnect-network
+  sidot-network:
+    name: sidot-network
     driver: bridge

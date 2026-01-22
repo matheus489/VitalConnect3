@@ -13,16 +13,16 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/repository"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/repository"
 )
 
 const (
 	// SMSQueueKey is the Redis key for the SMS queue
-	SMSQueueKey = "vitalconnect:sms_queue"
+	SMSQueueKey = "sidot:sms_queue"
 
 	// SMSProcessingKey is the Redis key for SMS being processed
-	SMSProcessingKey = "vitalconnect:sms_processing"
+	SMSProcessingKey = "sidot:sms_processing"
 
 	// SMSMaxRetries is the maximum number of retry attempts
 	SMSMaxRetries = 5

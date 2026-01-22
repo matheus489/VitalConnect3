@@ -11,13 +11,13 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/repository"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/repository"
 )
 
 const (
 	// SSEChannelName is the Redis Pub/Sub channel for SSE events
-	SSEChannelName = "vitalconnect:sse_events"
+	SSEChannelName = "sidot:sse_events"
 
 	// HeartbeatInterval is the interval for sending heartbeat events
 	HeartbeatInterval = 30 * time.Second

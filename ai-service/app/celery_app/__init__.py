@@ -1,5 +1,5 @@
 """
-Celery application module for VitalConnect AI Service.
+Celery application module for SIDOT AI Service.
 
 Contains Celery configuration, task queues, and task definitions.
 

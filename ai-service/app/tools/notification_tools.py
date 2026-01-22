@@ -1,5 +1,5 @@
 """
-Notification Tools for VitalConnect AI Assistant.
+Notification Tools for SIDOT AI Assistant.
 
 Provides tools for sending notifications to team members based on
 shift schedules and notification preferences.
@@ -210,9 +210,9 @@ class SendTeamNotificationTool(BaseTool):
             prefix = "[IMPORTANTE] "
 
         if occurrence_id:
-            return f"{prefix}VitalConnect - Ocorrencia #{occurrence_id[:8]}"
+            return f"{prefix}SIDOT - Ocorrencia #{occurrence_id[:8]}"
 
-        return f"{prefix}VitalConnect - Mensagem da Equipe"
+        return f"{prefix}SIDOT - Mensagem da Equipe"
 
     def get_confirmation_details(
         self,

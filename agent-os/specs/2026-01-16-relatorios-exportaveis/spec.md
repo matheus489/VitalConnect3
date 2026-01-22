@@ -20,9 +20,9 @@ Implementar geracao de relatorios em PDF e CSV com dados de ocorrencias e metric
 
 **Exportacao PDF Institucional**
 - Utilizar biblioteca `gofpdf` ou equivalente leve para geracao do PDF
-- Cabecalho: Logo VitalConnect (esquerda) + texto "Governo do Estado de Goias - SES" (direita)
+- Cabecalho: Logo SIDOT (esquerda) + texto "Governo do Estado de Goias - SES" (direita)
 - Corpo: Titulo "Relatorio de Ocorrencias", Periodo filtrado, Tabela zebrada com dados
-- Rodape: "Gerado automaticamente por VitalConnect em {data_hora}" com numero de pagina
+- Rodape: "Gerado automaticamente por SIDOT em {data_hora}" com numero de pagina
 - Tabela com mesmas colunas do CSV, formatacao zebrada para legibilidade
 
 **Metricas Agregadas no Relatorio**

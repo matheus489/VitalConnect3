@@ -18,8 +18,8 @@ from app.middleware.tenant import RequestContext
 logger = logging.getLogger(__name__)
 
 
-# System prompt for VitalConnect Copilot (Portuguese)
-SYSTEM_PROMPT_PT = """Voce e o assistente virtual do VitalConnect, um sistema de gestao de captacao de orgaos para transplante.
+# System prompt for SIDOT Copilot (Portuguese)
+SYSTEM_PROMPT_PT = """Voce e o assistente virtual do SIDOT, um sistema de gestao de captacao de orgaos para transplante.
 
 Seu papel e auxiliar os usuarios da central de captacao em suas tarefas diarias, incluindo:
 - Consultar e gerenciar ocorrencias de captacao

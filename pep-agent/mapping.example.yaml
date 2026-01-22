@@ -1,7 +1,7 @@
-# VitalConnect PEP Agent - Arquivo de Configuracao
+# SIDOT PEP Agent - Arquivo de Configuracao
 # =================================================
 # Este arquivo define a conexao com o banco de dados do PEP hospitalar
-# e o mapeamento de campos para o sistema VitalConnect.
+# e o mapeamento de campos para o sistema SIDOT.
 #
 # IMPORTANTE:
 # - Copie este arquivo para mapping.yaml antes de configurar
@@ -10,7 +10,7 @@
 #
 # Exemplo de uso:
 #   export PEP_DB_PASSWORD="senha_do_banco"
-#   export VITALCONNECT_API_KEY="chave_api_do_hospital"
+#   export SIDOT_API_KEY="chave_api_do_hospital"
 #   ./pep-agent -config mapping.yaml
 
 # Configuracao de conexao com o banco de dados do PEP
@@ -36,7 +36,7 @@ database:
   # Modo SSL: disable, require, verify-full
   ssl_mode: disable
 
-# Mapeamento de campos do PEP para VitalConnect
+# Mapeamento de campos do PEP para SIDOT
 mapping:
   # Tabela ou view de origem (usar nome completo com schema)
   source_table: TASY.TB_PACIENTE_OBITO
@@ -45,7 +45,7 @@ mapping:
   filter_column: DT_OBITO
 
   # Mapeamento de campos (de-para)
-  # Lado esquerdo: campo padrao VitalConnect
+  # Lado esquerdo: campo padrao SIDOT
   # Lado direito: nome da coluna no banco do PEP
   fields:
     # Campos obrigatorios
@@ -77,13 +77,13 @@ mapping:
   #   WHERE DT_OBITO > '{{WATERMARK}}'
   #   ORDER BY DT_OBITO ASC
 
-# Configuracao do servidor central VitalConnect
+# Configuracao do servidor central SIDOT
 central:
   # URL do endpoint de recepcao de eventos
   url: http://localhost:8080/api/v1/pep/eventos
 
   # Chave de API do hospital (use variavel de ambiente)
-  api_key: ${VITALCONNECT_API_KEY}
+  api_key: ${SIDOT_API_KEY}
 
   # Pular verificacao TLS (APENAS para desenvolvimento)
   insecure: true
@@ -93,7 +93,7 @@ central:
 
 # Configuracoes operacionais do agente
 agent:
-  # ID do hospital no VitalConnect (UUID)
+  # ID do hospital no SIDOT (UUID)
   hospital_id: 123e4567-e89b-12d3-a456-426614174000
 
   # Intervalo de polling (default: 3s)

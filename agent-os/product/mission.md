@@ -2,7 +2,7 @@
 
 ## Pitch
 
-**VitalConnect** e uma solucao GovTech de interoperabilidade ativa (middleware) que ajuda equipes de Centrais de Transplantes e Bancos de Olhos a captar orgaos e tecidos viaveis dentro da janela de oportunidade critica, conectando automaticamente os sistemas hospitalares (PEP/EMR) aos processos de notificacao de obitos.
+**SIDOT** e uma solucao GovTech de interoperabilidade ativa (middleware) que ajuda equipes de Centrais de Transplantes e Bancos de Olhos a captar orgaos e tecidos viaveis dentro da janela de oportunidade critica, conectando automaticamente os sistemas hospitalares (PEP/EMR) aos processos de notificacao de obitos.
 
 O nome reflete a conexao critica ("Connect") de dados para preservar a vida ou a qualidade de vida ("Vital"), alinhando-se ao proposito de saude publica e transplantes.
 
@@ -50,7 +50,7 @@ A captacao de corneas possui uma janela de oportunidade de apenas **6 horas** ap
 ## Diferenciais
 
 ### Deteccao em Tempo Real (Zero-Delay)
-Diferente de processos manuais que dependem da memoria e disponibilidade da equipe hospitalar, o VitalConnect detecta o evento de obito no exato momento em que e registrado no prontuario. Isso garante o inicio do cronometro de 6 horas com precisao e maximiza o tempo disponivel para captacao.
+Diferente de processos manuais que dependem da memoria e disponibilidade da equipe hospitalar, o SIDOT detecta o evento de obito no exato momento em que e registrado no prontuario. Isso garante o inicio do cronometro de 6 horas com precisao e maximiza o tempo disponivel para captacao.
 
 ### Triagem Inteligente Automatizada
 Diferente de sistemas que simplesmente repassam todas as notificacoes, aplicamos regras de negocio configuráveis (idade, causa mortis, intervalo de tempo) para filtrar casos nao elegíveis. Isso reduz falsos positivos e evita sobrecarga da equipe de captacao.

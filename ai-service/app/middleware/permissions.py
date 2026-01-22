@@ -21,7 +21,7 @@ from typing import Set
 
 
 class Role(str, Enum):
-    """User roles in VitalConnect."""
+    """User roles in SIDOT."""
 
     ADMIN = "admin"
     GESTOR = "gestor"

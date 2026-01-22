@@ -1,11 +1,11 @@
-# VitalConnect Makefile
+# SIDOT Makefile
 # Commands for development and deployment
 
 .PHONY: help dev dev-db dev-backend dev-frontend build test clean
 
 # Default target
 help:
-	@echo "VitalConnect - Available Commands"
+	@echo "SIDOT - Available Commands"
 	@echo ""
 	@echo "Development:"
 	@echo "  make dev           - Start all services (requires Docker)"

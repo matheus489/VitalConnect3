@@ -5,7 +5,7 @@
 Integrar com gateway SMS (ex: Twilio, Zenvia) para envio de alertas para celulares da equipe de plantao.
 
 **Contexto do Produto:**
-- Sistema VitalConnect para notificacao de doacao de orgaos
+- Sistema SIDOT para notificacao de doacao de orgaos
 - Janela critica de 6 horas para captacao de corneas apos obito por PCR
 - Feature faz parte da Fase 2 (Produto Completo para Piloto v1.0)
 - Deve funcionar junto com notificacoes por email e dashboard ja existentes
@@ -32,7 +32,7 @@ Integrar com gateway SMS (ex: Twilio, Zenvia) para envio de alertas para celular
 
 **Q5:** Qual conteudo incluir no SMS?
 **Answer:** Foco na Acao Imediata.
-- Template: "[VitalConnect] ALERTA CRITICO: Obito PCR detectado. Hosp: {hospital_name} Idade: {age} Janela: {hours_left}h restantes. Acao: {short_link}"
+- Template: "[SIDOT] ALERTA CRITICO: Obito PCR detectado. Hosp: {hospital_name} Idade: {age} Janela: {hours_left}h restantes. Acao: {short_link}"
 - Link deve levar direto para login/detalhe da ocorrencia.
 
 **Q6:** Quais limites e restricoes de envio?
@@ -103,7 +103,7 @@ N/A - Nenhum asset visual fornecido.
 
 **Template de Mensagem:**
 ```
-[VitalConnect] ALERTA CRITICO: Obito PCR detectado. Hosp: {hospital_name} Idade: {age} Janela: {hours_left}h restantes. Acao: {short_link}
+[SIDOT] ALERTA CRITICO: Obito PCR detectado. Hosp: {hospital_name} Idade: {age} Janela: {hours_left}h restantes. Acao: {short_link}
 ```
 
 **Variaveis do Template:**

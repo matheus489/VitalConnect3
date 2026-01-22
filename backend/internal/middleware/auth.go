@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/vitalconnect/backend/internal/services/auth"
+	"github.com/sidot/backend/internal/services/auth"
 )
 
 // UserClaims represents the JWT claims for a user

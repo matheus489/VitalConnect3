@@ -1,4 +1,4 @@
-# Task Breakdown: VitalConnect MVP
+# Task Breakdown: SIDOT MVP
 
 ## Overview
 
@@ -456,9 +456,9 @@
     - Configuracoes de conexao simuladas
     - Criado: `/backend/cmd/seeder/main.go`
   - [x] 8.5 Criar script seeder para usuarios
-    - admin@vitalconnect.gov.br (Admin)
-    - gestor@vitalconnect.gov.br (Gestor)
-    - operador@vitalconnect.gov.br (Operador)
+    - admin@sidot.gov.br (Admin)
+    - gestor@sidot.gov.br (Gestor)
+    - operador@sidot.gov.br (Operador)
     - Senha padrao: "demo123"
     - Criado: `/backend/cmd/seeder/main.go`
   - [x] 8.6 Criar script seeder para regras de triagem
@@ -574,4 +574,4 @@ A implementacao deve seguir esta sequencia para respeitar dependencias:
 
 *Tarefas criadas em: 2026-01-15*
 *Task Group 8 completado em: 2026-01-15*
-*Spec Path: /home/matheus_rubem/VitalConnect/agent-os/specs/2026-01-15-vitalconnect-mvp*
+*Spec Path: /home/matheus_rubem/SIDOT/agent-os/specs/2026-01-15-sidot-mvp*

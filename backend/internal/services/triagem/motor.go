@@ -13,9 +13,9 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/repository"
-	"github.com/vitalconnect/backend/internal/services/listener"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/repository"
+	"github.com/sidot/backend/internal/services/listener"
 )
 
 const (

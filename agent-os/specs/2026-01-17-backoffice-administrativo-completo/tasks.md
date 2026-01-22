@@ -369,7 +369,7 @@ This feature implements a comprehensive super-admin backoffice with:
       - Audit Logs (/admin/logs)
     - Use different accent color to distinguish from tenant app
   - [x] 6.5 Create AdminHeader component
-    - Display "VitalConnect Admin" branding
+    - Display "SIDOT Admin" branding
     - Show current super admin user
     - Include logout and "Back to App" link
   - [x] 6.6 Create admin layout in `/frontend/src/app/admin/layout.tsx`

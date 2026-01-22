@@ -1,5 +1,5 @@
 """
-Base Celery task class with audit logging for VitalConnect AI Service.
+Base Celery task class with audit logging for SIDOT AI Service.
 
 Provides:
 - Task retry logic with exponential backoff

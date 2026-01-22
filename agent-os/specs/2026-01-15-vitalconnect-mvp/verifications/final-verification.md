@@ -1,6 +1,6 @@
-# Relatorio de Verificacao Final: VitalConnect MVP
+# Relatorio de Verificacao Final: SIDOT MVP
 
-**Spec:** `2026-01-15-vitalconnect-mvp`
+**Spec:** `2026-01-15-sidot-mvp`
 **Data:** 2026-01-15
 **Verificador:** implementation-verifier
 **Status:** Passou
@@ -9,7 +9,7 @@
 
 ## Sumario Executivo
 
-A implementacao do VitalConnect MVP foi concluida com sucesso. Todas as 68 sub-tarefas organizadas em 8 grupos de tarefas foram implementadas conforme especificado. O sistema inclui backend completo em Go com Gin, frontend em Next.js 14+ com Shadcn/UI, banco de dados PostgreSQL com 7 migrations, sistema de filas Redis Streams, e notificacoes em tempo real via SSE. Os testes do frontend passaram (24 testes) e a compilacao foi bem-sucedida.
+A implementacao do SIDOT MVP foi concluida com sucesso. Todas as 68 sub-tarefas organizadas em 8 grupos de tarefas foram implementadas conforme especificado. O sistema inclui backend completo em Go com Gin, frontend em Next.js 14+ com Shadcn/UI, banco de dados PostgreSQL com 7 migrations, sistema de filas Redis Streams, e notificacoes em tempo real via SSE. Os testes do frontend passaram (24 testes) e a compilacao foi bem-sucedida.
 
 ---
 
@@ -395,35 +395,35 @@ frontend/src/
 ### Iniciar Infraestrutura
 
 ```bash
-cd /home/matheus_rubem/VitalConnect
+cd /home/matheus_rubem/SIDOT
 docker-compose up -d
 ```
 
 ### Executar Migrations
 
 ```bash
-cd /home/matheus_rubem/VitalConnect/backend
+cd /home/matheus_rubem/SIDOT/backend
 go run migrations/run_migrations.go
 ```
 
 ### Executar Seeder
 
 ```bash
-cd /home/matheus_rubem/VitalConnect/backend
+cd /home/matheus_rubem/SIDOT/backend
 go run cmd/seeder/main.go
 ```
 
 ### Iniciar Backend
 
 ```bash
-cd /home/matheus_rubem/VitalConnect/backend
+cd /home/matheus_rubem/SIDOT/backend
 go run cmd/api/main.go
 ```
 
 ### Iniciar Frontend
 
 ```bash
-cd /home/matheus_rubem/VitalConnect/frontend
+cd /home/matheus_rubem/SIDOT/frontend
 npm install  # primeira vez
 npm run dev
 ```
@@ -431,7 +431,7 @@ npm run dev
 ### Executar Demo ao Vivo
 
 ```bash
-cd /home/matheus_rubem/VitalConnect/backend
+cd /home/matheus_rubem/SIDOT/backend
 go run cmd/demo/live_demo.go
 ```
 
@@ -439,11 +439,11 @@ go run cmd/demo/live_demo.go
 
 ```bash
 # Backend
-cd /home/matheus_rubem/VitalConnect/backend
+cd /home/matheus_rubem/SIDOT/backend
 go test ./... -v
 
 # Frontend
-cd /home/matheus_rubem/VitalConnect/frontend
+cd /home/matheus_rubem/SIDOT/frontend
 npm test
 ```
 
@@ -453,9 +453,9 @@ npm test
 
 | Usuario | Email | Senha | Permissoes |
 |---------|-------|-------|------------|
-| Admin | admin@vitalconnect.gov.br | demo123 | Todas |
-| Gestor | gestor@vitalconnect.gov.br | demo123 | Regras, Metricas, Ocorrencias |
-| Operador | operador@vitalconnect.gov.br | demo123 | Operar Ocorrencias |
+| Admin | admin@sidot.gov.br | demo123 | Todas |
+| Gestor | gestor@sidot.gov.br | demo123 | Regras, Metricas, Ocorrencias |
+| Operador | operador@sidot.gov.br | demo123 | Operar Ocorrencias |
 
 ---
 
@@ -484,7 +484,7 @@ Nenhuma pendencia critica. O MVP esta completo e funcional.
 
 ## Conclusao
 
-O VitalConnect MVP foi implementado com sucesso, atendendo a todos os requisitos especificados. O sistema esta pronto para demonstracao e validacao com stakeholders. A arquitetura modular permite facil expansao para as fases subsequentes do roadmap.
+O SIDOT MVP foi implementado com sucesso, atendendo a todos os requisitos especificados. O sistema esta pronto para demonstracao e validacao com stakeholders. A arquitetura modular permite facil expansao para as fases subsequentes do roadmap.
 
 **Verificacao realizada em:** 2026-01-15
 **Status Final:** APROVADO

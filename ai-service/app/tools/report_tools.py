@@ -1,5 +1,5 @@
 """
-Report Tools for VitalConnect AI Assistant.
+Report Tools for SIDOT AI Assistant.
 
 Provides tools for generating reports about organ capture operations.
 
@@ -202,7 +202,7 @@ class SearchDocumentationTool(BaseTool):
     """
 
     name = "search_documentation"
-    description = """Pesquisa na base de conhecimento e documentacao do VitalConnect.
+    description = """Pesquisa na base de conhecimento e documentacao do SIDOT.
 
     Parametros:
     - query: Pergunta ou termos de busca (obrigatorio)

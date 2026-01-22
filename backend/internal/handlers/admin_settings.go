@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/repository"
-	"github.com/vitalconnect/backend/internal/services/audit"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/repository"
+	"github.com/sidot/backend/internal/services/audit"
 )
 
 var adminSettingsRepo *repository.AdminSettingsRepository

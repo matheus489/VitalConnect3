@@ -12,8 +12,8 @@ export const api = axios.create({
 });
 
 // Token management
-const TOKEN_KEY = 'vitalconnect_access_token';
-const REFRESH_TOKEN_KEY = 'vitalconnect_refresh_token';
+const TOKEN_KEY = 'sidot_access_token';
+const REFRESH_TOKEN_KEY = 'sidot_refresh_token';
 
 export const getAccessToken = (): string | null => {
   if (typeof window === 'undefined') return null;

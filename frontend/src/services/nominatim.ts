@@ -35,7 +35,7 @@ export async function searchAddress(
   try {
     const response = await fetch(`${NOMINATIM_BASE_URL}/search?${params}`, {
       headers: {
-        'User-Agent': 'VitalConnect/1.0 (contact@vitalconnect.gov.br)',
+        'User-Agent': 'SIDOT/1.0 (contact@sidot.gov.br)',
         'Accept-Language': 'pt-BR,pt;q=0.9',
       },
     });
@@ -97,7 +97,7 @@ export async function reverseGeocode(
   try {
     const response = await fetch(`${NOMINATIM_BASE_URL}/reverse?${params}`, {
       headers: {
-        'User-Agent': 'VitalConnect/1.0 (contact@vitalconnect.gov.br)',
+        'User-Agent': 'SIDOT/1.0 (contact@sidot.gov.br)',
         'Accept-Language': 'pt-BR,pt;q=0.9',
       },
     });

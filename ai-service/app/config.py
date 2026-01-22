@@ -87,7 +87,7 @@ def get_settings() -> Settings:
     # Database URL for AI service
     database_url = get_env(
         "DATABASE_URL",
-        "postgresql://postgres:postgres@postgres:5432/vitalconnect"
+        "postgresql://postgres:postgres@postgres:5432/sidot"
     )
 
     # Redis URL (use database 1 for AI service to separate from main app)
@@ -114,7 +114,7 @@ def get_settings() -> Settings:
 
         # Redis
         redis_url=redis_url,
-        redis_key_prefix=get_env("REDIS_KEY_PREFIX", "vitalconnect:ai:"),
+        redis_key_prefix=get_env("REDIS_KEY_PREFIX", "sidot:ai:"),
         redis_max_connections=get_env_int("REDIS_MAX_CONNECTIONS", 10),
         redis_message_ttl=get_env_int("REDIS_MESSAGE_TTL", 3600),  # 1 hour
 
@@ -129,7 +129,7 @@ def get_settings() -> Settings:
 
         # Vector Store
         qdrant_url=get_env("QDRANT_URL", "http://qdrant:6333"),
-        qdrant_collection_prefix=get_env("QDRANT_COLLECTION_PREFIX", "vitalconnect_"),
+        qdrant_collection_prefix=get_env("QDRANT_COLLECTION_PREFIX", "sidot_"),
 
         # Go Backend Integration
         go_backend_url=get_env("GO_BACKEND_URL", "http://backend:8080"),

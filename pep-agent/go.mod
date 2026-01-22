@@ -1,4 +1,4 @@
-module github.com/vitalconnect/pep-agent
+module github.com/sidot/pep-agent
 
 go 1.21
 

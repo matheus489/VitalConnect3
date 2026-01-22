@@ -1,7 +1,7 @@
-# Specification: AI Assistant Agent (VitalConnect Co-Pilot)
+# Specification: AI Assistant Agent (SIDOT Co-Pilot)
 
 ## Goal
-Build a hybrid AI assistant (Q&A via RAG + Function Calling for actions) that serves as an operational co-pilot for VitalConnect users, enabling natural language queries about documentation and executing system actions while respecting multi-tenant isolation and role-based permissions.
+Build a hybrid AI assistant (Q&A via RAG + Function Calling for actions) that serves as an operational co-pilot for SIDOT users, enabling natural language queries about documentation and executing system actions while respecting multi-tenant isolation and role-based permissions.
 
 ## User Stories
 - As an operator, I want to ask natural language questions about organ capture procedures so that I can quickly find answers without searching documentation manually
@@ -18,7 +18,7 @@ Build a hybrid AI assistant (Q&A via RAG + Function Calling for actions) that se
 - Structure: `/ai-service/app/main.py`, `/ai-service/app/agents/`, `/ai-service/app/tools/`, `/ai-service/app/rag/`
 
 **LlamaIndex RAG Pipeline**
-- Index VitalConnect documentation (markdown files, PDFs) into vector store
+- Index SIDOT documentation (markdown files, PDFs) into vector store
 - Use Qdrant or ChromaDB as vector store with tenant-isolated collections
 - Implement metadata filtering by `tenant_id` on all vector queries
 - Create ingestion pipeline for document updates via Celery background tasks
@@ -40,8 +40,8 @@ Build a hybrid AI assistant (Q&A via RAG + Function Calling for actions) that se
 - Each tool must validate user permissions before execution
 
 **Redis Broker Configuration**
-- Redis connection reuses existing VitalConnect Redis instance
-- Separate key prefix for AI service: `vitalconnect:ai:`
+- Redis connection reuses existing SIDOT Redis instance
+- Separate key prefix for AI service: `sidot:ai:`
 - Configure message TTL of 1 hour for task messages
 - Implement connection pooling with max 10 connections
 
@@ -53,7 +53,7 @@ Build a hybrid AI assistant (Q&A via RAG + Function Calling for actions) that se
 
 ## Visual Design
 
-No visual mockups provided. Frontend implementation should follow existing VitalConnect component patterns.
+No visual mockups provided. Frontend implementation should follow existing SIDOT component patterns.
 
 **Chat Widget Design Requirements**
 - Floating action button (FAB) positioned at bottom-right corner

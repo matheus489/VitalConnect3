@@ -13,8 +13,8 @@ import (
 	// Oracle driver requires CGO and godror, commented out for portability
 	// _ "github.com/godror/godror"
 
-	"github.com/vitalconnect/pep-agent/internal/config"
-	"github.com/vitalconnect/pep-agent/internal/models"
+	"github.com/sidot/pep-agent/internal/config"
+	"github.com/sidot/pep-agent/internal/models"
 )
 
 // Connector provides database connectivity for the PEP Agent

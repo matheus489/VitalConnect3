@@ -1,7 +1,7 @@
 # Specification: Health Check e Monitoramento
 
 ## Goal
-Implementar um sistema de health check agregado e dashboard de monitoramento em tempo real para o VitalConnect, permitindo que administradores visualizem o status de todos os servicos criticos (Database, Redis, Listener, API) atraves de uma interface visual tipo semaforo, com alertas automaticos por email quando o Obito Listener falhar.
+Implementar um sistema de health check agregado e dashboard de monitoramento em tempo real para o SIDOT, permitindo que administradores visualizem o status de todos os servicos criticos (Database, Redis, Listener, API) atraves de uma interface visual tipo semaforo, com alertas automaticos por email quando o Obito Listener falhar.
 
 ## User Stories
 - Como Admin do Sistema, quero visualizar o status de todos os servicos em uma unica pagina com indicadores visuais claros (verde/amarelo/vermelho), para identificar rapidamente problemas de infraestrutura.
@@ -15,11 +15,11 @@ Implementar um sistema de health check agregado e dashboard de monitoramento em 
 - Cada componente deve incluir: status (up/degraded/down), latencia em ms, ultima verificacao
 - Usar ping do database com timeout de 2 segundos para verificar PostgreSQL
 - Usar PING command do Redis com timeout de 2 segundos
-- Verificar heartbeat do Listener via Redis (chave vitalconnect:listener:heartbeat)
+- Verificar heartbeat do Listener via Redis (chave sidot:listener:heartbeat)
 - Status geral: "healthy" se todos up, "degraded" se algum lento, "unhealthy" se algum down
 
 **Sistema de Heartbeat do Listener**
-- Listener deve publicar heartbeat no Redis a cada 5 segundos (SET vitalconnect:listener:heartbeat com TTL de 15s)
+- Listener deve publicar heartbeat no Redis a cada 5 segundos (SET sidot:listener:heartbeat com TTL de 15s)
 - Health check verifica existencia da chave - se ausente por 2 ciclos (20s), considera DOWN
 - Armazenar timestamp do ultimo heartbeat para calcular tempo desde ultima atividade
 - Implementar no ObitoListener.go como goroutine separada

@@ -82,7 +82,7 @@ class TestConfiguration:
             assert settings.database_url is not None
             assert settings.redis_url is not None
             assert settings.jwt_secret == "dev-jwt-secret-change-in-production"
-            assert settings.redis_key_prefix == "vitalconnect:ai:"
+            assert settings.redis_key_prefix == "sidot:ai:"
             assert settings.redis_max_connections == 10
 
         finally:

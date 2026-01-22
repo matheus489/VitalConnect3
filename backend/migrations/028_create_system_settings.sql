@@ -35,7 +35,7 @@ COMMENT ON COLUMN system_settings.updated_at IS 'Data da ultima atualizacao';
 
 -- Seed initial settings with empty configurations
 INSERT INTO system_settings (key, value, description, is_encrypted) VALUES
-    ('smtp_config', '{"host": "", "port": 587, "user": "", "password": "", "from_address": "", "from_name": "VitalConnect"}', 'Configuracao do servidor SMTP para envio de emails', true),
+    ('smtp_config', '{"host": "", "port": 587, "user": "", "password": "", "from_address": "", "from_name": "SIDOT"}', 'Configuracao do servidor SMTP para envio de emails', true),
     ('twilio_config', '{"account_sid": "", "auth_token": "", "from_number": ""}', 'Configuracao do Twilio para envio de SMS', true),
     ('fcm_config', '{"server_key": ""}', 'Configuracao do Firebase Cloud Messaging para push notifications', true)
 ON CONFLICT (key) DO NOTHING;

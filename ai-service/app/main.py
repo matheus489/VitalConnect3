@@ -1,8 +1,8 @@
 """
-VitalConnect AI Service - FastAPI Application Entry Point
+SIDOT AI Service - FastAPI Application Entry Point
 
 A hybrid AI assistant (Q&A via RAG + Function Calling) that serves as an
-operational co-pilot for VitalConnect users.
+operational co-pilot for SIDOT users.
 """
 
 import logging
@@ -88,8 +88,8 @@ def create_app() -> FastAPI:
     settings = get_settings()
 
     app = FastAPI(
-        title="VitalConnect AI Service",
-        description="AI Assistant Co-Pilot for VitalConnect - RAG + Function Calling",
+        title="SIDOT AI Service",
+        description="AI Assistant Co-Pilot for SIDOT - RAG + Function Calling",
         version="1.0.0",
         docs_url="/docs" if settings.debug else None,
         redoc_url="/redoc" if settings.debug else None,
@@ -155,7 +155,7 @@ def create_app() -> FastAPI:
     async def root() -> dict:
         """Root endpoint with service information."""
         return {
-            "service": "VitalConnect AI Service",
+            "service": "SIDOT AI Service",
             "version": "1.0.0",
             "status": "running",
             "docs": "/docs" if settings.debug else "disabled",

@@ -1,4 +1,4 @@
-# Task Breakdown: AI Assistant Agent (VitalConnect Co-Pilot)
+# Task Breakdown: AI Assistant Agent (SIDOT Co-Pilot)
 
 ## Overview
 Total Tasks: 11 Task Groups | ~55 Sub-tasks
@@ -111,7 +111,7 @@ This task breakdown implements a hybrid AI assistant using LlamaIndex + Celery a
     - Create `/ai-service/app/celery_app/celery_config.py`
     - Configure Redis as broker: `redis://redis:6379/1`
     - Configure PostgreSQL as result backend
-    - Key prefix: `vitalconnect:ai:`
+    - Key prefix: `sidot:ai:`
   - [x] 2.3 Configure task queues with priorities
     - `ai_query` queue (high priority) - for user queries
     - `ai_actions` queue (normal priority) - for tool executions
@@ -185,7 +185,7 @@ This task breakdown implements a hybrid AI assistant using LlamaIndex + Celery a
   - [x] 3.3 Create Python SQLAlchemy models
     - Create `/ai-service/app/models/conversation.py`
     - Create `/ai-service/app/models/audit_log.py`
-    - Follow existing VitalConnect model patterns
+    - Follow existing SIDOT model patterns
   - [x] 3.4 Create repository layer for AI models
     - Create `/ai-service/app/repository/conversation_repo.py`
     - Create `/ai-service/app/repository/audit_repo.py`
@@ -372,7 +372,7 @@ This task breakdown implements a hybrid AI assistant using LlamaIndex + Celery a
     - Create `/ai-service/app/agents/copilot_agent.py`
     - Configure LlamaIndex ReActAgent
     - Register all tools
-    - System prompt for VitalConnect context
+    - System prompt for SIDOT context
     - Portuguese language support
   - [x] 6.10 Ensure agent tests pass
     - Run ONLY the 2-4 tests written in 6.1
@@ -718,10 +718,10 @@ EMBEDDING_MODEL=multilingual-e5-large
 
 # Vector Store
 QDRANT_URL=http://qdrant:6333
-QDRANT_COLLECTION_PREFIX=vitalconnect_
+QDRANT_COLLECTION_PREFIX=sidot_
 
 # Connections (reuse existing)
-DATABASE_URL=postgresql://postgres:postgres@postgres:5432/vitalconnect
+DATABASE_URL=postgresql://postgres:postgres@postgres:5432/sidot
 REDIS_URL=redis://redis:6379/1
 JWT_SECRET=${existing_jwt_secret}
 

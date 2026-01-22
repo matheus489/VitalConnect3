@@ -9,7 +9,7 @@ Interface visual para gestores criarem e editarem regras de elegibilidade sem ne
 
 ## Context
 
-This is part of VitalConnect - a system for organ donation notification. This feature will:
+This is part of SIDOT - a system for organ donation notification. This feature will:
 - Provide a visual interface for managers to create/edit eligibility rules
 - Allow configuration of criteria like: maximum age, excluded causes of death, maximum elapsed time
 - No code changes needed to modify rules

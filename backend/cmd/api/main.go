@@ -15,20 +15,20 @@ import (
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	"github.com/redis/go-redis/v9"
-	"github.com/vitalconnect/backend/config"
-	"github.com/vitalconnect/backend/internal/handlers"
-	"github.com/vitalconnect/backend/internal/integration"
-	"github.com/vitalconnect/backend/internal/middleware"
-	"github.com/vitalconnect/backend/internal/models"
-	"github.com/vitalconnect/backend/internal/repository"
-	"github.com/vitalconnect/backend/internal/services"
-	"github.com/vitalconnect/backend/internal/services/audit"
-	"github.com/vitalconnect/backend/internal/services/auth"
-	"github.com/vitalconnect/backend/internal/services/health"
-	"github.com/vitalconnect/backend/internal/services/listener"
-	"github.com/vitalconnect/backend/internal/services/notification"
-	"github.com/vitalconnect/backend/internal/services/report"
-	"github.com/vitalconnect/backend/internal/services/triagem"
+	"github.com/sidot/backend/config"
+	"github.com/sidot/backend/internal/handlers"
+	"github.com/sidot/backend/internal/integration"
+	"github.com/sidot/backend/internal/middleware"
+	"github.com/sidot/backend/internal/models"
+	"github.com/sidot/backend/internal/repository"
+	"github.com/sidot/backend/internal/services"
+	"github.com/sidot/backend/internal/services/audit"
+	"github.com/sidot/backend/internal/services/auth"
+	"github.com/sidot/backend/internal/services/health"
+	"github.com/sidot/backend/internal/services/listener"
+	"github.com/sidot/backend/internal/services/notification"
+	"github.com/sidot/backend/internal/services/report"
+	"github.com/sidot/backend/internal/services/triagem"
 )
 
 func main() {
@@ -540,7 +540,7 @@ func main() {
 
 	// Start server in goroutine
 	go func() {
-		log.Printf("VitalConnect API server starting on port %s", cfg.ServerPort)
+		log.Printf("SIDOT API server starting on port %s", cfg.ServerPort)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Failed to start server: %v", err)
 		}

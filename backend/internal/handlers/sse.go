@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/vitalconnect/backend/internal/middleware"
-	"github.com/vitalconnect/backend/internal/services/auth"
-	"github.com/vitalconnect/backend/internal/services/notification"
+	"github.com/sidot/backend/internal/middleware"
+	"github.com/sidot/backend/internal/services/auth"
+	"github.com/sidot/backend/internal/services/notification"
 )
 
 var (

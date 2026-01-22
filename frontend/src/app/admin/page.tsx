@@ -283,7 +283,7 @@ export default function AdminDashboardPage() {
             Dashboard Administrativo
           </h1>
           <p className="text-slate-400">
-            Visao geral do sistema VitalConnect
+            Visao geral do sistema SIDOT
           </p>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -307,7 +307,7 @@ export default function AdminDashboardPage() {
           Dashboard Administrativo
         </h1>
         <p className="text-slate-400">
-          Visao geral do sistema VitalConnect
+          Visao geral do sistema SIDOT
         </p>
       </div>
 
